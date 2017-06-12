@@ -1,0 +1,21 @@
+//
+//  RequestPayBminOrder.h
+//  BianMin
+//
+//  Created by kkk on 16/8/29.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface RequestPayBminOrder : NSObject
+
+@property (nonatomic, copy) NSString *orderNo;
+@property (nonatomic, assign) NSInteger payType;//1-支付宝支付，2-微信支付，4-线下支付
+@property (nonatomic, copy) NSString *payAmount;
+
+///订单Id(新增)
+@property (nonatomic, strong) NSString  *bminOrderId ;
+
+
+@end

@@ -1,0 +1,26 @@
+//
+//  TripPayVC.h
+//  BianMin
+//
+//  Created by 席亚坤 on 17/2/22.
+//  Copyright © 2017年 bianming. All rights reserved.
+//
+
+#import "BaseViewController.h"
+@class TripModel;
+@interface TripPayVC : BaseViewController
+@property (weak, nonatomic) IBOutlet UIImageView *ZFBImage;
+@property (weak, nonatomic) IBOutlet UIImageView *WXImage;
+@property (weak, nonatomic) IBOutlet UILabel *payTimeLimit;
+@property (weak, nonatomic) IBOutlet UILabel *payAmount;
+
+///
+@property (nonatomic, strong) dispatch_source_t timer;
+ ;
+
+
+///TripModel
+@property (nonatomic, strong) TripModel  *tripModel ;
+
+
+@end

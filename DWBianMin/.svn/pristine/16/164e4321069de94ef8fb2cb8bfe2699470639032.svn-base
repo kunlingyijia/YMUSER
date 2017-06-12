@@ -1,0 +1,44 @@
+//
+//  OrderDetailViewController.h
+//  0818
+//
+//  Created by 月美 刘 on 16/8/18.
+//  Copyright © 2016年 月美 刘. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
+
+@interface OrderDetailViewController : BaseViewController
+
+@property (nonatomic , copy)void(^backBlockAction)(NSString *str);
+
+@property (weak, nonatomic) IBOutlet UILabel *merchantName;           //商家名称
+@property (weak, nonatomic) IBOutlet UIImageView *merchantImage;      //商家图片
+@property (weak, nonatomic) IBOutlet UITextView *merchantDescription; //商家描述
+@property (weak, nonatomic) IBOutlet UILabel *orderStatus;            //订单状态
+@property (weak, nonatomic) IBOutlet UILabel *statusDescription;      //(订单)状态描述
+@property (weak, nonatomic) IBOutlet UIButton *btnOnlinePay;          //线上付款
+@property (weak, nonatomic) IBOutlet UIButton *btnOfflinePay;         //线下付款
+@property (weak, nonatomic) IBOutlet UILabel *name;                   //姓名
+@property (weak, nonatomic) IBOutlet UILabel *tel;                    //电话
+@property (weak, nonatomic) IBOutlet UILabel *address;                //地址
+@property (weak, nonatomic) IBOutlet UILabel *comeTime;               //上门时间
+@property (weak, nonatomic) IBOutlet UITextView *detail;              //详情
+@property (weak, nonatomic) IBOutlet UILabel *orderNumberL;
+@property (weak, nonatomic) IBOutlet UILabel *createLabel;
+@property (weak, nonatomic) IBOutlet UILabel *shopPrice;
+@property (weak, nonatomic) IBOutlet UILabel *payPirce;
+
+@property (nonatomic, copy) NSString *orderNo;
+@property (nonatomic, assign) NSInteger commitOrderC;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *firstBtnFirstH;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *firstBtnSecontH;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *secondBtnFirstH;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *secondBtnSectonH;
+
+
+
+@end

@@ -1,0 +1,127 @@
+//
+//  GoodsMessageCell.m
+//  BianMin
+//
+//  Created by kkk on 16/5/6.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "GoodsMessageCell.h"
+#define Space 5
+@implementation GoodsMessageCell
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self createView];
+    }
+    return self;
+}
+
+- (void)createView {
+    UILabel *buyLabel = [UILabel new];
+    buyLabel.textColor = [UIColor colorWithHexString:kSubTitleColor];
+    buyLabel.font = [UIFont systemFontOfSize:14];
+    buyLabel.text = @"购买须知";
+    [self.contentView addSubview:buyLabel];
+    [buyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView.mas_top).with.offset(Space);
+        make.left.equalTo(self.contentView.mas_left).with.offset(2*Space);
+        make.height.mas_equalTo(25);
+    }];
+    UILabel *line = [UILabel new];
+    line.backgroundColor = [UIColor colorWithHexString:kLineColor];
+    [self.contentView addSubview:line];
+    [line mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(buyLabel.mas_bottom).with.offset(Space);
+        make.left.equalTo(self.contentView.mas_left).with.offset(2*Space);
+        make.right.equalTo(self.contentView.mas_right);
+        make.height.mas_equalTo(@(1));
+    }];
+    
+    UILabel *firstLabel = [UILabel new];
+    firstLabel.font = [UIFont systemFontOfSize:14];
+    firstLabel.textColor = [UIColor colorWithHexString:@"#ff9712"];
+    firstLabel.text = @"有效期:";
+    [self.contentView addSubview:firstLabel];
+    [firstLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(line.mas_bottom).with.offset(Space);
+        make.left.equalTo(self.contentView).with.offset(2*Space);
+        make.height.mas_equalTo(@(25));
+    }];
+    
+    self.data = [UILabel new];
+    self.data.textColor = [UIColor colorWithHexString:kTitleColor];
+    self.data.font = [UIFont systemFontOfSize:14];
+    self.data.text = @"";
+    [self.contentView addSubview:self.data];
+    [self.data mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(firstLabel.mas_bottom).with.offset(0);
+        make.left.equalTo(firstLabel.mas_left).with.offset(Space);
+        make.height.mas_equalTo(@(25));
+    }];
+    
+    
+    UILabel *secondLabel = [UILabel new];
+    secondLabel.textColor = [UIColor colorWithHexString:@"#ff9712"];
+    secondLabel.text = @"使用时间:";
+    secondLabel.font = [UIFont systemFontOfSize:14];
+    [self.contentView addSubview:secondLabel];
+    [secondLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.data.mas_bottom).with.offset(Space);
+        make.left.equalTo(self.contentView).with.offset(2*Space);
+        make.height.mas_equalTo(@(25));
+    }];
+    
+    self.useData = [UILabel new];
+    self.useData.font = [UIFont systemFontOfSize:14];
+    self.useData.text = @"";
+    self.useData.textColor = [UIColor colorWithHexString:kTitleColor];
+    [self.contentView addSubview:self.useData];
+    [self.useData mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(secondLabel.mas_bottom);
+        make.left.equalTo(secondLabel.mas_left).with.offset(Space);
+        make.height.mas_equalTo(@(25));
+    }];
+    
+    UILabel *thirdLabel = [UILabel new];
+    thirdLabel.textColor = [UIColor colorWithHexString:@"#ff9712"];
+    thirdLabel.text = @"使用规则:";
+    thirdLabel.font = [UIFont systemFontOfSize:14];
+    [self.contentView addSubview:thirdLabel];
+    [thirdLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.useData.mas_bottom).with.offset(Space);
+        make.left.equalTo(self.contentView).with.offset(2*Space);
+        make.height.mas_equalTo(@(25));
+    }];
+    
+    self.useRule = [UILabel new];
+    self.useRule.font = [UIFont systemFontOfSize:14];
+    self.useRule.text = @"使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则使用规则";
+    self.useRule.numberOfLines = 0;
+    self.useRule.textColor = [UIColor colorWithHexString:kTitleColor];
+    [self.contentView addSubview:self.useRule];
+    [self.useRule mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(thirdLabel.mas_bottom);
+        make.left.equalTo(thirdLabel.mas_left).with.offset(Space);
+        make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-Space);
+        make.width.mas_equalTo(@(Width/3*2));
+    }];
+    
+}
+
+
+
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    // Initialization code
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+@end

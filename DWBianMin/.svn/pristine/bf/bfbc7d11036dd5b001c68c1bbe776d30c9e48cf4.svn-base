@@ -1,0 +1,124 @@
+//
+//  CustomSearchBar.m
+//  CustomSearchBarDemo
+//
+//  Created by 王春平 on 16/3/8.
+//  Copyright © 2016年 wang. All rights reserved.
+//
+
+#import "CustomSearchBar.h"
+//#import "UIView+ModifyAttributeValue.h"
+#define CancleButtonWidth 50 //取消按钮的宽度
+#define SearchImageViewSize self.frame.size.height - 5 //搜索图标的尺寸（宽与高相等）
+
+@interface CustomSearchBar ()<UITextFieldDelegate>
+{
+    UIView *_bgView;//背景视图
+    UITextField *_textField;//输入框
+    UIImageView *_searchImageView;//放大镜图标
+    UIButton *_cancleButton;//取消按钮
+}
+@end
+
+@implementation CustomSearchBar
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        //背景视图
+        _bgView = [[UIView alloc] initWithFrame:self.bounds];
+        //设置圆角效果
+        _bgView.layer.cornerRadius = 5;
+        _bgView.layer.masksToBounds = YES;
+//        _bgView.backgroundColor = [UIColor redColor];
+        _bgView.layer.masksToBounds = YES;
+        _bgView.layer.cornerRadius = 9;
+        _bgView.layer.borderColor = [UIColor colorWithHexString:kViewBg].CGColor;
+        _bgView.layer.borderWidth = 1;
+        
+        [self addSubview:_bgView];
+        
+//        //取消按钮
+//        _cancleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        _cancleButton.frame = CGRectMake(CGRectGetWidth(self.frame) - CancleButtonWidth, 0, CancleButtonWidth, CGRectGetHeight(self.frame));
+//        [_cancleButton setTitle:@"取消" forState:UIControlStateNormal];
+//        [_cancleButton setTitleColor:[UIColor colorWithWhite:0.335 alpha:1.000] forState:UIControlStateNormal];
+//        _cancleButton.titleLabel.font = [UIFont systemFontOfSize:13];
+//        [_cancleButton addTarget:self action:@selector(handleButton:) forControlEvents:UIControlEventTouchDown];
+//        //textField未编辑状态，“取消”按纽不显示
+//        _cancleButton.hidden = YES;
+//        [self addSubview:_cancleButton];
+        
+        //输入框
+        _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 0, CGRectGetWidth(_bgView.frame) - 10, CGRectGetHeight(_bgView.frame))];
+        _textField.font = [UIFont systemFontOfSize:12];
+        [_textField becomeFirstResponder];
+        _textField.textColor = [UIColor colorWithHexString:kTitleColor];
+        [_textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:UIControlEventEditingChanged];
+        _textField.delegate = self;
+        _textField.returnKeyType = UIReturnKeySearch;
+        //为textField设置属性占位符
+//        _textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"请输入商家姓名,物品或者关键词" attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:0.335 alpha:1.000]}];
+        _textField.placeholder = @"请输入商家名称";
+        _textField.tintColor = [UIColor colorWithHexString:kNavigationBgColor];
+        [_bgView addSubview:_textField];
+        
+        //放大镜图标imageView
+        _searchImageView = [[UIImageView alloc] init];
+        _searchImageView.image = [UIImage imageNamed:@"btn_home_sousuo_narmal"];
+        [_bgView addSubview:_searchImageView];
+        [_searchImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo (self).with.offset(5);
+            make.centerY.equalTo(self.mas_centerY);
+            make.size.mas_equalTo(CGSizeMake(SearchImageViewSize, SearchImageViewSize));
+        }];
+    }
+    return self;
+}
+
+#pragma mark - handle action
+
+- (void)textFieldChanged:(UITextField *)textField {
+    //当输入框的字符数大于零时，隐藏放大镜图标
+    NSLog(@"%@", textField.text);
+//    _searchImageView.hidden = textField.text.length > 0 ? YES : NO;
+}
+
+//取消按钮触发事件
+- (void)handleButton:(UIButton *)button {
+    [_textField resignFirstResponder];
+    //清除输入框中的字符串
+    _textField.text = @"";
+    _cancleButton.hidden = YES;
+    _searchImageView.hidden = NO;
+//    //隐藏“取消”按钮伴随的动画效果
+//    [UIView animateWithDuration:0.5 animations:^{
+//        //方法setSize:和setOrigin:是UIView分类UIView+ModifyAttributeValue中的方法
+//        [_bgView setSize:CGSizeMake(CGRectGetWidth(_bgView.frame) + CancleButtonWidth, CGRectGetHeight(_bgView.frame))];
+//        [_textField setSize:CGSizeMake(CGRectGetWidth(_textField.frame) + CancleButtonWidth, CGRectGetHeight(_textField.frame))];
+//        [_searchImageView setOrigin:CGPointMake(_searchImageView.frame.origin.x + CancleButtonWidth, _searchImageView.frame.origin.y)];
+//    }];
+}
+
+- (void)getBlockFromOutSpace:(ReturnBlock)block {
+    self.block = block;
+}
+
+#pragma mark - UITextFieldDelegate
+
+//输入框开始编辑
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    self.beginSearch(_textField);
+}
+//结束编辑
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    self.endSearch(nil);
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    self.block(textField);
+//    [self handleButton:_cancleButton];
+    return YES;
+}
+
+@end

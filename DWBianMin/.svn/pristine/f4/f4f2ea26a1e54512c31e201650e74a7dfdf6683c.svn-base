@@ -1,0 +1,15 @@
+//
+//  RequestBminUrge.h
+//  BianMin
+//
+//  Created by kkk on 16/8/28.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface RequestBminUrge : NSObject
+
+@property (nonatomic, copy) NSString *orderNo;
+
+@end

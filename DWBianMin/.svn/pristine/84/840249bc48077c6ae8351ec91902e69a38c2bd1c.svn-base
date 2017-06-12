@@ -1,0 +1,26 @@
+//
+//  RefundViewController.h
+//  BianMin
+//
+//  Created by kkk on 16/5/17.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "BaseViewController.h"
+#import "RequestMyGoodsOrderDetailModel.h"
+@interface RefundViewController : BaseViewController
+@property (weak, nonatomic) IBOutlet UILabel *reason;
+@property (weak, nonatomic) IBOutlet UILabel *passwordLabel;
+@property (weak, nonatomic) IBOutlet UILabel *refundMoney;
+@property (weak, nonatomic) IBOutlet UILabel *firstLabel;
+@property (weak, nonatomic) IBOutlet UILabel *secondLabel;
+@property (weak, nonatomic) IBOutlet UILabel *thirdLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fourLbael;
+@property (weak, nonatomic) IBOutlet UILabel *fiveLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sevenLabel;
+@property (weak, nonatomic) IBOutlet UIButton *submitBtn;
+
+
+@property (nonatomic, strong) RequestMyGoodsOrderDetailModel *messageModel;
+@end

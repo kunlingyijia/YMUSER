@@ -1,0 +1,336 @@
+//
+//  OrderDetailViewController.m
+//  0818
+//
+//  Created by 月美 刘 on 16/8/18.
+//  Copyright © 2016年 月美 刘. All rights reserved.
+//
+
+#import "OrderDetailViewController.h"
+#import "UIColor+DWColor.h"
+#import "RequestMyBminorderDetail.h"
+#import "RequestMyBminorderDetailModel.h"
+#import "RequestBminUrge.h"
+#import "RequestBminCancelOrder.h"
+#import "OnlinePayController.h"
+#import "RequestBminserviceListModel.h"
+#import "RequestPayBminOrder.h"
+@interface OrderDetailViewController ()
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentSizeHeight;
+@property (nonatomic, strong) RequestMyBminorderDetailModel *orderModel;
+@property (nonatomic, assign) NSInteger firstBtnUser;//1-可点击 2-不可点击
+@property (nonatomic, assign) NSInteger secondBtnUser;//1-可点击 2-不可点击
+@end
+
+@implementation OrderDetailViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    if (self.commitOrderC == 6) {
+        [self newShowBackBtn];
+    }else {
+        [self showBackBtn];
+    }
+    self.title = @"订单详情";
+    self.firstBtnUser = 1;
+    self.secondBtnUser = 1;
+    // 导航
+    //设置导航框的背景色
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithHexString:@"00c7b7"];
+    //设置线上付款和线下付款两个button的边框颜色
+    self.btnOnlinePay.layer.borderWidth = 1;
+    self.btnOnlinePay.layer.borderColor = [UIColor colorWithHexString:@"#EDEDED"].CGColor;
+    self.btnOfflinePay.layer.borderWidth = 1;
+    self.btnOfflinePay.layer.borderColor = [UIColor colorWithHexString:@"#EDEDED"].CGColor;
+    self.contentSizeHeight.constant = 720;
+    
+    [self getOrderMessage];
+}
+- (void)newShowBackBtn{
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    backBtn.frame = CGRectMake(0, 0, 40, 40);
+    backBtn.backgroundColor = [UIColor clearColor];
+    [backBtn setImage:[UIImage imageNamed:@"箭头"] forState:UIControlStateNormal];
+    backBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [backBtn addTarget:self action:@selector(newDoBack:) forControlEvents:UIControlEventTouchUpInside];
+    [backBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 30)];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
+    self.navigationItem.leftBarButtonItem = backItem;
+    self.navigationController.navigationBar.translucent = NO;
+}
+
+- (void)newDoBack:(id)sender{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+- (void)viewGetData {
+    self.merchantName.text = self.orderModel.merchantName;
+    [self loadImageWithView:self.merchantImage urlStr:self.orderModel.iconUrl];
+    
+    self.name.text = self.orderModel.name;
+    self.tel.text = self.orderModel.tel;
+    self.address.text = self.orderModel.address;
+    self.detail.text  = self.orderModel.content;
+    NSString *bmContent = nil;
+    
+    for (int i = 0; i < self.orderModel.bminServiceList.count; i++) {
+        RequestBminserviceListModel *dic = [RequestBminserviceListModel yy_modelWithJSON:self.orderModel.bminServiceList[i]];
+        if (i == 0) {
+            bmContent = [NSString stringWithFormat:@"%@",  dic.serviceName];
+        }else {
+            bmContent = [NSString stringWithFormat:@"%@+%@", bmContent, dic.serviceName];
+        }
+    }
+    self.merchantDescription.text = bmContent;
+    NSString *statrTime = [self.orderModel.bookingStartTime substringToIndex:16];
+    NSString *firtEndTime = [self.orderModel.bookingEndTime substringToIndex:16];
+    NSString *endTime = [firtEndTime substringFromIndex:10];
+    self.comeTime.text = [NSString stringWithFormat:@"%@-%@", statrTime, endTime];
+    self.orderNumberL.text = self.orderModel.orderNo;
+    self.createLabel.text = self.orderModel.createTime;
+    self.shopPrice.text = [NSString stringWithFormat:@"%.2f元",self.orderModel.price];
+
+    
+    switch (self.orderModel.status) {
+        case 0:
+            self.orderStatus.text = @"等待商户接单";
+            self.statusDescription.text = @"若商户长时间未接单，请手动催单或取消订单";
+            [self.btnOnlinePay setTitle:@"催单" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitle:@"取消订单" forState:UIControlStateNormal];
+            self.payPirce.text = @"待支付";
+            break;
+        case 1:
+            self.orderStatus.text = @"商户接单";
+            self.statusDescription.text = @"商户已接单,将尽快安排上门服务,请保持电话畅通";
+            [self.btnOnlinePay setTitle:@"催单" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitle:@"付款" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            self.secondBtnUser = 2;
+            self.payPirce.text = @"待支付";
+            break;
+        case 2:
+            self.orderStatus.text = @"等待支付";
+            self.statusDescription.text = @"商户已上门服务,等待付款";
+            [self.btnOnlinePay setTitle:@"线下支付" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitle:@"线上支付" forState:UIControlStateNormal];
+            self.payPirce.text = @"待支付";
+            break;
+        case 3:
+            self.orderStatus.text = @"订单已完成";
+            self.statusDescription.text = @"订单已完成";
+            [self.btnOnlinePay setTitle:@"" forState:UIControlStateNormal];
+            [self.btnOnlinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            self.firstBtnFirstH.constant = 0;
+            self.firstBtnSecontH.constant = 0;
+            self.secondBtnFirstH.constant = 0;
+            self.secondBtnSectonH.constant = 0;
+            [self.btnOfflinePay setTitle:@"" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            self.firstBtnUser = 2;
+            self.secondBtnUser = 2;
+            self.payPirce.text = [NSString stringWithFormat:@"%.2f元", self.orderModel.payAmount];
+            break;
+        case 4:
+            self.orderStatus.text = @"订单已取消";
+            self.statusDescription.text = @"订单已取消";
+            [self.btnOnlinePay setTitle:@"" forState:UIControlStateNormal];
+            [self.btnOnlinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            self.firstBtnFirstH.constant = 0;
+            self.firstBtnSecontH.constant = 0;
+            self.secondBtnFirstH.constant = 0;
+            self.secondBtnSectonH.constant = 0;
+            [self.btnOfflinePay setTitle:@"" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            self.firstBtnUser = 2;
+            self.secondBtnUser = 2;
+            self.payPirce.text = @"待支付";
+            break;
+        case 5:
+            self.orderStatus.text = @"商户已拒单";
+            self.statusDescription.text = @"商户拒绝接单";
+            self.firstBtnFirstH.constant = 0;
+            self.firstBtnSecontH.constant = 0;
+            self.secondBtnFirstH.constant = 0;
+            self.secondBtnSectonH.constant = 0;
+            [self.btnOnlinePay setTitle:@"" forState:UIControlStateNormal];
+            [self.btnOnlinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            
+            [self.btnOfflinePay setTitle:@"" forState:UIControlStateNormal];
+            [self.btnOfflinePay setTitleColor:[UIColor colorWithHexString:@"#AAAAAA"] forState:UIControlStateNormal];
+            self.firstBtnUser = 2;
+            self.secondBtnUser = 2;
+            self.payPirce.text = @"待支付";
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (IBAction)firstBtnAction:(id)sender {
+    UIButton *btn = sender;
+    if (self.firstBtnUser == 1) {
+        if ([btn.titleLabel.text isEqualToString:@"催单"]) {
+            [self urgeOrderWithOrderNo:self.orderNo bminOrderId:self.bminOrderId];
+        }else if ([btn.titleLabel.text isEqualToString:@"线下支付"]) {
+            UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+            [alertC addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                textField.keyboardType = UIKeyboardTypeDecimalPad;
+                textField.text =[NSString stringWithFormat:@"%.2f", self.orderModel.price];
+                textField.userInteractionEnabled = NO;
+            }];
+            UITextField *textField = [alertC.textFields firstObject];
+            
+            [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+            }]];
+            
+            [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+                [self getdataWith:textField.text  withPayType:4];
+            }]];
+            [self presentViewController:alertC animated:YES completion:^{
+                
+            }];
+
+        }
+    }else if (self.firstBtnUser == 2) {
+        
+    }
+    
+}
+
+- (void)getdataWith:(NSString *)price withPayType:(NSInteger)payType {
+    RequestPayBminOrder *bmOrder = [[RequestPayBminOrder alloc] init];
+    bmOrder.payAmount = price;
+    bmOrder.payType = payType;
+    bmOrder.orderNo = self.orderModel.orderNo;
+    bmOrder.bminOrderId =self.orderModel.bminOrderId;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.encryptionType = AES;
+    baseReq.data = [AESCrypt encrypt:[bmOrder yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestPayBminOrder" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+       
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            OrderDetailViewController *detailC = [[OrderDetailViewController alloc] initWithNibName:@"OrderDetailViewController" bundle:nil];
+            detailC.orderNo = self.orderModel.orderNo;
+            detailC.bminOrderId = self.orderModel.bminOrderId;
+            detailC.commitOrderC = 6;
+            [detailC showSuccessWith:@"支付成功"];
+            [self.navigationController pushViewController:detailC animated:YES];
+            }else {
+            [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+
+
+- (IBAction)secondBtnAction:(id)sender {
+    if (self.secondBtnUser == 1) {
+        UIButton *btn = sender;
+        if ([btn.titleLabel.text isEqualToString:@"取消订单"]) {
+            [self cancelOrderAction:self.orderNo bminOrderId:self.bminOrderId];
+        }else if ([btn.titleLabel.text isEqualToString:@"线上支付"]) {
+            OnlinePayController *onlinePay = [[OnlinePayController alloc] initWithNibName:@"OnlinePayController" bundle:nil];
+            onlinePay.orderNo = self.orderModel.orderNo;
+            onlinePay.bminOrderId =self.orderModel.bminOrderId;
+            [self.navigationController pushViewController:onlinePay animated:YES];
+        }
+    }else if (self.secondBtnUser == 2) {
+        
+    }
+    
+}
+
+//取消订单
+- (void)cancelOrderAction:(NSString *)orderNo bminOrderId:(NSString*)bminOrderId{
+    [self showProgress];
+    RequestBminCancelOrder *order = [[RequestBminCancelOrder alloc] init];
+    order.orderNo = orderNo;
+    order.bminOrderId = bminOrderId;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.encryptionType = AES;
+    baseReq.data= [AESCrypt encrypt:[order yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestBminCancelOrder" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            [self showToast:@"订单取消成功"];
+            self.backBlockAction(nil);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        }else {
+           [self showToast:baseRes.msg];//  [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+        [self hideProgress];
+    } faild:^(id error) {
+        [self hideProgress];
+    }];
+}
+
+- (void)urgeOrderWithOrderNo:(NSString *)orderNo bminOrderId:(NSString*)bminOrderId {
+    RequestBminUrge *urge = [[RequestBminUrge alloc] init];
+    urge.orderNo = orderNo;
+    urge.bminOrderId = bminOrderId;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.encryptionType = AES;
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.data = [AESCrypt encrypt:[urge yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestBminUrge" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            [self showToast:@"催单成功"];
+        }else {
+            [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+
+
+
+
+
+
+- (void)getOrderMessage {
+    RequestMyBminorderDetail *detail = [[RequestMyBminorderDetail alloc] init];
+    detail.orderNo = self.orderNo;
+    detail.bminOrderId = self.bminOrderId;
+
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.encryptionType = AES;
+    baseReq.data = [AESCrypt encrypt:[detail yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestMyBminorderDetail" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+         if (baseRes.resultCode == 1) {
+             NSLog(@"%@", response);
+            self.orderModel = [RequestMyBminorderDetailModel yy_modelWithJSON:baseRes.data];
+            [self viewGetData];
+        }else {
+          [self showToast:baseRes.msg];//   [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+@end

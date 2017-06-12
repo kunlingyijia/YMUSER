@@ -1,0 +1,297 @@
+//
+//  RefundDetailsVC.m
+//  BianMin
+//
+//  Created by 席亚坤 on 17/2/23.
+//  Copyright © 2017年 bianming. All rights reserved.
+//
+
+#import "RefundDetailsVC.h"
+#import "RefundDetailsOneCell.h"
+#import "RefundDetailsTwoCell.h"
+#import "RefundDetailsThreeCell.h"
+#import "RefundDetailsFourCell.h"
+#import "RefundModel.h"
+#import "TripModel.h"
+#import "RefundController.h"
+#import "RequestAgreementLinksModel.h"
+#import "TOrderDetailsVC.h"
+
+@interface RefundDetailsVC (){
+    UIButton *backBtn;
+}
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property(nonatomic,strong)RefundModel *refundModel;
+@end
+
+@implementation RefundDetailsVC
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    //UI
+    [self SET_UI];
+    //数据
+    [self  SET_DATA];
+    
+}
+#pragma mark - 关于UI
+-(void)SET_UI{
+    //[self showBackBtn];
+    [self showBackBtn:^{
+        for (BaseViewController *tempVc in self.navigationController.viewControllers) {
+            if ([tempVc isKindOfClass:[TOrderDetailsVC class]]) {
+                [self.navigationController popToViewController:tempVc animated:YES];
+            }
+        }
+    }];
+    [self ShowNodataView];
+    self.title = @"退款详情";
+    self.tableView.tableFooterView = [UIView new];
+    [self.tableView  tableViewregisterNibArray:@[@"RefundDetailsOneCell",@"RefundDetailsTwoCell",@"RefundDetailsThreeCell",@"RefundDetailsFourCell"]];
+    
+    
+}
+#pragma mark - 关于数据
+-(void)SET_DATA{
+    self.refundModel = [RefundModel new];
+    //退款详情
+    [self requestRefundInfo];
+    
+    
+}
+#pragma mark - 退款详情
+-(void)requestRefundInfo{
+    RefundModel *model = [RefundModel new];
+    NSString *Token =[AuthenticationModel getLoginToken];
+    model.orderNo = self.tripModel.orderNo;
+    model.orderId = self.tripModel.orderId;
+    
+    __weak typeof(self) weakself = self;
+    if (Token.length!= 0) {
+        BaseRequest *baseReq = [[BaseRequest alloc] init];
+        baseReq.token = [AuthenticationModel getLoginToken];
+        baseReq.encryptionType = AES;
+        baseReq.data = [AESCrypt encrypt:[model yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+        [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/TravelOrderRefund/requestRefundInfo" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response)  {
+            NSLog(@" 退款详情--%@",response);
+            
+            if ([response[@"resultCode"] isEqualToString:@"1"]) {
+                
+               
+                weakself.refundModel = [RefundModel yy_modelWithJSON:response[@"data"]];
+                if ([weakself.refundModel.status isEqualToString:@"2"]) {
+                    [weakself AddRightBtn];
+                }
+                [weakself.tableView reloadData];
+                [weakself HiddenNodataView];
+            }else{
+                [weakself showToast:response[@"msg"]];
+                
+            }
+            
+        } faild:^(id error) {
+            NSLog(@"%@", error);
+        }];
+        
+    }else {
+        
+    }
+    
+    
+    
+}
+
+#pragma mark - 添加保存
+-(void)AddRightBtn{
+    backBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+    backBtn.frame = CGRectMake(0, 0, 70, 40);
+    backBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    backBtn.backgroundColor = [UIColor clearColor];
+    [backBtn setTitle:@"重新申请" forState:(UIControlStateNormal)];
+   
+    [backBtn addTarget:self action:@selector(save:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
+    self.navigationItem.rightBarButtonItem = backItem;
+}
+#pragma mark - 重新审核
+-(void)save:(UIButton*)sender{
+    //Push 跳转
+    RefundController * VC = [[RefundController alloc]init];
+    VC.tripModel = self.tripModel;
+    [self.navigationController  pushViewController:VC animated:YES];
+
+    
+    
+}
+
+#pragma tableView 代理方法
+//tab分区个数
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    //分区个数
+    return 1;
+}
+///tab个数
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    ///退款状态：1-待审核（已申请），2-拒绝退款（填写原因），3-退款完成
+    if ([self.refundModel.status isEqualToString:@"1"]) {
+        return 3;
+    }else{
+        return 4;
+    }
+   }
+//tab设置
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    tableView.separatorStyle = UITableViewCellSelectionStyleNone;
+    
+    switch (indexPath.row) {
+        case 0:
+        {
+            RefundDetailsOneCell * cell = [tableView dequeueReusableCellWithIdentifier:@"RefundDetailsOneCell" forIndexPath:indexPath];
+            [cell.RefundBtn addTarget:self action:@selector(RefundBtnAction:) forControlEvents:(UIControlEventTouchUpInside)];
+            [cell CellGetData:self.refundModel];
+            return cell;
+            break;
+        }
+            
+        case 1:
+        {
+            RefundDetailsTwoCell * cell = [tableView dequeueReusableCellWithIdentifier:@"RefundDetailsTwoCell" forIndexPath:indexPath];
+            
+             [cell CellGetData:self.refundModel];
+            
+            return cell;
+            break;
+        }
+            
+        case 2:
+        {
+            RefundDetailsThreeCell * cell = [tableView dequeueReusableCellWithIdentifier:@"RefundDetailsThreeCell" forIndexPath:indexPath];
+             [cell CellGetData:self.refundModel];
+            
+            
+            return cell;
+            break;
+        }
+            
+            
+        case 3:
+        {
+            RefundDetailsFourCell * cell = [tableView dequeueReusableCellWithIdentifier:@"RefundDetailsFourCell" forIndexPath:indexPath];
+            
+             [cell CellGetData:self.refundModel];
+            
+            return cell;
+
+            break;
+        }
+            
+        default:{
+            RefundDetailsFourCell * cell = [tableView dequeueReusableCellWithIdentifier:@"RefundDetailsFourCell" forIndexPath:indexPath];
+            
+            
+            
+            return cell;
+            break;
+            
+        }
+    }
+
+    }
+#pragma mark -退款帮助
+-(void)RefundBtnAction:(UIButton*)sender{
+    
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.encryptionType = RequestMD5;
+    baseReq.data = [NSArray array];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Sys/requestAgreementLinks" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            RequestAgreementLinksModel *model = [RequestAgreementLinksModel yy_modelWithJSON:baseRes.data];
+            [self webController:model];
+        }else {
+            [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+- (void)webController:(RequestAgreementLinksModel *)model {
+    DWWebViewController *webC = [[DWWebViewController alloc] init];
+    webC.title = @"退款帮助";
+    [webC setUrl:model.travelRefundLink];
+    [self.navigationController pushViewController:webC animated:YES];
+}
+#pragma mark - Cell点击事件
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
+#pragma mark - Cell的高度
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    switch (indexPath.row) {
+        case 0:
+        {
+            
+             return 0.4*Width+10;
+            
+            break;
+        }
+            
+        case 1:
+        {
+            //用storyboard 进行自适应布局
+            self.tableView.estimatedRowHeight = 200;
+            self.tableView.rowHeight = UITableViewAutomaticDimension;
+             return self.tableView.rowHeight;
+            break;
+        }
+            
+        case 2:
+        {
+            return 0.2*Width;
+
+            
+            break;
+        }
+            
+            
+        case 3:
+        {
+            //用storyboard 进行自适应布局
+            self.tableView.estimatedRowHeight = 500;
+            self.tableView.rowHeight = UITableViewAutomaticDimension;
+            return self.tableView.rowHeight;
+            break;
+        }
+            
+        default:{
+            return 0;
+
+            break;
+            
+        }
+    }
+
+   
+    
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

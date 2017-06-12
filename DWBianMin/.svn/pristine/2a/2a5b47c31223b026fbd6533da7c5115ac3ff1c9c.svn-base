@@ -1,0 +1,210 @@
+//
+//  BaseViewController.m
+//  BianMin
+//
+//  Created by kkk on 16/4/22.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "BaseViewController.h"
+#import "MobClick.h"
+#import "SVProgressHUD.h"
+#import "UIView+Toast.h"
+
+@interface BaseViewController ()
+
+@property (nonatomic ,strong) UIView *activeV;
+@property (nonatomic, strong) UIImageView *img;
+
+@property (nonatomic, strong) UILabel *yiminL;
+@property (nonatomic, strong) UIButton *btn;
+@property (nonatomic, strong) UIButton *webBtn;
+
+@end
+
+@implementation BaseViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.delegate = nil;
+    }
+
+    
+    self.view.backgroundColor = [UIColor colorWithHexString:kViewBg alpha:1];
+    
+    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self initWithDefaultProgressHub];
+    //增加监听，当键盘出现或改变时收出消息
+}
+
+
+
+
+
+
+
+
+
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [MobClick beginLogPageView:[self.class description]];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [MobClick endLogPageView:[self.class description]];;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:YES];
+    UIImageView *navBarHairlineImageView;
+    navBarHairlineImageView = [self findHairlineImageViewUnder:self.navigationController.navigationBar];
+    navBarHairlineImageView.hidden = YES;
+   
+}
+- (UIImageView *)findHairlineImageViewUnder:(UIView *)view {
+    if ([view isKindOfClass:UIImageView.class] && view.bounds.size.height <= 1.0) {
+        return (UIImageView *)view;
+    }
+    for (UIView *subview in view.subviews) {
+        UIImageView *imageView = [self findHairlineImageViewUnder:subview];
+        if (imageView) {
+            return imageView;
+        }
+    }
+    return nil;
+
+}
+- (void)showBackBtn{
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    backBtn.frame = CGRectMake(0, 0, 40, 40);
+    backBtn.backgroundColor = [UIColor clearColor];
+    [backBtn setImage:[UIImage imageNamed:@"箭头"] forState:UIControlStateNormal];
+    backBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [backBtn addTarget:self action:@selector(doBack:) forControlEvents:UIControlEventTouchUpInside];
+    [backBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 30)];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
+    self.navigationItem.leftBarButtonItem = backItem;
+    self.navigationController.navigationBar.translucent = NO;
+}
+
+- (void)doBack:(id)sender{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)popRootshowBackBtn{
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    backBtn.frame = CGRectMake(0, 0, 40, 40);
+    backBtn.backgroundColor = [UIColor clearColor];
+    [backBtn setImage:[UIImage imageNamed:@"箭头"] forState:UIControlStateNormal];
+    backBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [backBtn addTarget:self action:@selector(popRootdoBack:) forControlEvents:UIControlEventTouchUpInside];
+    [backBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 30)];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
+    self.navigationItem.leftBarButtonItem = backItem;
+    self.navigationController.navigationBar.translucent = NO;
+}
+
+- (void)popRootdoBack:(id)sender{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+//回收键盘
+- (void)endEditingAction:(UIView *)endView {
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(endtapAction:)];
+    [endView addGestureRecognizer:tap];
+}
+
+- (void)endtapAction:(UITapGestureRecognizer *)sender {
+    UIView *endV = sender.view;
+    [endV endEditing:YES];
+}
+
+#pragma mark - 加载网络图片
+//加载网络图片
+- (void)loadImageWithView:(UIImageView *)imageV urlStr:(NSString *)urlStr {
+    DWHelper *helper = [DWHelper shareHelper];
+    if (helper.isWifiOn) {
+        if ([helper.netWorking isEqualToString:@"wifi"]) {
+            [imageV sd_setImageWithURL:[NSURL URLWithString:urlStr]];
+        }else {
+            imageV.image = [UIImage imageNamed:@"bg_zaijia_5-3"];
+        }
+    }else {
+        if (urlStr == nil) {
+            imageV.image = [UIImage imageNamed:@"bg_zaijia_5-3"];
+        }else {
+            NSLog(@"%@", urlStr);
+           [imageV sd_setImageWithURL:[NSURL URLWithString:urlStr] placeholderImage:[UIImage imageNamed:@"bg_zaijia_5-3"]];
+        }
+    }
+    
+}
+//是否是登录状态
+- (BOOL)isLogin {
+    DWHelper *helper = [DWHelper shareHelper];
+    if ([helper.isLogin integerValue]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)showSuccessWith:(NSString *)str {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self showToast:str];
+    });
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)initWithDefaultProgressHub{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleLight];
+    [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
+}
+
+- (void)showProgress{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD showWithStatus:@"加载中..."];
+}
+
+- (void)showProgressWithText:(NSString *)text{
+    [SVProgressHUD showWithStatus:text];
+}
+
+- (void)hideProgress{
+    [SVProgressHUD dismiss];
+}
+
+- (void)showSucessProgress{
+    [SVProgressHUD showInfoWithStatus:@"成功！"];
+}
+
+- (void)showSucessProgressWithText:(NSString *)text{
+    [SVProgressHUD showInfoWithStatus:text];
+}
+
+- (void)showErrorProgress{
+    [SVProgressHUD showErrorWithStatus:@"失败"];
+}
+
+- (void)showErrorProgressWithText:(NSString *)text{
+    [SVProgressHUD showErrorWithStatus:text];
+}
+
+- (void)showToast:(NSString *)text{
+    [self.view hideToastActivity];
+    [self.view makeToast:text duration:1.5 position:CSToastPositionCenter];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.view endEditing:YES];
+}
+
+@end

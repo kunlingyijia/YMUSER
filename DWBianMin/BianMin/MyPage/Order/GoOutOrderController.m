@@ -1,0 +1,148 @@
+//
+//  GoOutOrderController.m
+//  BianMin
+//
+//  Created by kkk on 16/8/15.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "GoOutOrderController.h"
+#import "GoOutOrderCell.h"
+#import "RequestTripOrderList.h"
+#import "RequestTripOrderListModel.h"
+#import "GoOutPayOrderController.h"
+#import "GoingOutMessageController.h"
+@interface GoOutOrderController ()<UITableViewDelegate, UITableViewDataSource>
+
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray *dataSource;
+@property (nonatomic, assign) NSInteger pageIndex;
+@end
+
+@implementation GoOutOrderController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.title = @"出行订单";
+    self.pageIndex = 1;
+    [self showBackBtn];
+    [self createTableView];
+}
+
+- (void)createTableView {
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Width, Height-64) style:UITableViewStyleGrouped];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.rowHeight = 130;
+    [self.tableView registerNib:[UINib nibWithNibName:@"GoOutOrderCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"GoOutOrderCell"];
+        self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
+    [self.view addSubview:self.tableView];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        self.pageIndex = 1;
+        [self getDataList];
+    }];
+    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+        self.pageIndex = self.pageIndex + 1;
+        [self getDataList];
+    }];
+    [self getDataList];
+}
+
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    GoOutOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GoOutOrderCell" forIndexPath:indexPath];
+    RequestTripOrderListModel *model = self.dataSource[indexPath.section];
+    [cell cellGetDataWithModel:model];
+    __weak GoOutOrderController *weakSelf = self;
+    cell.backBlockAction = ^(NSString *orderNo) {
+        GoOutPayOrderController *payC = [[GoOutPayOrderController alloc] initWithNibName:@"GoOutPayOrderController" bundle:nil];
+        payC.orderNumber = model.orderNo;
+        [weakSelf.navigationController pushViewController:payC animated:YES];
+    };
+    return cell;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.dataSource.count;
+}
+
+
+#pragma mark - UITableViewDelegate
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.1;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    RequestTripOrderListModel *model = self.dataSource[indexPath.section];
+    GoingOutMessageController *goingOutC = [[GoingOutMessageController alloc] initWithNibName:@"GoingOutMessageController" bundle:nil];
+    goingOutC.orderNo = model.orderNo;
+    __weak GoOutOrderController *weakSelf = self;
+    goingOutC.backBlockAction = ^(NSString *str) {
+        [weakSelf.dataSource removeAllObjects];
+        [weakSelf getDataList];
+    };
+    [self.navigationController pushViewController:goingOutC animated:YES];
+}
+
+
+
+#pragma mark - networking
+- (void)getDataList {
+    RequestTripOrderList *list = [[RequestTripOrderList alloc] init];
+    list.pageCount = 10;
+    list.pageIndex = self.pageIndex;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.encryptionType = AES;
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.data = [AESCrypt encrypt:[list yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Trip/requestTripOrderList" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            if (self.pageIndex == 1) {
+                [self.dataSource removeAllObjects];
+            }
+            for (NSDictionary *dic in baseRes.data) {
+                RequestTripOrderListModel *model = [RequestTripOrderListModel yy_modelWithDictionary:dic];
+                [self.dataSource addObject:model];
+            }
+        }else {
+            
+        }
+        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView reloadData];
+    } faild:^(id error) {
+        
+    }];
+}
+
+- (NSMutableArray *)dataSource {
+    if (!_dataSource) {
+        self.dataSource = [NSMutableArray arrayWithCapacity:0];
+    }
+    return _dataSource;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

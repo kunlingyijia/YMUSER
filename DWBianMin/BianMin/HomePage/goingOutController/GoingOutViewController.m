@@ -1,0 +1,265 @@
+//
+//  GoingOutViewController.m
+//  BianMin
+//
+//  Created by kkk on 16/5/9.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "GoingOutViewController.h"
+#import "RequestAddTripList.h"
+#import "HZQDatePickerView.h"
+#import "GoingSuccessViewController.h"
+#import "GoingSucessListController.h"
+#import "GoingOutHeaderView.h"
+#import "GoHistoryCell.h"
+#import "SelectedDateViewController.h"
+#import "GYZCalendarModel.h"
+#import "SearchAdressController.h"
+#import "SearchResultController.h"
+#import "RequestSearchStation.h"
+#import "RequestTripListModel.h"
+@interface GoingOutViewController ()<UITableViewDelegate, UITableViewDataSource>
+
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) GoingOutHeaderView *headerView;
+@property (nonatomic, copy) NSString *today;
+@property (nonatomic, strong) NSMutableArray *dataSource;
+@property (nonatomic, copy) NSString *searchDate;
+@end
+
+@implementation GoingOutViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.title = @"搜索";
+    self.view.backgroundColor = [UIColor whiteColor];
+    [self showBackBtn];
+    [self createNavigationRightBtn];
+
+}
+
+- (void)createNavigationRightBtn {
+    NSDate *date = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *todyDate = [formatter stringFromDate:date];
+    self.today = todyDate;
+    self.searchDate = todyDate;
+    self.headerView = [[[NSBundle mainBundle] loadNibNamed:@"GoingOutHeaderView" owner:self options:nil] firstObject];
+    self.headerView.frame = CGRectMake(0, 0, Width, 400);
+    [self.view addSubview:self.headerView];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectedAdress:)];
+    self.headerView.dateLabel.userInteractionEnabled = YES;
+    [self.headerView.dateLabel addGestureRecognizer:tap];
+    NSString *str = [todyDate substringToIndex:7];
+    NSString *firstMonth = [str substringFromIndex:5];
+    NSString *firstDay = [todyDate substringFromIndex:8];
+    if ([[firstMonth substringToIndex:1] isEqualToString:@"0"]) {
+        firstMonth = [firstMonth substringFromIndex:1];
+    }
+    if ([[firstDay substringToIndex:1] isEqualToString:@"0"]) {
+        firstDay = [firstDay substringFromIndex:1];
+    }
+    self.headerView.dateLabel.text = [NSString stringWithFormat:@"%@月%@日", firstMonth, firstDay];
+    self.headerView.weakLabel.text = [self getWeek:todyDate];
+    [self.headerView.serchBtn addTarget:self action:@selector(searchAdressBtn:) forControlEvents:UIControlEventTouchUpInside];
+    
+}
+
+- (void)searchAdressBtn:(UIButton *)sender {
+    if ([self isLogin]) {
+        if (self.headerView.startText.text.length == 0) {
+            [self showToast:@"请输入出发地"];
+        }else if (self.headerView.endText.text.length == 0) {
+            [self showToast:@"请输入目的地"];
+        }else {
+            RequestSearchStation *search = [[RequestSearchStation alloc] init];
+            search.startPlace = self.headerView.startText.text;
+            search.endPlace = self.headerView.endText.text;
+            search.regionId = [AuthenticationModel getRegionID];
+            search.startTime = self.searchDate;
+            BaseRequest *baseReq = [[BaseRequest alloc] init];
+            baseReq.encryptionType = AES;
+            baseReq.token = [AuthenticationModel getLoginToken];
+            baseReq.data = [AESCrypt encrypt:[search yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+            [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Trip/requestSearchStation" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+                BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+                
+                if (baseRes.resultCode == 1) {
+                    [self.dataSource removeAllObjects];
+                    for (NSDictionary *dic in baseRes.data) {
+                        RequestTripListModel *model = [RequestTripListModel yy_modelWithDictionary:dic];
+                        [self.dataSource addObject:model];
+                    }
+                    SearchResultController *resultC = [[SearchResultController alloc] init];
+                    resultC.dataSource = self.dataSource;
+                    [self.navigationController pushViewController:resultC animated:YES];
+                }else {
+                    [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+                }
+            } faild:^(id error) {
+                
+            }];
+        }
+    }else{
+        LoginController *login = [[LoginController alloc] init];
+        [self.navigationController pushViewController:login animated:YES];
+//        LoginController *loginController = [[LoginController alloc] init];
+//        DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
+//        
+//        CATransition *  ansition =[CATransition animation];
+//        [ansition setDuration:0.3];
+//        [ansition setType:kCAGravityRight];
+//        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
+//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
+        
+    }
+}
+
+
+
+
+- (void)selectedAdress:(UITapGestureRecognizer *)sender {
+    SelectedDateViewController *selectedC = [[SelectedDateViewController alloc] init];
+    __weak GoingOutViewController *weakSelf = self;
+    selectedC.selectedDateBack = ^(GYZCalendarModel *model) {
+        weakSelf.headerView.dateLabel.text = [NSString stringWithFormat:@"%lu月%lu日", (unsigned long)model.month, model.day];
+        NSString *monthT = [NSString stringWithFormat:@"%lu@", model.month];
+        NSString *dayT = [NSString stringWithFormat:@"%lu@", model.day];
+        if (monthT.length == 1) {
+            monthT = [NSString stringWithFormat:@"0%@", monthT];
+        }
+        if (dayT.length == 1) {
+            dayT = [NSString stringWithFormat:@"0%@", dayT];
+        }
+        weakSelf.searchDate = [NSString stringWithFormat:@"%lu-%@-%@", model.year, monthT, dayT];
+        NSString *weak = nil;
+        switch (model.week) {
+            case 2:
+                weak = @"星期一";
+                break;
+            case 3:
+                weak = @"星期二";
+                break;
+            case 4:
+                weak = @"星期三";
+                break;
+            case 5:
+                weak = @"星期四";
+                break;
+            case 6:
+                weak = @"星期五";
+                break;
+            case 7:
+                weak = @"星期六";
+                break;
+            case 8:
+                weak = @"星期日";
+                break;
+            default:
+                break;
+        }
+        NSString *todayWeak = [weakSelf getWeek:self.today];
+        if ([todayWeak isEqualToString:weak]) {
+            weakSelf.headerView.tadyLabel.hidden = NO;
+        }else {
+            weakSelf.headerView.tadyLabel.hidden = YES;
+        }
+        weakSelf.headerView.weakLabel.text = weak;
+    };
+    [self.navigationController pushViewController:selectedC animated:YES];
+}
+
+- (void)startAdressAction:(UITapGestureRecognizer *)sender {
+
+//    SearchAdressController *searchC = [[SearchAdressController alloc] init];
+//    [self.navigationController pushViewController:searchC animated:YES];
+}
+
+
+
+#pragma mark - Delegate
+#pragma mark - UITableViewDelegate
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 10;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    GoHistoryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GoHistoryCell" forIndexPath:indexPath];
+    cell.startAdress.text = @"福州南站";
+    cell.endAdress.text = @"福州站";
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    return cell;
+}
+
+- (NSString *)getWeek:(NSString *)dateDay {
+    NSRange day = {8,2};
+    NSRange month = {5,2};
+    NSRange year = {0,4};
+    NSDateComponents *_comps = [[NSDateComponents alloc] init];
+    [_comps setDay:[[dateDay substringWithRange:day] integerValue]];
+    [_comps setMonth:[[dateDay substringWithRange:month] integerValue]];
+    [_comps setYear:[[dateDay substringWithRange:year] integerValue]];
+    NSCalendar *gregorian = [[NSCalendar alloc]
+                             initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDate *_date = [gregorian dateFromComponents:_comps];
+    NSDateComponents *weekdayComponents =
+    [gregorian components:NSWeekdayCalendarUnit fromDate:_date];
+    NSInteger _weekday = [weekdayComponents weekday];
+    NSLog(@"_weekday::%ld",(long)_weekday-1);
+    switch (_weekday - 1) {
+        case 1:
+            return @"星期一";
+            break;
+        case 2:
+            return @"星期二";
+            break;
+        case 3:
+            return @"星期三";
+            break;
+        case 4:
+            return @"星期四";
+            break;
+        case 5:
+            return @"星期五";
+            break;
+        case 6:
+            return @"星期六";
+            break;
+        case 7:
+            return @"星期日";
+            break;
+        default:
+            break;
+    }
+    return nil;
+}
+
+
+- (NSMutableArray *)dataSource {
+    if (!_dataSource) {
+        self.dataSource = [NSMutableArray arrayWithCapacity:0];
+    }
+    return _dataSource;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

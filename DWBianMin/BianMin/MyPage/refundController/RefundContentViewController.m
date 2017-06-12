@@ -1,0 +1,105 @@
+//
+//  RefundContentViewController.m
+//  BianMin
+//
+//  Created by kkk on 16/5/25.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "RefundContentViewController.h"
+#import "RequestRefundGoodsOrderDetail.h"
+#import "RequestRefundGoodsOrderDetailModel.h"
+#import "RequestAgreementLinksModel.h"
+@interface RefundContentViewController ()
+
+@property (nonatomic, strong) RequestRefundGoodsOrderDetailModel *model;
+
+@end
+
+@implementation RefundContentViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.title = @"退款详情";
+    [self showBackBtn];
+    [self getRefundMessage];
+}
+
+- (void)getRefundMessage {
+    RequestRefundGoodsOrderDetail *orderDetail = [[RequestRefundGoodsOrderDetail alloc] init];
+    orderDetail.orderNo = self.orderNo;
+    orderDetail.goodsOrderId = self.goodsOrderId;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.encryptionType = AES;
+    baseReq.data = [AESCrypt encrypt:[orderDetail yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestRefundGoodsOrderDetail" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            
+            
+            self.model = [RequestRefundGoodsOrderDetailModel yy_modelWithJSON:baseRes.data];
+        }else {
+            [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+        [self viewGetData];
+    } faild:^(id error) {
+        
+    }];
+}
+- (void)viewGetData {
+    self.moneyLabel.text = [NSString stringWithFormat:@"%.2f", self.model.returnAmount];
+    if (self.model.payType == 1) {
+        self.payLabel.text = @"支付宝";
+    }else {
+        self.payLabel.text = @"微信";
+    }
+    self.dateLabel.text = [NSString stringWithFormat:@"%@", self.model.createTime];
+    self.orderLabel.text = self.model.orderNo;
+    self.refundLabel.text = self.model.content;
+}
+
+
+- (IBAction)refundHelp:(id)sender {
+    OKLog(@"退款帮助");
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.encryptionType = RequestMD5;
+    baseReq.data = [NSArray array];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Sys/requestAgreementLinks" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            RequestAgreementLinksModel *model = [RequestAgreementLinksModel yy_modelWithJSON:baseRes.data];
+            [self webController:model];
+        }else {
+            [self showToast:baseRes.msg];//  [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+- (void)webController:(RequestAgreementLinksModel *)model {
+    DWWebViewController *webC = [[DWWebViewController alloc] init];
+    webC.title = @"退款帮助";
+    [webC setUrl:model.travelRefundLink];
+    [self.navigationController pushViewController:webC animated:YES];
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

@@ -1,0 +1,159 @@
+//
+//  GoingOutMessageController.m
+//  Go
+//
+//  Created by 月美 刘 on 16/8/11.
+//  Copyright © 2016年 月美 刘. All rights reserved.
+//
+
+#import "GoingOutMessageController.h"
+#import "UIColor+DWColor.h"
+#import "RequestTriporderDetail.h"
+#import "GoOutPayOrderController.h"
+#import "RequestTriporderDetailModel.h"
+#import "RequestUnsubscribeTriporder.h"
+@interface GoingOutMessageController ()
+
+@property (nonatomic, strong) RequestTriporderDetailModel *orderModel;
+
+@end
+
+@implementation GoingOutMessageController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.goOutContentSizeHeight.constant = 800;
+    if (self.isNewC == 6) {
+        [self popRootshowBackBtn];
+    }else {
+        [self showBackBtn];
+    }
+    self.title = @"出行详情";
+    UITapGestureRecognizer *firstTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(payAction:)];
+    [self.pay addGestureRecognizer:firstTap];
+    UITapGestureRecognizer *secondTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelAction:)];
+    [self.unsubscribe addGestureRecognizer:secondTap];
+    [self getOrderData];
+}
+
+- (void)viewGetData {
+    self.carType.text = self.orderModel.carType;
+    self.startPlace.text = self.orderModel.startPlace;
+    self.endPlace.text = self.orderModel.endPlace;
+    self.carNo.text = self.orderModel.carNo;
+    self.startTime.text = [self.orderModel.startTime substringToIndex:16];
+    self.price.text = [NSString stringWithFormat:@"%.2f元", self.orderModel.price];
+    NSRange range = [self.orderModel.driveTime rangeOfString:@"."];
+    NSLog(@"%@", self.orderModel.driveTime);
+    if ([self.orderModel.driveTime containsString:@"."]) {
+        NSString *hourT = [self.orderModel.driveTime substringToIndex:range.location];
+        NSInteger minth = [[self.orderModel.driveTime substringFromIndex:range.location] floatValue] * 60;
+        self.driveTime.text = [NSString stringWithFormat:@"%@小时%ld分", hourT,(long)minth];
+    }else {
+        self.driveTime.text = [NSString stringWithFormat:@"%@小时", self.orderModel.driveTime];
+    }
+
+    self.kilometer.text = [NSString stringWithFormat:@"%@公里",self.orderModel.kilometer];
+    self.peopleCount.text = self.orderModel.ticketCount;
+    self.getOnPlace.text = self.orderModel.getOnPlace;
+    self.getDownPlace.text = self.orderModel.getDownPlace;
+    self.orderNumberL.text = self.orderModel.orderNo;
+    self.createTimeL.text = self.orderModel.createTime;
+    self.shopL.text = [NSString stringWithFormat:@"%.2f元", self.orderModel.price];
+    
+    switch (self.orderModel.status) {
+        case 1:
+            self.status.text = @"已预约";
+            self.payPriceL.text = @"待支付";
+            break;
+        case 2:
+            self.status.text = @"已完成";
+            self.pay.hidden = YES;
+            self.unsubscribe.hidden = YES;
+            self.firline.hidden = YES;
+            self.secondLine.hidden = YES;
+            self.thirdLine.hidden = YES;
+            self.payPriceL.text = [NSString stringWithFormat:@"%.2f", self.orderModel.payAmount];
+            self.firstH.constant = 0;
+            self.secondH.constant = 0;
+            break;
+        case 3:
+            self.status.text = @"已退订";
+            self.payPriceL.text = @"待支付";
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)payAction:(UITapGestureRecognizer *)sender {
+    GoOutPayOrderController *payC = [[GoOutPayOrderController alloc] initWithNibName:@"GoOutPayOrderController" bundle:nil];
+    payC.orderNumber = self.orderModel.orderNo;
+    [self.navigationController pushViewController:payC animated:YES];
+    
+}
+
+- (void)cancelAction:(UITapGestureRecognizer *)sender {
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否退订" preferredStyle:UIAlertControllerStyleAlert];
+    [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }]];
+    [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self cancelOrder];
+    }]];
+    [self presentViewController:alertC animated:YES completion:nil];
+   
+}
+
+- (void)cancelOrder {
+    RequestUnsubscribeTriporder *unsub = [[RequestUnsubscribeTriporder alloc] init];
+    unsub.orderNo = self.orderModel.orderNo;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.data = [AESCrypt encrypt:[unsub yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    baseReq.encryptionType = AES;
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Trip/requestUnsubscribeTriporder" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        if (baseRes.resultCode == 1) {
+            self.backBlockAction(nil);
+            [self.navigationController popViewControllerAnimated:YES];
+        }else {
+            [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+
+- (void)getOrderData {
+    RequestTriporderDetail *detail = [[RequestTriporderDetail alloc] init];
+    detail.orderNo = self.orderNo;
+    BaseRequest *baseReq = [[BaseRequest alloc] init];
+    baseReq.encryptionType = AES;
+    baseReq.token = [AuthenticationModel getLoginToken];
+    baseReq.data = [AESCrypt encrypt:[detail yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Trip/requestTriporderDetail" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+        NSLog(@"%@", response);
+        if (baseRes.resultCode == 1) {
+            self.orderModel = [RequestTriporderDetailModel yy_modelWithJSON:baseRes.data];
+            [self viewGetData];
+        }else {
+            [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+        }
+    } faild:^(id error) {
+        
+    }];
+}
+
+
+
+
+
+
+
+
+@end

@@ -1,0 +1,67 @@
+
+//
+//  ShopViewCell.m
+//  BianMin
+//
+//  Created by kkk on 16/4/29.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "ShopViewCell.h"
+#import "GoodsModel.h"
+#import "RequestMerchantGoodsListModel.h"
+@implementation ShopViewCell
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self createView];
+    }
+    return self;
+}
+
+- (void)createView {
+    self.pictureView = [[UIImageView alloc] initWithFrame:CGRectMake(30, 10, 90, 60)];
+    [self.contentView addSubview:self.pictureView];
+    
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.pictureView.frame)+5, 10, Bounds.size.width - 100, 20)];
+    self.nameLabel.text = @"";
+    self.nameLabel.adjustsFontSizeToFitWidth = YES;
+    self.nameLabel.textColor = [UIColor colorWithHexString:kTitleColor];
+    self.nameLabel.font = [UIFont systemFontOfSize:14];
+    [self.contentView addSubview:self.nameLabel];
+    
+    self.priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.pictureView.frame)+5,50, 60, 20)];
+    self.priceLabel.font = [UIFont systemFontOfSize:14];
+    self.priceLabel.text = @"";
+    self.priceLabel.textColor = MainColor;
+    [self.contentView addSubview:self.priceLabel];
+    
+    self.priceLabelTwo = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.priceLabel.frame)+5, 50, 200, 20)];
+    self.priceLabelTwo.text = @"";
+    self.priceLabelTwo.font = [UIFont systemFontOfSize:14];
+    self.priceLabelTwo.textColor = [UIColor grayColor];
+    [self.contentView addSubview:self.priceLabelTwo];
+    
+    self.alreadyNum = [[UILabel alloc] initWithFrame:CGRectMake(Bounds.size.width - 70, 30, 60, 20)];
+    self.alreadyNum.text = @"";
+    self.alreadyNum.font = [UIFont systemFontOfSize:14];
+    self.alreadyNum.textColor = [UIColor grayColor];
+    [self.contentView addSubview:self.alreadyNum];
+    
+}
+
+- (void)cellGetData:(RequestMerchantGoodsListModel *)model WithController:(BaseViewController *)controller{
+    
+    [controller loadImageWithView:self.pictureView urlStr:model.originUrl];
+    
+//    [self.pictureView sd_setImageWithURL:[NSURL URLWithString:model.image]];
+    self.nameLabel.text = [NSString stringWithFormat:@"%@,建议%@人使用", model.goodsName, model.suggestPeople];
+    self.nameLabel.adjustsFontSizeToFitWidth = YES;
+    self.priceLabel.text = [NSString stringWithFormat:@"¥%.2f", model.discountedPrice];
+    self.priceLabelTwo.text = [NSString stringWithFormat:@"门市价:¥%.2f",model.price];
+    self.alreadyNum.text = [NSString stringWithFormat:@"已售%@",model.sales];
+}
+
+
+@end

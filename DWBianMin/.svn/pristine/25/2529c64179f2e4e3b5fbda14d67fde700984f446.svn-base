@@ -1,0 +1,37 @@
+//
+//  TripAppointmentController.h
+//  DWduifubao
+//
+//  Created by 月美 刘 on 17/2/21.
+//  Copyright © 2017年 bianming. All rights reserved.
+//
+
+#import "BaseViewController.h"
+@class TripModel;
+@interface TripAppointmentController : BaseViewController
+@property (weak, nonatomic) IBOutlet UIImageView *avatarUrl;
+@property (weak, nonatomic) IBOutlet UILabel *realName;
+@property (weak, nonatomic) IBOutlet UIImageView *gender;
+@property (weak, nonatomic) IBOutlet UILabel *carNo;
+@property (weak, nonatomic) IBOutlet UILabel *carColor;
+@property (weak, nonatomic) IBOutlet UILabel *startPlace;
+@property (weak, nonatomic) IBOutlet UILabel *endPlace;
+@property (weak, nonatomic) IBOutlet UILabel *price;
+@property (weak, nonatomic) IBOutlet UILabel *date;
+@property (weak, nonatomic) IBOutlet UITextField *verifyCode;
+@property (weak, nonatomic) IBOutlet UIButton *verifyCodeBtn;
+
+@property (weak, nonatomic) IBOutlet UITextField *name;
+@property (weak, nonatomic) IBOutlet UITextField *tel;
+
+
+
+
+
+///可滑动的高度
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentHeight;
+///TripModel
+@property (nonatomic, strong) TripModel  *tripModel;
+
+
+@end

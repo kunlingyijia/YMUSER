@@ -1,0 +1,224 @@
+//
+//  DWMainPageTableViewCell.m
+//  BianMin
+//
+//  Created by kkk on 16/4/22.
+//  Copyright © 2016年 bianming. All rights reserved.
+//
+
+#import "DWMainPageTableViewCell.h"
+#import "Masonry.h"
+#import "CWStarRateView.h"
+#import "RequestMerchantListModel.h"
+#define PictureWidth 60
+#define SpaceOne 10
+#define SpaceTwo 5
+#define LabelH 20
+
+@interface DWMainPageTableViewCell ()
+//星星评价
+@property (nonatomic, strong)CWStarRateView *starRateView;
+
+
+@end
+
+
+@implementation DWMainPageTableViewCell
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self addView];
+    }
+    return self;
+}
+
+- (void)addView {
+    self.pictureView = [UIImageView new];
+    [self.contentView addSubview:self.pictureView];
+    self.pictureView.contentMode = UIViewContentModeScaleAspectFill;
+    self.pictureView.clipsToBounds = YES;
+    self.name = [UILabel new];
+    self.name.text = @"";
+    self.name.font = [UIFont systemFontOfSize:13];
+    self.name.textColor = [UIColor colorWithHexString:kTitleColor];
+    [self.contentView addSubview:self.name];
+
+    self.officalLable = [UILabel new];
+    self.officalLable.text = @"官方认证";
+    self.officalLable.textAlignment = NSTextAlignmentCenter;
+    self.officalLable.textColor = [UIColor colorWithHexString:kNavigationBgColor];
+    self.officalLable.font = [UIFont systemFontOfSize:8];
+    self.officalLable.layer.borderColor = [UIColor colorWithHexString:kNavigationBgColor].CGColor;
+    self.officalLable.layer.borderWidth = 1;
+    self.officalLable.layer.cornerRadius = 3;
+    self.officalLable.layer.masksToBounds = YES;
+    [self.contentView addSubview:self.officalLable];
+    
+    
+    self.outSeller = [UILabel new];
+    self.outSeller.text = @"外送服务";
+    self.outSeller.hidden = YES;
+    self.outSeller.textAlignment = NSTextAlignmentCenter;
+    self.outSeller.textColor = [UIColor colorWithHexString:kNavigationBgColor];
+    self.outSeller.font = [UIFont systemFontOfSize:8];
+    self.outSeller.layer.borderColor = [UIColor colorWithHexString:kNavigationBgColor].CGColor;
+    self.outSeller.layer.borderWidth = 1;
+    self.outSeller.layer.cornerRadius = 3;
+    self.outSeller.layer.masksToBounds = YES;
+    [self.contentView addSubview:self.outSeller];
+    
+//
+//    self.sellNumber = [UILabel new];
+//    self.sellNumber.text = @"月单量: 10000";
+//    self.sellNumber.font = [UIFont systemFontOfSize:12];
+//    [self.contentView addSubview:self.sellNumber];
+    
+    self.range = [UILabel new];
+    self.range.text = @"0m";
+    self.range.textAlignment = NSTextAlignmentRight;
+    self.range.font = [UIFont systemFontOfSize:10];
+    self.range.textColor = [UIColor colorWithHexString:kSubTitleColor];
+    [self.contentView addSubview:self.range];
+    
+    
+    [self.pictureView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.contentView.mas_top).with.offset(SpaceOne);
+        make.left.mas_equalTo(self.contentView.mas_left).with.offset(SpaceOne);
+        make.bottom.mas_equalTo(self.contentView.mas_bottom).with.offset(-SpaceOne);
+        make.width.equalTo(@(80));
+    }];
+    
+    [self.name mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.contentView.mas_top).with.offset(SpaceOne);
+        make.left.mas_equalTo(self.pictureView.mas_right).with.offset(SpaceTwo);
+        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-SpaceOne);
+        make.height.equalTo(@(LabelH));
+        
+    }];
+    
+        [self.range mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.contentView.mas_top).with.offset(SpaceOne);
+//            make.left.mas_equalTo(self.pictureView.mas_right).with.offset(SpaceTwo);
+            make.right.mas_equalTo(self.contentView.mas_right).with.offset(-SpaceOne);
+            make.height.equalTo(@(LabelH));
+            make.width.equalTo(@(80));
+    
+        }];
+    
+    self.starRateView = [[CWStarRateView alloc] initWithFrame:CGRectMake(95, 55, 60, 13)];
+    [self.starRateView setNumberOfStarts:5];
+//    self.starRateView.backgroundColor = [UIColor redColor];
+//    self.starRateView.backgroundColor = [UIColor grayColor];
+    self.starRateView.allowIncompleteStar = YES;
+    self.starRateView.scorePercent = 0.5;
+    self.starRateView.hasAnimation = NO;
+    self.starRateView.userInteractionEnabled = NO;
+    [self.contentView addSubview:self.starRateView];
+//    [self.starRateView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.mas_equalTo(self.name.mas_bottom);
+//        make.left.mas_equalTo(self.pictureView.mas_right);
+//        make.bottom.mas_equalTo(self.pictureView.mas_bottom);
+//        make.width.mas_equalTo(@(50));
+//    }];
+    
+    
+//    [self.goodComment mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.mas_equalTo(self.name.mas_bottom).with.offset(SpaceTwo);
+//        make.left.mas_equalTo(self.pictureView.mas_right).with.offset(SpaceTwo);
+//        make.bottom.mas_equalTo(self.range.mas_top).with.offset(-SpaceTwo);
+//        make.width.equalTo(@(80));
+//        make.height.equalTo(@(LabelH));
+//        
+//    }];
+//
+//    [self.sellNumber mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.mas_equalTo(self.name.mas_bottom).with.offset(SpaceTwo);
+//        make.left.mas_equalTo(self.goodComment.mas_right).with.offset(SpaceOne);
+//        make.bottom.mas_equalTo(self.range.mas_top).with.offset(-SpaceTwo);
+//        make.width.equalTo(@(80));
+//        make.height.mas_equalTo(self.name);
+//    }];
+
+  
+    self.lineLabel = [UILabel new];
+    [self.contentView addSubview:self.lineLabel];
+    self.lineLabel.backgroundColor = [UIColor colorWithHexString:kLineColor];
+    [self.lineLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.contentView.mas_left);
+        make.right.mas_equalTo(self.contentView.mas_right);
+        make.bottom.mas_equalTo(self.contentView.mas_bottom);
+        make.height.mas_equalTo(@(kLineHeight));
+    }];
+    
+    
+    [self.officalLable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.starRateView.mas_top).with.offset(0);
+//        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-SpaceOne);
+        make.left.mas_equalTo(self.starRateView.mas_right).with.offset(SpaceOne);
+//        make.bottom.mas_equalTo(self.contentView.mas_bottom).with.offset(-SpaceOne);
+        make.width.mas_equalTo(@(40));
+        make.height.mas_equalTo(@(15));
+    }];
+    
+    [self.outSeller mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.starRateView.mas_top).with.offset(0);
+        //        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-SpaceOne);
+        make.left.mas_equalTo(self.officalLable.mas_right).with.offset(SpaceTwo);
+        //        make.bottom.mas_equalTo(self.contentView.mas_bottom).with.offset(-SpaceOne);
+        make.width.mas_equalTo(@(40));
+        make.height.mas_equalTo(@(15));
+    }];
+    
+}
+
+
+
+
+- (void)cellGetDataModel:(RequestMerchantListModel *)model WithController:(BaseViewController *)controller{
+    CGFloat rangNumber = [self getStarWith:model];
+    if (rangNumber < 1) {
+        self.range.text = [NSString stringWithFormat:@"%0.0fm", rangNumber*1000];
+    }else {
+       self.range.text = [NSString stringWithFormat:@"%0.1fkm", rangNumber];
+    }
+    [controller loadImageWithView:self.pictureView urlStr:model.iconUrl];
+    CGFloat nameWidth = [model.merchantName getSingleLineTextWidthWithFont:[UIFont systemFontOfSize:13] withMaxWith:Width];
+    
+    [self.name mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.contentView.mas_top).with.offset(SpaceOne);
+        make.left.mas_equalTo(self.pictureView.mas_right).with.offset(SpaceTwo);
+        make.right.mas_equalTo(self.contentView.mas_right).with.offset(-SpaceOne);
+        make.height.equalTo(@(nameWidth));
+    }];
+    
+    self.name.text = model.merchantName;
+    self.starRateView.scorePercent = model.star*0.2;
+//    self.starRateView.scorePercent = [model.star floatValue];
+//    self.range.text = [NSString stringWithFormat:@"%@m",model.distance];
+//    NSLog(@"%@", model.haveoffice);
+    if (model.haveoffice == 1) {
+        self.officalLable.hidden = NO;
+    }else {
+        self.officalLable.hidden = YES;
+    }
+    
+}
+
+- (CGFloat)getStarWith:(RequestMerchantListModel *)model {
+    DWHelper *helper = [DWHelper shareHelper];
+    NSNumber *lag = [DWCacheManager getPublicCacheWithKey:@"latitude"];
+    NSNumber *log = [DWCacheManager getPublicCacheWithKey:@"longitude"];
+    CLLocationCoordinate2D statr = helper.coordinate;
+    NSLog(@"%f %f ----  %@  %@", statr.latitude,statr.longitude, model.lat, model.lng);
+    CLLocation *orig=[[CLLocation alloc] initWithLatitude:[lag doubleValue] longitude:[log doubleValue]];
+    CLLocation* dist=[[CLLocation alloc] initWithLatitude:[model.lat doubleValue] longitude:[model.lng doubleValue]];
+    
+    CLLocationDistance kilometers=[orig distanceFromLocation:dist]/1000;
+    NSLog(@"距离:%f",kilometers);
+    return kilometers;
+}
+
+
+
+@end

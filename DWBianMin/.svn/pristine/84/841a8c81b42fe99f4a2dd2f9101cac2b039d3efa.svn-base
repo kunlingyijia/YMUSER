@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "c2561b72-44ec-e049-b7ad-b9e7ac9c92c2++6687",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "c2561b72-44ec-e049-b7ad-b9e7ac9c92c2++6687" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "c2561b72-44ec-e049-b7ad-b9e7ac9c92c2++6687" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "0979E417-DBC7-4B9A-A0C2-FBB08BD3E220",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "c2561b72-44ec-e049-b7ad-b9e7ac9c92c2++6687" : "DWBianMin222\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "BianMin",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "BianMin.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/192.168.1.125\/svn\/O2O",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "c2561b72-44ec-e049-b7ad-b9e7ac9c92c2++6687"
+    }
+  ]
+}
