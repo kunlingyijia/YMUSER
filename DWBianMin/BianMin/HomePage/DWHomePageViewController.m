@@ -339,12 +339,12 @@
         }]];
         [alertView addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
            // [self VersionUpdate];
-            //[self updateVerison];
+            [self updateVerison];
         }]];
         [self presentViewController:alertView animated:YES completion:nil];
         
     }else {
-        // [self updateVerison];
+         [self updateVerison];
        // [self VersionUpdate];
     }
     

@@ -14,6 +14,7 @@
 //#import "SearchHistoryView.h"
 #import "GoodsListVC.h"
 #import "UIView+Toast.h"
+#import "ReceiveIndustry.h"
 @interface SearchHistoryViewController ()<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource>
 typedef enum : NSUInteger {
     HistoryData,
@@ -41,6 +42,11 @@ typedef enum : NSUInteger {
     [self.HistoryArray removeAllObjects];
     self.HistoryArray = [NSMutableArray arrayWithArray:[self GetHistoryData]];
     [self.tableView reloadData];
+    
+//    ReceiveIndustry* VC = [[ReceiveIndustry alloc]initWithNibName:@"ReceiveIndustry" bundle:nil];
+//    
+//    VC.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+//    [self presentViewController:VC animated:YES completion:nil];
 
 }
 - (void)viewDidLoad {
@@ -366,7 +372,7 @@ typedef enum : NSUInteger {
     NSUserDefaults * UserDefault = [NSUserDefaults standardUserDefaults];
     NSArray * SearchArr = [UserDefault objectForKey:@"SearchHistory"];
     if (SearchArr.count==0) {
-     [UserDefault setObject: [NSArray arrayWithObjects:@"历史记录",self.searchHisToryTF.text,nil] forKey:@"SearchHistory"];
+     [UserDefault setObject: [NSArray arrayWithObjects:@"历史搜索",self.searchHisToryTF.text,nil] forKey:@"SearchHistory"];
     }else{
         NSMutableArray * AfterMArray = [NSMutableArray arrayWithArray:SearchArr];
         //插入数据到第二位

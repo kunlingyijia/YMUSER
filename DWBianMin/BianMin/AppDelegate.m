@@ -83,9 +83,7 @@
     [self configThirdPart];
     [self payAction];
     [self isLogin];
-    //a62f82aaf6d0b36a63cb3ce439977230
-    //测试6eb92d95273f7d8f43112766c305130f
-    [AMapServices sharedServices].apiKey =@"a4725781981191b57d44936de2fbbe52";
+    [AMapServices sharedServices].apiKey =GDKey;
     //[AMapServices sharedServices].apiKey = @"6eb92d95273f7d8f43112766c305130f";
    [[AMapServices sharedServices] setEnableHTTPS:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showActive:) name:@"登录成功" object:nil];

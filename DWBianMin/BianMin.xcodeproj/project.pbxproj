@@ -522,6 +522,8 @@
 		BD94F3751E5E864000A82DD5 /* RefundDetailsThreeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD94F3731E5E864000A82DD5 /* RefundDetailsThreeCell.xib */; };
 		BD94F3791E5E865500A82DD5 /* RefundDetailsFourCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BD94F3771E5E865500A82DD5 /* RefundDetailsFourCell.m */; };
 		BD94F37A1E5E865500A82DD5 /* RefundDetailsFourCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD94F3781E5E865500A82DD5 /* RefundDetailsFourCell.xib */; };
+		BD96760D1EEF8E5900F4C3E4 /* ReceiveIndustry.m in Sources */ = {isa = PBXBuildFile; fileRef = BD96760B1EEF8E5900F4C3E4 /* ReceiveIndustry.m */; };
+		BD96760E1EEF8E5900F4C3E4 /* ReceiveIndustry.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD96760C1EEF8E5900F4C3E4 /* ReceiveIndustry.xib */; };
 		BDAB0D1B1EA49135008B9BC1 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDAB0D1A1EA49135008B9BC1 /* JavaScriptCore.framework */; };
 		BDAB0D1D1EA49175008B9BC1 /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BDAB0D1C1EA49175008B9BC1 /* libstdc++.6.0.9.tbd */; };
 		BDAB0D1F1EA491D5008B9BC1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDAB0D1E1EA491D5008B9BC1 /* OpenGLES.framework */; };
@@ -1584,6 +1586,9 @@
 		BD94F3761E5E865500A82DD5 /* RefundDetailsFourCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefundDetailsFourCell.h; sourceTree = "<group>"; };
 		BD94F3771E5E865500A82DD5 /* RefundDetailsFourCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefundDetailsFourCell.m; sourceTree = "<group>"; };
 		BD94F3781E5E865500A82DD5 /* RefundDetailsFourCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RefundDetailsFourCell.xib; sourceTree = "<group>"; };
+		BD96760A1EEF8E5900F4C3E4 /* ReceiveIndustry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceiveIndustry.h; sourceTree = "<group>"; };
+		BD96760B1EEF8E5900F4C3E4 /* ReceiveIndustry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceiveIndustry.m; sourceTree = "<group>"; };
+		BD96760C1EEF8E5900F4C3E4 /* ReceiveIndustry.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ReceiveIndustry.xib; sourceTree = "<group>"; };
 		BDAB0D1A1EA49135008B9BC1 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		BDAB0D1C1EA49175008B9BC1 /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 		BDAB0D1E1EA491D5008B9BC1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2441,6 +2446,7 @@
 		63CACC041CC9C3F400FBF7E6 = {
 			isa = PBXGroup;
 			children = (
+				BD9676051EEF8E0B00F4C3E4 /* IndustryVoucher行业抵用券 */,
 				BDF20F361E6FD9860013EB1C /* HomePage分类 */,
 				63CACC0F1CC9C3F400FBF7E6 /* BianMin */,
 				63CACC0E1CC9C3F400FBF7E6 /* Products */,
@@ -3650,6 +3656,48 @@
 			path = ViewHistory;
 			sourceTree = "<group>";
 		};
+		BD9676051EEF8E0B00F4C3E4 /* IndustryVoucher行业抵用券 */ = {
+			isa = PBXGroup;
+			children = (
+				BD9676061EEF8E0B00F4C3E4 /* industry抵用券 */,
+			);
+			path = "IndustryVoucher行业抵用券";
+			sourceTree = "<group>";
+		};
+		BD9676061EEF8E0B00F4C3E4 /* industry抵用券 */ = {
+			isa = PBXGroup;
+			children = (
+				BD9676071EEF8E0B00F4C3E4 /* Model */,
+				BD9676081EEF8E0B00F4C3E4 /* VC */,
+				BD9676091EEF8E0B00F4C3E4 /* View */,
+			);
+			path = "industry抵用券";
+			sourceTree = "<group>";
+		};
+		BD9676071EEF8E0B00F4C3E4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		BD9676081EEF8E0B00F4C3E4 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				BD96760A1EEF8E5900F4C3E4 /* ReceiveIndustry.h */,
+				BD96760B1EEF8E5900F4C3E4 /* ReceiveIndustry.m */,
+				BD96760C1EEF8E5900F4C3E4 /* ReceiveIndustry.xib */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		BD9676091EEF8E0B00F4C3E4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		BDD4AF3E1E77B9FF0095D1F3 /* Masonry */ = {
 			isa = PBXGroup;
 			children = (
@@ -3936,7 +3984,7 @@
 				TargetAttributes = {
 					63CACC0C1CC9C3F400FBF7E6 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = X57HHXYHRU;
+						DevelopmentTeam = 2M7G83HE4L;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
@@ -3970,6 +4018,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63463FE01D70125F00AB11AC /* BMselectedTimeController.xib in Resources */,
+				BD96760E1EEF8E5900F4C3E4 /* ReceiveIndustry.xib in Resources */,
 				BD8A37BE1EDA40A1006D6325 /* GDPoiCell.xib in Resources */,
 				630A92DA1D407B53007ACD7B /* MyCollectCell.xib in Resources */,
 				63FDDF3B1D19354800328FE2 /* HZQDatePickerView.xib in Resources */,
@@ -4521,6 +4570,7 @@
 				63CB581F1CE0953D002011F8 /* GovNewsViewController.m in Sources */,
 				63FB9D341CF3F77900431C00 /* PayBackViewController.m in Sources */,
 				6346FACC1D5DC31600960F29 /* GoingOutSearchListCell.m in Sources */,
+				BD96760D1EEF8E5900F4C3E4 /* ReceiveIndustry.m in Sources */,
 				19EB340A1CD844F1001A063B /* ImageModel.m in Sources */,
 				BD42B1D01E5ABE04005FCE10 /* TOrderDetailsOneCell.m in Sources */,
 				19E9C2021CD9C6FF006C6524 /* PinyinFormatter.m in Sources */,
@@ -4685,7 +4735,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shenzhen Eztro Information Technology Co.Ltd.";
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: Shenzhen Eztro Information Technology Co.Ltd.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = X57HHXYHRU;
+				DEVELOPMENT_TEAM = 2M7G83HE4L;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4812,7 +4862,7 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bianmin;
 				PRODUCT_NAME = "易民";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4831,7 +4881,7 @@
 				CODE_SIGN_ENTITLEMENTS = "BianMin/易民.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shenzhen Eztro Information Technology Co.Ltd.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = X57HHXYHRU;
+				DEVELOPMENT_TEAM = 2M7G83HE4L;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4958,7 +5008,7 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bianmin;
 				PRODUCT_NAME = "易民";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -73,9 +73,15 @@
 ///正式
 //#define kServerUrl @"http://api.bmin.wang/?"
 ///测试
-//#define kServerUrl @"http://test.bmin.wang/?"
+#define kServerUrl @"http://test.bmin.wang/?"
 ///开发
-#define kServerUrl @"http://test.bmin.dongwuit.com/?"
+//#define kServerUrl @"http://test.bmin.dongwuit.com/?"
+
+///正式地图
+//#define GDKey @"a4725781981191b57d44936de2fbbe52"
+///测试地图
+#define GDKey @"2d5e8931fb852fc18d87d2ce0ee1404c"
+
 #define kPhotoUrl @"http://test.dongwuit.com/?act=Api/Image/upload&sign=%@"
 #define kTitleColor @"#333333"
 #define kSubTitleColor @"#aaaaaa"

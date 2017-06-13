@@ -117,7 +117,7 @@
     showImageBtn.backgroundColor = [UIColor blackColor];
     showImageBtn.layer.masksToBounds = YES;
     showImageBtn.layer.cornerRadius = 35/2;
-   // [self.container addSubview:showImageBtn];
+    [self.container addSubview:showImageBtn];
     
     
     
