@@ -9,7 +9,7 @@
 #import "DWGuideViewController.h"
 #import "SGFocusImageFrame.h"
 #import "DWTabBarController.h"
-
+#import "AdressSelectedController.h"
 @interface DWGuideViewController ()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -141,7 +141,31 @@
 }
 
 - (void)click:(id)sender{
-    [UIApplication sharedApplication].keyWindow.rootViewController = [[DWTabBarController alloc] init];
+    
+    
+    NSString *regionName = [AuthenticationModel getRegionName];
+    if (regionName == nil || regionName == NULL) {
+        AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
+        adressSelected.isFrest = @"是";
+        adressSelected.selectdeAdress = ^(NSString *adressStr) {
+           // [[NSNotificationCenter defaultCenter] postNotificationName:@"切换地址" object:@"切换地址" userInfo:@{}];
+//            weakSelf.pageIndex = 1;
+//            [weakSelf.searchView.adressBtn setTitle:adressStr forState:UIControlStateNormal];
+//            [weakSelf.classKindArr removeAllObjects];
+//            [weakSelf againAchiveData];
+//            [weakSelf.dataSource removeAllObjects];
+//            [weakSelf getShopDataWithType:self.merchantType];
+        };
+       
+        [UIApplication sharedApplication].keyWindow.rootViewController = [[UINavigationController alloc]initWithRootViewController:adressSelected];
+    }else {
+   [UIApplication sharedApplication].keyWindow.rootViewController = [[DWTabBarController alloc] init];
+    
+    };
+
+    
+    
+    
 }
 
 @end

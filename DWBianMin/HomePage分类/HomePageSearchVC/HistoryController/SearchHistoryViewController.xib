@@ -68,7 +68,7 @@
                                         <constraint firstAttribute="width" constant="85" id="WpS-zH-56n"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                    <state key="normal" title=" 商 家 " image="夺宝－分类－手机平板－下拉箭头.png">
+                                    <state key="normal" title="  商 家  " image="夺宝－分类－手机平板－下拉箭头.png">
                                         <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                     </state>
                                     <connections>

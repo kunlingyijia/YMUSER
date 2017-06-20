@@ -47,6 +47,7 @@
 #import "VerisonModel.h"
 #import "SearchHistoryViewController.h"
 #import "GoodsListOneCell.h"
+#import "IndustryListVC.h"
 #define BoundsWidth [UIScreen mainScreen].bounds.size.width
 #define CategoryWidth ([UIScreen mainScreen].bounds.size.width - 3) / 4
 #define IOSVersion [[[UIDevice currentDevice] systemVersion] floatValue]
@@ -129,9 +130,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    //Push 跳转
+//    IndustryListVC * VC = [[IndustryListVC alloc]initWithNibName:@"IndustryListVC" bundle:nil];
+//    [self.navigationController  pushViewController:VC animated:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PublicMessageVC) name:@"跳转到消息中心" object:nil];
     //定位
     [self locationAction];
+    [self setupNavigationItem];
     //取出是否是在wifi下加载图片
     DWHelper *helper = [DWHelper  shareHelper];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
@@ -146,7 +151,7 @@
     self.pageIndex = 1;
     self.merchantType = @"1";
     [self setupTableView];
-    [self setupNavigationItem];
+    
     [self netWorking];
     //获取地址
 //    [self getAdressNetWork];
@@ -339,12 +344,12 @@
         }]];
         [alertView addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
            // [self VersionUpdate];
-            [self updateVerison];
+            //[self updateVerison];
         }]];
         [self presentViewController:alertView animated:YES completion:nil];
         
     }else {
-         [self updateVerison];
+         //[self updateVerison];
        // [self VersionUpdate];
     }
     
@@ -456,7 +461,7 @@
             [weakSelf.dataSource removeAllObjects];
             [weakSelf getShopDataWithType:self.merchantType];
         };
-        [self.navigationController pushViewController:adressSelected animated:YES];
+        [self.navigationController pushViewController:adressSelected animated:NO];
     }else {
          [self.searchView.adressBtn setTitle:regionName forState:UIControlStateNormal];
     };
@@ -1273,11 +1278,6 @@
     return [self findBestViewController:viewController];
     
 }
-
-
-
-
-
 #pragma mark - 版本更新
 -(void)updateVerison{
     //获得build号：

@@ -93,11 +93,11 @@
     RequestMerchantList *merchantL = [[RequestMerchantList alloc] init];
     
     merchantL.businessAreaId = business;
-    merchantL.merchantCategoryId =[NSString stringWithFormat:@"%ld", kind];
+    merchantL.merchantCategoryId =[NSString stringWithFormat:@"%ld", (long)kind];
     merchantL.pageCount = 10;
     merchantL.pageIndex = self.count;
     merchantL.regionId = [AuthenticationModel getRegionID];
-    merchantL.sort =[NSString stringWithFormat:@"%ld", sort];
+    merchantL.sort =[NSString stringWithFormat:@"%ld", (long)sort];
     
     DWHelper *helper = [DWHelper shareHelper];
     merchantL.lng = [NSString stringWithFormat:@"%f", helper.coordinate.longitude];
@@ -125,7 +125,6 @@
             [self hideProgress];
             [self showToast:baseRes.msg];
 
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
         }
         
         [self.tableView.mj_header endRefreshing];
@@ -351,7 +350,6 @@
         NSArray *businessArr = self.chooseArray[1];
         BusinessareaModel *businessModel = businessArr[self.businessIndex];
         [self getDataWithKind:[bmModel.merchantCategoryId integerValue] withSort:self.factorNum withBusiness:businessModel.businessAreaId];
-        NSLog(@"%ld",self.cellIndex);
         return;
     }
     
@@ -494,8 +492,7 @@
         self.dropDownView.frame = CGRectMake(0, 0, Width, 40);
         
         NSArray *arr = self.chooseArray[0];
-        NSArray *businessArr = self.chooseArray[1];
-        NSLog(@"%ld",self.kindClassIndex) ;
+//        NSArray *businessArr = self.chooseArray[1];
         
         RequestCateAndBusinessareaModel *model = arr[self.kindClassIndex];
         [self.dataSource removeAllObjects];

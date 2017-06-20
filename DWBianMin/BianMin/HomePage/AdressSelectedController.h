@@ -11,6 +11,9 @@
 @interface AdressSelectedController : BaseViewController
 
 @property (nonatomic , copy)void(^selectdeAdress)(NSString *);
+///第一次
+@property (nonatomic, strong) NSString  *isFrest;
+
 
 
 

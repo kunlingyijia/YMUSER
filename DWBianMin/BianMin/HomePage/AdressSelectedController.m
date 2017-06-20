@@ -11,7 +11,7 @@
 #import "DWHelper.h"
 #import "BATableView.h"
 #import "RegionModel.h"
-
+#import "DWTabBarController.h"
 @interface AdressSelectedController ()<UITableViewDelegate, UITableViewDataSource,BATableViewDelegate,UISearchBarDelegate,AMapLocationManagerDelegate>
 //数据存储请求的数据
 @property (nonatomic ,strong) NSMutableArray *dataSource;
@@ -68,7 +68,9 @@
     [super viewDidLoad];
      [self getAdressData];
     self.title = @"选择城市";
-    [self selfShowBackBtn];
+    if (!self.isFrest) {
+     [self selfShowBackBtn];
+    }
     [self createTableView];
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -104,9 +106,6 @@
 - (void)selfDoBack:(id)sender{
     NSString *regionName = [AuthenticationModel getRegionName];
     if (regionName == nil || regionName == NULL) {
-        
-        
-        
         UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"还未选择地址,请选择" preferredStyle:UIAlertControllerStyleAlert];
         [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alertC animated:YES completion:nil];
@@ -373,7 +372,13 @@
         [userDefaul setObject:modle.regionId forKey:@"regionId"];
         [userDefaul setObject:modle.regionName forKey:@"regionName"];
         self.selectdeAdress(modle.regionName);
-        [self.navigationController popViewControllerAnimated:YES];
+        if (!self.isFrest) {
+            [self.navigationController popViewControllerAnimated:YES];
+
+        }else{
+            [UIApplication sharedApplication].keyWindow.rootViewController = [[DWTabBarController alloc] init];
+        }
+        
     }else {
         NSString *adress = self.searchArr[indexPath.row];
         RegionModel *adressModel = nil;
@@ -388,7 +393,11 @@
         [userDefaul setObject:adressModel.regionId forKey:@"regionId"];
         [userDefaul setObject:adressModel.regionName forKey:@"regionName"];
         self.selectdeAdress(adressModel.regionName);
-        [self.navigationController popViewControllerAnimated:YES];
+        if (!self.isFrest) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            [UIApplication sharedApplication].keyWindow.rootViewController = [[DWTabBarController alloc] init];
+        }
     }
     
     

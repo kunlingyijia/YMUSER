@@ -35,6 +35,7 @@
 #import <AMapFoundationKit/AMapFoundationKit.h>
 #import <AMapSearchKit/AMapSearchKit.h>
 #import "PublicMessageVC.h"
+#import "AdressSelectedController.h"
 @interface AppDelegate ()<WXApiDelegate,JPUSHRegisterDelegate>
 
 @property (nonatomic, strong) UIView *adView;
@@ -73,8 +74,32 @@
         if ([self haveNewAd]) {
             [self showAdView];
         }else{
-            self.dwTabBarController = [[DWTabBarController alloc] init];
-            self.window.rootViewController = self.dwTabBarController;
+            
+            NSString *regionName = [AuthenticationModel getRegionName];
+            if (regionName == nil || regionName == NULL) {
+                AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
+                adressSelected.isFrest = @"是";
+                adressSelected.selectdeAdress = ^(NSString *adressStr) {
+                    // [[NSNotificationCenter defaultCenter] postNotificationName:@"切换地址" object:@"切换地址" userInfo:@{}];
+                    //            weakSelf.pageIndex = 1;
+                    //            [weakSelf.searchView.adressBtn setTitle:adressStr forState:UIControlStateNormal];
+                    //            [weakSelf.classKindArr removeAllObjects];
+                    //            [weakSelf againAchiveData];
+                    //            [weakSelf.dataSource removeAllObjects];
+                    //            [weakSelf getShopDataWithType:self.merchantType];
+                };
+                
+                [UIApplication sharedApplication].keyWindow.rootViewController = [[UINavigationController alloc]initWithRootViewController:adressSelected];
+            }else {
+                [UIApplication sharedApplication].keyWindow.rootViewController = [[DWTabBarController alloc] init];
+                
+            };
+
+            
+            
+            
+//            self.dwTabBarController = [[DWTabBarController alloc] init];
+//            self.window.rootViewController = self.dwTabBarController;
         }
     }
 
@@ -291,52 +316,72 @@
 
 
 - (void)showAdView{
-    self.window.rootViewController = [[DWTabBarController alloc] init];
-    UIButton *adView = [[UIButton alloc] initWithFrame:self.window.bounds];
-    adView.backgroundColor = [UIColor whiteColor];
-    [adView addTarget:self action:@selector(clickAd:) forControlEvents:UIControlEventTouchUpInside];
-    [self.window.rootViewController.view addSubview:adView];
-    self.adView = adView;
-    UIImageView *adImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, Width, Width*4/3)];
-    adImage.image = [UIImage imageNamed:@""];
-    [adView addSubview:adImage];
-    [self getImageLogo:adImage];
-    UIView *brandView = [[UIView alloc] initWithFrame:CGRectMake(0, Height - 100, Width, 100)];
-    brandView.backgroundColor= [UIColor whiteColor];
-    [adView addSubview:brandView];
     
-    UIImageView *logo = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    logo.image = [UIImage imageNamed:@"512"];
-    logo.backgroundColor = [UIColor redColor];
-    logo.center = CGPointMake(Width/ 2 - 30, 40);
-    [brandView addSubview:logo];
-    
-    UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-    lable.center = CGPointMake(Width/ 2 + 40, 40);
-    lable.text = @"便民服务";
-    lable.font = [UIFont boldSystemFontOfSize:16];
-    lable.textColor = [UIColor colorWithHexString:kTitleColor];
-    [brandView addSubview:lable];
-    
-    UILabel *copyRightLable = [[UILabel alloc] initWithFrame:CGRectMake(0, brandView.frame.size.height - 40, Width, 30)];
-    copyRightLable.text = @"©2016 bmin.wang All Rights Reserved";
-    copyRightLable.font = [UIFont systemFontOfSize:12];
-    copyRightLable.textAlignment = NSTextAlignmentCenter;
-    copyRightLable.textColor = [UIColor colorWithHexString:kSubTitleColor];
-    [brandView addSubview:copyRightLable];
+    NSString *regionName = [AuthenticationModel getRegionName];
+    if (regionName == nil || regionName == NULL) {
+        AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
+        adressSelected.isFrest = @"是";
+        adressSelected.selectdeAdress = ^(NSString *adressStr) {
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"切换地址" object:@"切换地址" userInfo:@{}];
+            //            weakSelf.pageIndex = 1;
+            //            [weakSelf.searchView.adressBtn setTitle:adressStr forState:UIControlStateNormal];
+            //            [weakSelf.classKindArr removeAllObjects];
+            //            [weakSelf againAchiveData];
+            //            [weakSelf.dataSource removeAllObjects];
+            //            [weakSelf getShopDataWithType:self.merchantType];
+        };
+        
+        self.window.rootViewController= [[UINavigationController alloc]initWithRootViewController:adressSelected];
+    }else {
+        self.window.rootViewController = [[DWTabBarController alloc] init];
+        UIButton *adView = [[UIButton alloc] initWithFrame:self.window.bounds];
+        adView.backgroundColor = [UIColor whiteColor];
+        [adView addTarget:self action:@selector(clickAd:) forControlEvents:UIControlEventTouchUpInside];
+        [self.window.rootViewController.view addSubview:adView];
+        self.adView = adView;
+        UIImageView *adImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, Width, Width*4/3)];
+        adImage.image = [UIImage imageNamed:@""];
+        [adView addSubview:adImage];
+        [self getImageLogo:adImage];
+        UIView *brandView = [[UIView alloc] initWithFrame:CGRectMake(0, Height - 100, Width, 100)];
+        brandView.backgroundColor= [UIColor whiteColor];
+        [adView addSubview:brandView];
+        
+        UIImageView *logo = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        logo.image = [UIImage imageNamed:@"512"];
+        logo.backgroundColor = [UIColor redColor];
+        logo.center = CGPointMake(Width/ 2 - 30, 40);
+        [brandView addSubview:logo];
+        
+        UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
+        lable.center = CGPointMake(Width/ 2 + 40, 40);
+        lable.text = @"便民服务";
+        lable.font = [UIFont boldSystemFontOfSize:16];
+        lable.textColor = [UIColor colorWithHexString:kTitleColor];
+        [brandView addSubview:lable];
+        
+        UILabel *copyRightLable = [[UILabel alloc] initWithFrame:CGRectMake(0, brandView.frame.size.height - 40, Width, 30)];
+        copyRightLable.text = @"©2016 bmin.wang All Rights Reserved";
+        copyRightLable.font = [UIFont systemFontOfSize:12];
+        copyRightLable.textAlignment = NSTextAlignmentCenter;
+        copyRightLable.textColor = [UIColor colorWithHexString:kSubTitleColor];
+        [brandView addSubview:copyRightLable];
+        
+        UIButton *closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [closeBtn setBackgroundColor:[UIColor blackColor]];
+        closeBtn.frame = CGRectMake(Width - 80, 30, 60, 30);
+        closeBtn.layer.cornerRadius = 30/2;
+        closeBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];
+        [closeBtn setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
+        closeBtn.layer.masksToBounds = YES;
+        closeBtn.alpha = 0.3;
+        [closeBtn addTarget:self action:@selector(hideAdView:) forControlEvents:UIControlEventTouchUpInside];
+        [closeBtn setTitle:@"跳过" forState:UIControlStateNormal];
+        [adView addSubview:closeBtn];
+        [self performSelector:@selector(hideAdView:) withObject:adView afterDelay:6];
+        
+    };
 
-    UIButton *closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [closeBtn setBackgroundColor:[UIColor blackColor]];
-    closeBtn.frame = CGRectMake(Width - 80, 30, 60, 30);
-    closeBtn.layer.cornerRadius = 30/2;
-    closeBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];
-    [closeBtn setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
-    closeBtn.layer.masksToBounds = YES;
-    closeBtn.alpha = 0.3;
-    [closeBtn addTarget:self action:@selector(hideAdView:) forControlEvents:UIControlEventTouchUpInside];
-    [closeBtn setTitle:@"跳过" forState:UIControlStateNormal];
-    [adView addSubview:closeBtn];
-    [self performSelector:@selector(hideAdView:) withObject:adView afterDelay:6];
 }
 
 - (void)hideAdView:(UIView *)adView{
@@ -355,27 +400,70 @@
     }
     RequestHomePageModel *model = self.logoArr[[num integerValue] - 1];
     if (model.type == 1) {
-        ShopViewController *shopViewC = [[ShopViewController alloc] init];
-        shopViewC.merchantId = model.merchantId;
-        DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
-        [tabbar.homePageViewController.navigationController pushViewController:shopViewC animated:YES];
-        [self hideAdView:btn];
-    }else if (model.type == 3) {
-        if (model.linkUrl.length !=0) {
-            DWWebViewController *webVC = [[DWWebViewController alloc] init];
-            [webVC setUrl:model.linkUrl];
-            DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
-            [tabbar.homePageViewController.navigationController pushViewController:webVC animated:YES];
-            [self hideAdView:btn];
-        }else{
+        
+        NSString *regionName = [AuthenticationModel getRegionName];
+        if (regionName == nil || regionName == NULL) {
+            AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
+            adressSelected.isFrest = @"是";
+            adressSelected.selectdeAdress = ^(NSString *adressStr) {
+                // [[NSNotificationCenter defaultCenter] postNotificationName:@"切换地址" object:@"切换地址" userInfo:@{}];
+                //            weakSelf.pageIndex = 1;
+                //            [weakSelf.searchView.adressBtn setTitle:adressStr forState:UIControlStateNormal];
+                //            [weakSelf.classKindArr removeAllObjects];
+                //            [weakSelf againAchiveData];
+                //            [weakSelf.dataSource removeAllObjects];
+                //            [weakSelf getShopDataWithType:self.merchantType];
+            };
+            
+            self.window.rootViewController= [[UINavigationController alloc]initWithRootViewController:adressSelected];
+        }else {
             ShopViewController *shopViewC = [[ShopViewController alloc] init];
             shopViewC.merchantId = model.merchantId;
             DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
             [tabbar.homePageViewController.navigationController pushViewController:shopViewC animated:YES];
             [self hideAdView:btn];
+            
+        };
 
-        }
         
+        
+           }else if (model.type == 3) {
+               NSString *regionName = [AuthenticationModel getRegionName];
+               if (regionName == nil || regionName == NULL) {
+                   AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
+                   adressSelected.isFrest = @"是";
+                   adressSelected.selectdeAdress = ^(NSString *adressStr) {
+                       // [[NSNotificationCenter defaultCenter] postNotificationName:@"切换地址" object:@"切换地址" userInfo:@{}];
+                       //            weakSelf.pageIndex = 1;
+                       //            [weakSelf.searchView.adressBtn setTitle:adressStr forState:UIControlStateNormal];
+                       //            [weakSelf.classKindArr removeAllObjects];
+                       //            [weakSelf againAchiveData];
+                       //            [weakSelf.dataSource removeAllObjects];
+                       //            [weakSelf getShopDataWithType:self.merchantType];
+                   };
+                   
+                   self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:adressSelected];
+               }else {
+                   if (model.linkUrl.length !=0) {
+                       DWWebViewController *webVC = [[DWWebViewController alloc] init];
+                       [webVC setUrl:model.linkUrl];
+                       DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
+                       [tabbar.homePageViewController.navigationController pushViewController:webVC animated:YES];
+                       [self hideAdView:btn];
+                   }else{
+                       ShopViewController *shopViewC = [[ShopViewController alloc] init];
+                       shopViewC.merchantId = model.merchantId;
+                       DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
+                       [tabbar.homePageViewController.navigationController pushViewController:shopViewC animated:YES];
+                       [self hideAdView:btn];
+                       
+                   }
+
+                   
+               };
+
+               
+               
     }
     
     

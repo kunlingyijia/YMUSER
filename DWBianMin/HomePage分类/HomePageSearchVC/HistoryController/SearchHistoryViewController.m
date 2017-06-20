@@ -14,7 +14,7 @@
 //#import "SearchHistoryView.h"
 #import "GoodsListVC.h"
 #import "UIView+Toast.h"
-#import "ReceiveIndustry.h"
+
 @interface SearchHistoryViewController ()<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource>
 typedef enum : NSUInteger {
     HistoryData,
@@ -43,6 +43,7 @@ typedef enum : NSUInteger {
     self.HistoryArray = [NSMutableArray arrayWithArray:[self GetHistoryData]];
     [self.tableView reloadData];
     
+
 //    ReceiveIndustry* VC = [[ReceiveIndustry alloc]initWithNibName:@"ReceiveIndustry" bundle:nil];
 //    
 //    VC.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
@@ -72,8 +73,8 @@ typedef enum : NSUInteger {
     //1-商家，2-团购套餐，3-便民服务
     self.serchType = @"1";
     self.PopoverViewArr=[NSMutableArray arrayWithCapacity:0];
-    [self.PopoverViewArr addObject:@{@"title":@" 商 家 ",@"hidID":@"1"}];
-     [self.PopoverViewArr addObject:@{@"title":@"团购套餐",@"hidID":@"2"}];
+    [self.PopoverViewArr addObject:@{@"title":@"  商 家 ",@"hidID":@"1"}];
+    [self.PopoverViewArr addObject:@{@"title":@"团购套餐",@"hidID":@"2"}];
     [self.PopoverViewArr addObject:@{@"title":@"便民服务",@"hidID":@"3"}];
     
     
