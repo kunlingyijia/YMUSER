@@ -12,7 +12,10 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
+    //Cell背景颜色
+    self.contentView.backgroundColor = [UIColor colorWithHexString:kViewBg];
+    //cell选中时的颜色 无色
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -25,8 +28,8 @@
     [vc loadImageWithView:self.pictureView urlStr:model.iconUrl];
     self.nameLabel.text = model.merchantName;
     
-    NSString * string = model.expireTime;
-    self.expireTime .text = [string  substringFromIndex:4];
+//    NSString * string = model.expireTime;
+    self.expireTime .text = model.expireTime;;
     if (model.couponType == 1) {
         self.couponType.text = @"满减券";
         self.priceLabel.text = [NSString stringWithFormat:@"%.0f", model.mVaule];
@@ -66,9 +69,9 @@
     [vc loadImageWithView:self.pictureView urlStr:model.iconUrl];
     self.nameLabel.text = model.merchantName;
     self.contentLabel.text = model.couponContent;
-    NSString * string = model.expireTime;
+//    NSString * string = model.expireTime;
     
-    self.expireTime .text = [string  substringFromIndex:4];
+    self.expireTime .text =model.expireTime;;
     if (model.couponType == 1) {
         self.couponType.text = @"满减券";
         self.priceLabel.text = [NSString stringWithFormat:@"%.0f", model.mVaule];

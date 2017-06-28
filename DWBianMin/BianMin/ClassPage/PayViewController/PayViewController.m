@@ -28,20 +28,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    [self newShowBackBtn];
+    [self showBackBtn:^{
+        OrderContentViewController *orderController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"OrderContentViewController"];
+        orderController.orderNo = self.payOrderModel.orderNo;
+        orderController.goodsOrderId =self.payOrderModel.goodsOrderId;
+        orderController.isPayBack = 6;
+        [self.navigationController pushViewController:orderController animated:YES];
+    }];
     self.title = @"确认支付";
     self.isAlipay = YES;
     UITapGestureRecognizer *wxTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(wxAction:)];
     [self.WXpay addGestureRecognizer:wxTap];
     UITapGestureRecognizer *aliTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(aliAction:)];
     [self.AliPay addGestureRecognizer:aliTap];
-    [self.pictureView sd_setImageWithURL:[NSURL URLWithString:self.goodsModel.originUrl]];
-    self.nameLabel.text = [NSString stringWithFormat:@"总价:¥%.2f", self.sumPrice];
-    self.priceLabel.text = self.goodsModel.goodsName;
-    self.onePriceLabel.text = [NSString stringWithFormat:@"单价:%.2f", self.goodsModel.price];
+    self.pictureView.layer.masksToBounds = YES;
+    self.pictureView.layer.cornerRadius  = 3.0;
+    [ DWHelper SD_WebImage:self.pictureView imageUrlStr:self.goodsModel.originUrl placeholderImage:nil];
+   //[self.pictureView sd_setImageWithURL:[NSURL URLWithString:self.goodsModel.originUrl]];
+    self.nameLabel.text =self.goodsModel.goodsName;
+    self.priceLabel.text =[NSString stringWithFormat:@"总价:%.2f元",self.goodsModel.price * [self.goodsModel.goodsNumber intValue]];
+    self.onePriceLabel.text = [NSString stringWithFormat:@"单价:%.2f元", self.goodsModel.price];
     self.numberLabel.text = [NSString stringWithFormat:@"数量:x%@", self.goodsModel.goodsNumber];
+    [self.payBtn setTitle:[NSString stringWithFormat:@"确认支付:%.2f元",self.sumPrice] forState:0];
     //支付成功后的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccessAction:) name:@"支付成功" object:nil];
 }
@@ -62,8 +70,6 @@
 - (void)newDoBack:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }
-
-
 
 #pragma mark - 支付成功的通知
 - (void)paySuccessAction:(NSNotification *)sender {

@@ -16,7 +16,15 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
+    //Cell背景颜色
+    self.contentView.backgroundColor = [UIColor whiteColor];
+    //cell选中时的颜色 无色
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    _shopLogo.layer.masksToBounds = YES;
+    _shopLogo.layer.cornerRadius = 3.0;
+    //Cell右侧箭头
+    //self.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+    //self.separatorInset = UIEdgeInsetsMake(0, Width, 0, 0); // ViewWidth  [宏] 指的是手机屏幕的宽度
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -71,11 +71,11 @@
 #   define OKLog(...)
 #endif
 ///正式
-#define kServerUrl @"http://api.bmin.wang/?"
+//#define kServerUrl @"http://api.bmin.wang/?"
 ///测试
 //#define kServerUrl @"http://test.bmin.wang/?"
 ///开发
-//#define kServerUrl @"http://test.bmin.dongwuit.com/?"
+#define kServerUrl @"http://bmin.dongwuit.com/?"
 ///正式地图
 #define GDKey @"a4725781981191b57d44936de2fbbe52"
 ///测试地图

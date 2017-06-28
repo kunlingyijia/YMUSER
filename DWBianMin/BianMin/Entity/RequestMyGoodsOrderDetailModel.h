@@ -26,6 +26,7 @@
 @property (nonatomic, copy) NSString *createTime;
 @property (nonatomic, strong) NSArray *coupons;
 @property (nonatomic, assign) CGFloat price;
+///支付金额
 @property (nonatomic, assign) CGFloat payAmount;
 @property (nonatomic, copy) NSString* status; //0-未付款  1-已付款(待使用)  2-退款中  3-等待评价   4-已经退款  5-取消订单 6-已完成
 @property (nonatomic, copy) NSString *couponId;
@@ -45,6 +46,11 @@
 
 ///退款金额
 @property (nonatomic, strong) NSString  *returnAmount ;
+
+///	行业抵用券面额
+@property (nonatomic, strong) NSString  *faceAmount ;
+
+
 
 
 

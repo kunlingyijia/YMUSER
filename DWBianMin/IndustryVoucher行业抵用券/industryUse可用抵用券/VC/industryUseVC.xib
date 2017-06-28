@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="industryUseVC">
+            <connections>
+                <outlet property="ChoseBtn" destination="alr-lY-UAo" id="RfC-eV-duV"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0xl-7E-ZS5">
+                    <rect key="frame" x="0.0" y="10" width="375" height="47"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="alr-lY-UAo">
+                            <rect key="frame" x="318" y="0.0" width="47" height="47"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="alr-lY-UAo" secondAttribute="height" id="Vfe-cR-7Jc"/>
+                            </constraints>
+                            <state key="normal" image="空－椭圆"/>
+                            <state key="selected" image="选中－椭圆"/>
+                            <connections>
+                                <action selector="ChoseBtnAction:" destination="-1" eventType="touchUpInside" id="aif-Lz-ag5"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="不使用抵用券" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c6b-h5-fo8">
+                            <rect key="frame" x="10" y="14.5" width="86" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="0xl-7E-ZS5" secondAttribute="height" multiplier="8" id="0uF-Jt-tLf"/>
+                        <constraint firstItem="c6b-h5-fo8" firstAttribute="centerY" secondItem="0xl-7E-ZS5" secondAttribute="centerY" id="4XC-ys-scW"/>
+                        <constraint firstItem="c6b-h5-fo8" firstAttribute="leading" secondItem="0xl-7E-ZS5" secondAttribute="leading" constant="10" id="CAW-kf-lqH"/>
+                        <constraint firstAttribute="bottom" secondItem="alr-lY-UAo" secondAttribute="bottom" id="bWq-lE-EyW"/>
+                        <constraint firstItem="alr-lY-UAo" firstAttribute="top" secondItem="0xl-7E-ZS5" secondAttribute="top" id="jnn-iX-V7w"/>
+                        <constraint firstAttribute="trailing" secondItem="alr-lY-UAo" secondAttribute="trailing" constant="10" id="npV-jZ-hfE"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="0xl-7E-ZS5" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NHp-SV-G5o"/>
+                <constraint firstAttribute="trailing" secondItem="0xl-7E-ZS5" secondAttribute="trailing" id="cht-qe-qP6"/>
+                <constraint firstItem="0xl-7E-ZS5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="oH7-5u-vQH"/>
+            </constraints>
+        </view>
+    </objects>
+    <resources>
+        <image name="空－椭圆" width="15" height="15"/>
+        <image name="选中－椭圆" width="15" height="15"/>
+    </resources>
+</document>

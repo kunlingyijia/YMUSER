@@ -16,16 +16,17 @@
 #import "RequestMyCouponListModel.h"
 #import "UseCouponViewController.h"
 #import "OrderContentViewController.h"
+#import "industryUseVC.h"
+#import "IndustryModel.h"
+#import "BusinessVouchersVC.h"
 @interface SubmitTGOrderVC ()
-///抵用
-@property(nonatomic,assign)CGFloat toUse;
-///通用
-@property(nonatomic,assign)CGFloat general;
 ///数据
 @property (nonatomic,strong)NSMutableArray * dataArray;
 @property (nonatomic, strong) RequestMyCouponListModel *couponModel;
-@end
+@property (nonatomic,strong) NSString * AllPrice;
+@property(nonatomic,strong) NSString * hangyePrice;
 
+@end
 @implementation SubmitTGOrderVC
 -(NSMutableArray *)dataArray{
     if (!_dataArray) {
@@ -49,238 +50,207 @@
     self.AddAndDelView.layer.masksToBounds = YES;
     self.AddAndDelView.layer.borderWidth= 1.0;
     self.AddAndDelView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.addBtn.backgroundColor = [UIColor whiteColor];
+    self.deleteBtn.backgroundColor = [UIColor whiteColor];
     self.textTf.userInteractionEnabled = YES;
     self.commitBtn.backgroundColor = [UIColor colorWithHexString:kNavigationBgColor];
     self.commitBtn.layer.masksToBounds = YES;
     self.commitBtn.layer.cornerRadius = 3;
+    self.textTf.userInteractionEnabled = YES;
     
 }
 #pragma mark - 关于数据
 -(void)SET_DATA{
-    self.toUse = 0.00;
-    self.general = 0.00;
+    
     self.goodsName.text  = self.goodsModel.goodsName;
     self.discountedPrice.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice];
     self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice];
-    ///请求抵用券
-    [self getCouponList];
-    
-    
+    self.AllPrice =[NSString stringWithFormat:@"%.2f", self.goodsModel.discountedPrice];
+   _hangyePrice =self.AllPrice;
+    self.goodsModel.couponId = @"";
+    self.goodsModel.industryCouponUserId = @"";
+    self.goodsModel.couponUserId = @"";
+    [_shangjiaBtn setTitle:self.goodsModel.couponId.length ==0 ?@"使用商家抵用券":@"" forState:0];
+    [_hangyeBtn setTitle:self.goodsModel.industryCouponUserId.length ==0 ?@"使用行业抵用券":@"" forState:0];
+    _alltotalLabel.text = self.subtotalLabel.text;
 }
-#pragma mark - ///请求抵用券
-- (void)getCouponList {
-    RequestMyCouponList *couponList = [[RequestMyCouponList alloc] init];
-    couponList.pageCount = 1000;
-    couponList.pageIndex = 1;
-    couponList.merchantId = self.merchantId;
-    couponList.status = 1;
-    BaseRequest *baseReq = [[BaseRequest alloc] init];
-    baseReq.token = [AuthenticationModel getLoginToken];
-    baseReq.encryptionType = AES;
-    baseReq.data = [AESCrypt encrypt:[couponList yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
-    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/User/requestMyCouponList" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
-        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
-        if (baseRes.resultCode == 1) {
-            for (NSDictionary *dic in baseRes.data) {
-                RequestMyCouponListModel *model = [RequestMyCouponListModel yy_modelWithDictionary:dic];
-                if (model.status == 1) {
-                    [self.dataArray addObject:model];
-                }
-            }
-        }else {
-            [self showToast:baseRes.msg];
-            
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
-        }
-        [self couponGetData];
-    } faild:^(id error) {
-        
-    }];
-}
-- (void)couponGetData {
-    RequestMyCouponListModel *model = [self getCouponModelWithPrice:[self.subtotalLabel.text floatValue]];
-    if (model == nil || model == NULL) {
-        self.toUseLabel.text = @"没有可用优惠券";
-        self.alltotalLabel.text = self.subtotalLabel.text;
-        self.toUseBtn.selected = NO;
-        self.toUseBtn.userInteractionEnabled = NO;
-    }else {
-        self.toUseBtn.selected = YES;
-        self.toUseBtn.userInteractionEnabled = YES;
-
-        if (model.couponType == 1) {
-            self.toUseLabel.text = [NSString stringWithFormat:@"满%.2f元,减%.2f元", model.mPrice, model.mVaule];
-            self.alltotalLabel.text = [NSString stringWithFormat:@"%.2f元", [self.subtotalLabel.text floatValue] - model.mVaule];
-            self.couponModel = model;
-        }else if (model.couponType == 2) {
-            self.toUseLabel.text = [NSString stringWithFormat:@"下单立减%.2f元", model.lValue];
-            if ([self.subtotalLabel.text floatValue] - model.lValue < 0) {
-                self.alltotalLabel.text = @"0.00元";
-            }else {
-                self.alltotalLabel.text = [NSString stringWithFormat:@"%.2f元", [self.subtotalLabel.text floatValue] - model.lValue];
-            }
-            self.couponModel = model;
-        }else if (model.couponType == 3) {
-            self.toUseLabel.text = [NSString stringWithFormat:@"%.1f折", model.dValue/10.0];
-            self.alltotalLabel.text = [NSString stringWithFormat:@"%.2f元", [self.subtotalLabel.text floatValue] * model.dValue/100];
-            self.couponModel = model;
-        }
-    }
-}
-
-- (RequestMyCouponListModel *)getCouponModelWithPrice:(CGFloat)price{
-    RequestMyCouponListModel *lCouponModel = [[RequestMyCouponListModel alloc] init];
-    lCouponModel.lValue = 0;
-    RequestMyCouponListModel *mCouponModel = [[RequestMyCouponListModel alloc] init];
-    mCouponModel.mVaule = 0;
-    RequestMyCouponListModel *dCouponModel = [[RequestMyCouponListModel alloc] init];
-    dCouponModel.dValue = 100;
-    //1-满减券  2-立减券  3-折扣券
-    for (RequestMyCouponListModel *model in self.dataArray) {
-        if (model.couponType == 2) {
-            if (model.lValue >= lCouponModel.lValue ) {
-                lCouponModel = model;
-            }
-        }else if (model.couponType == 3) {
-            if (model.dValue <= dCouponModel.dValue) {
-                dCouponModel = model;
-            }
-        }else if (model.couponType == 1) {
-            if (model.mVaule >= mCouponModel.mVaule) {
-                if (model.mPrice <= price) {
-                    mCouponModel = model;
-                }
-            }
-        }
-    }
-    
-    if (lCouponModel.merchantId != nil || lCouponModel.merchantId != NULL) {
-        return lCouponModel;
-    }else if (dCouponModel.merchantId != nil || dCouponModel.merchantId != NULL) {
-        return dCouponModel;
-    }else if (mCouponModel.merchantId != nil || mCouponModel.merchantId != NULL) {
-        return mCouponModel;
-    }else {
-        return nil;
-    }
-}
-
-
-
 
 
 - (IBAction)deleteACtion:(PublicBtn *)sender {
+    [self.view endEditing:YES];
     int a=  [self.textTf.text intValue];
     if ([self.textTf.text intValue]>1) {
         a--;
         self.textTf.text = [NSString stringWithFormat:@"%d",a];
         self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
-        
-        [self couponGetData];
-        
+        self.AllPrice =[NSString stringWithFormat:@"%.2f", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
+        _hangyePrice =self.AllPrice;
+        _alltotalLabel.text = self.subtotalLabel.text;
+        self.goodsModel.couponId = @"";
+        self.goodsModel.couponUserId = @"";
+        self.goodsModel.industryCouponUserId = @"";
+        [_shangjiaBtn setTitle: @"使用商家抵用券"
+                    forState:0];
+        [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
+                         forState:0];
+        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
     }
-   
 }
 - (IBAction)addAction:(PublicBtn *)sender {
+    [self.view endEditing:YES];
+
     int a=  [self.textTf.text intValue];
     if ([self.textTf.text intValue]>0) {
         a++;
-        
         self.textTf.text = [NSString stringWithFormat:@"%d",a];
         self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
-       [self couponGetData];
-    }
+        _alltotalLabel.text = self.subtotalLabel.text;
+        self.AllPrice =[NSString stringWithFormat:@"%.2f", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
+        _hangyePrice =self.AllPrice;
+        self.goodsModel.couponId = @"";
+        self.goodsModel.couponUserId = @"";
 
-   
+        self.goodsModel.industryCouponUserId = @"";
+        [_shangjiaBtn setTitle: @"使用商家抵用券"
+                      forState:0];
+        [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
+                           forState:0];
+        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
+    }
 }
 - (IBAction)TFChangeACtion:(PublicTF *)sender {
-    if (sender.text.length==0||[self.textTf.text intValue]==0) {
+    if (sender.text.length== 0||[self.textTf.text intValue]==0) {
         sender.text=@"1";
-        self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
-[self couponGetData];
-    }else{
+    }
+//        self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
+//        _alltotalLabel.text = self.subtotalLabel.text;
+//        self.AllPrice =[NSString stringWithFormat:@"%.2f", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
+//        _hangyePrice =self.AllPrice;
+//        self.goodsModel.couponId = @"";
+//        self.goodsModel.couponUserId = @"";
+//
+//        self.goodsModel.industryCouponUserId = @"";
+//        [_shangjiaBtn setTitle: @"使用商家抵用券"
+//                      forState:0];
+//        [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
+//                           forState:0];
+//        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+//        [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
+//    }else{
     int a=  [self.textTf.text intValue];
     self.textTf.text = [NSString stringWithFormat:@"%d",a];
-        self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
-        [self couponGetData];
-    }
-    
-}
+    self.subtotalLabel.text = [NSString stringWithFormat:@"%.2f元",self.goodsModel.discountedPrice*[self.textTf.text intValue]];
+        _alltotalLabel.text = self.subtotalLabel.text;
+        self.AllPrice =[NSString stringWithFormat:@"%.2f", self.goodsModel.discountedPrice*[self.textTf.text intValue]];
+        _hangyePrice =self.AllPrice;
+        self.goodsModel.couponId = @"";
+        self.goodsModel.couponUserId = @"";
 
-- (IBAction)selectedCouponAction:(UIButton *)sender {
-    
-    
-    UseCouponViewController *useCoupC = [[UseCouponViewController alloc] init];
-    useCoupC.merchantId = self.merchantId;
+        self.goodsModel.industryCouponUserId = @"";
+        [_shangjiaBtn setTitle: @"使用商家抵用券"
+                      forState:0];
+        [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
+                           forState:0];
+        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
+    //}
+}
+#pragma mark - 商家抵用券
+- (IBAction)shangjiaBtnAction:(UIButton *)sender {
+    [self.view endEditing:YES];
+    //Push 跳转
+    BusinessVouchersVC * VC = [[BusinessVouchersVC alloc]initWithNibName:@"BusinessVouchersVC" bundle:nil];
+    __block IndustryModel * model =[IndustryModel new];
     __weak typeof(self) weakSelf = self;
-    useCoupC.selectedCouponAction = ^(RequestMyCouponListModel *couponModel) {
-        switch (couponModel.couponType) {
-            case 1:
-                if ([weakSelf.subtotalLabel.text floatValue] < couponModel.mPrice) {
-                    weakSelf.toUseLabel.text = @"没有可用的优惠券";
-                    weakSelf.alltotalLabel.text = weakSelf.subtotalLabel.text;
-                    weakSelf.couponModel = nil;
-                }else {
-                    weakSelf.toUseLabel.text = [NSString stringWithFormat:@"满%.2f元,减%.2f元", couponModel.mPrice, couponModel.mVaule];
-                    weakSelf.alltotalLabel.text = [NSString stringWithFormat:@"%.2f元", [weakSelf.subtotalLabel.text floatValue]-couponModel.mVaule];
-                    weakSelf.couponModel = couponModel;
-                }
-                break;
-            case 2:
-                weakSelf.toUseLabel.text = [NSString stringWithFormat:@"下单立减%.0f元", couponModel.lValue];
-                if ([weakSelf.subtotalLabel.text floatValue] - couponModel.lValue < 0) {
-                    weakSelf.alltotalLabel.text = @"0.00元";
-                    weakSelf.couponModel = couponModel;
-                }else {
-                    weakSelf.alltotalLabel.text = [NSString stringWithFormat:@"%.2f元", [weakSelf.subtotalLabel.text floatValue]-couponModel.lValue];
-                    weakSelf.couponModel = couponModel;
-                }
-                break;
-            case 3:
-                weakSelf.toUseLabel.text = [NSString stringWithFormat:@"%.1f折", couponModel.dValue/10.0];
-                NSLog(@"%ld", (long)couponModel.dValue);
-                weakSelf.alltotalLabel.text = [NSString stringWithFormat:@"%.2f元", [weakSelf.subtotalLabel.text floatValue]*(couponModel.dValue / 100.0)];
-                weakSelf.couponModel = couponModel;
-                
-                break;
-            default:
-                break;
+    VC.BusinessVouchersVCBlock = ^(IndustryModel * industryModel){
+        weakSelf.goodsModel.industryCouponUserId = @"";
+        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
+        weakSelf.goodsModel.couponId = industryModel.couponId;
+        weakSelf.goodsModel.couponUserId = industryModel.couponUserId;
+        weakSelf.goodsModel.industryCouponUserId =@"";
+        NSString *AllPrice ;
+        NSString * Amount ;
+        weakSelf.AllPrice = [NSString stringWithFormat:@"%.2f", weakSelf.goodsModel.discountedPrice*[self.textTf.text intValue]];
+        _hangyePrice =self.AllPrice;
+        ///1-满减券  2-立减券  3-折扣券
+        if (model.couponType == 0)  {
+            AllPrice =weakSelf.AllPrice;
+        }else  if (model.couponType == 1) {
+            Amount = [NSString stringWithFormat:@"-¥%.0f", model.mVaule];
+            AllPrice = [NSString stringWithFormat:@"%.2f",[weakSelf.AllPrice floatValue]-model.mVaule];
+        }else if (model.couponType == 2)  {            
+            if ([weakSelf.AllPrice floatValue]-model.lValue<0) {
+                Amount = [NSString stringWithFormat:@"-¥%.2f", [weakSelf.AllPrice floatValue]];
+                  AllPrice = @"0.00";
+            }else{
+            Amount = [NSString stringWithFormat:@"-¥%.0f", model.lValue];
+            AllPrice = [NSString stringWithFormat:@"%.2f",[weakSelf.AllPrice floatValue]-model.lValue];
+            }
+        }else  if(industryModel.couponType ==3 ){
+            if (model.dValue % 10 == 0) {
+                Amount = [NSString stringWithFormat:@"%.0f折", model.dValue / 10.0];
+                AllPrice = [NSString stringWithFormat:@"%.2f",[weakSelf.AllPrice floatValue]*model.dValue/100];
+            }else {
+                Amount = [NSString stringWithFormat:@"%.1f折", model.dValue / 10.0];
+                AllPrice = [NSString stringWithFormat:@"%.2f",[weakSelf.AllPrice floatValue]*model.dValue/100];
+            }
+
         }
+        [_shangjiaBtn setTitle:weakSelf.goodsModel.couponId.length ==0 ? @"使用商家抵用券": [NSString stringWithFormat:@"%@",Amount]
+                                     forState:0];
+        [_shangjiaBtn setTitleColor:weakSelf.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
+           forState:0];
+    weakSelf.AllPrice = weakSelf.goodsModel.couponId.length == 0 ? weakSelf.AllPrice : AllPrice;
+     _alltotalLabel.text = [NSString stringWithFormat:@"%@元",AllPrice];
+     _hangyePrice =self.AllPrice;
     };
-    [self.navigationController pushViewController:useCoupC animated:YES];
-
+    model.merchantId = self.goodsModel.merchantId;
+    model.amount = [NSString stringWithFormat:@"%.2f", weakSelf.goodsModel.discountedPrice*[self.textTf.text intValue]];
+    model.couponId = self.goodsModel.couponId;
+    VC.industryModel =model;
+    [self.navigationController  pushViewController:VC animated:YES];
 }
+#pragma mark - 行业
+- (IBAction)hangyeBtnAction:(UIButton *)sender {
+    [self.view endEditing:YES];
 
-
-- (IBAction)toUseBtnAction:(UIButton *)sender {
-    sender.selected = !sender.selected;
-    if (sender.selected ==NO) {
-        self.alltotalLabel.text = self.subtotalLabel.text;
-    }else{
-        [self couponGetData];
-    }
+    //Push 跳转
+    industryUseVC * VC = [[industryUseVC alloc]initWithNibName:@"industryUseVC" bundle:nil];
+    __block IndustryModel * model =[IndustryModel new];
+    model.merchantId = self.goodsModel.merchantId;
+   //model. companyId = @"1";
+   model.amount = _hangyePrice ;
+   model.industryCouponUserId = self.goodsModel.industryCouponUserId;
+    __weak typeof(self) weakSelf = self;
+    VC.industryUseVCBlock = ^(IndustryModel * industryModel){
+      __block  NSString *AllPrice ;
+        AllPrice = [NSString stringWithFormat:@"%.2f", [_hangyePrice floatValue]-[industryModel.amount floatValue]];
+        weakSelf.goodsModel.industryCouponUserId = industryModel.industryCouponUserId;
+        
+        [_hangyeBtn setTitle:weakSelf.goodsModel.industryCouponUserId.length ==0 ?@"使用行业抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]forState:0];
+        [_hangyeBtn setTitleColor:weakSelf.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
+        weakSelf.AllPrice = weakSelf.goodsModel.industryCouponUserId.length == 0 ? _hangyePrice :AllPrice;
+        _alltotalLabel.text = [NSString stringWithFormat:@"%@元",weakSelf.goodsModel.industryCouponUserId.length == 0?_hangyePrice:AllPrice];
+    };
+    VC.industryModel =model;
+    [self.navigationController  pushViewController:VC animated:YES];
 }
-
-
-
-
 - (IBAction)commitBtnAction:(UIButton *)sender {
-    
-    
-    
+    [self.view endEditing:YES];
     [self showProgress];
-    
     RequestPayOrder *order = [[RequestPayOrder alloc] init];
     order.goodsId = self.goodsModel.goodsId;
     order.number = [self.textTf.text integerValue];
-    if (self.couponModel.couponId != nil || self.couponModel.couponId != NULL) {
-        order.couponId = self.couponModel.couponId;
-    }
+    order.couponUserId = self.goodsModel.couponUserId;
+    order.industryCouponUserId = self.goodsModel.industryCouponUserId;
     BaseRequest *baseReq = [[BaseRequest alloc] init];
     baseReq.encryptionType = AES;
     baseReq.token = [AuthenticationModel getLoginToken];
     baseReq.data = [AESCrypt encrypt:[order yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
-    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestAddGoodsOrder" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/GoodsOrder/requestAddGoodsOrder" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
         NSLog(@"%@", response);
         BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
         if (baseRes.resultCode == 1) {
@@ -288,8 +258,6 @@
             [self payAction:model];
         }else {
             [self showToast:baseRes.msg];
-            
-            // [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
         }
         [self hideProgress];
     } faild:^(id error) {
@@ -297,44 +265,28 @@
         [self hideProgress];
     }];
 }
-
 - (void)payAction:(RequestPayOrderModel *)model {
-    
+    //0-未付款  1-已付款
     if (model.status == 0) {
         PayViewController *payViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"PayViewController"];
         payViewController.goodsModel = self.goodsModel;
-        NSLog(@"%@",[self.goodsModel.goodsOrderId yy_modelToJSONObject]);
         payViewController.sumPrice = [self.alltotalLabel.text floatValue];
         payViewController.goodsNum = [self.textTf.text integerValue];
         self.goodsModel.goodsNumber = self.textTf.text;
         self.goodsModel.price = model.price;
         payViewController.payOrderModel = model;
         [self.navigationController pushViewController:payViewController animated:YES];
-    }
-    else if (model.status == 1) {
-        //self.qrImgView.image = [LBXScanWrapper createQRWithString:[NSString stringWithFormat:@"dwbm://%@:%@:%@:%@", self.orderNo,self.couponNo,self.goodsOrderId,self.goodsOrderCouponId]
-        //        PayBackViewController *payBackC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"PayBackViewController"];
-        //        payBackC.payOrderModel = model;
-        //        [self.navigationController pushViewController:payBackC animated:YES];
+    }else if (model.status == 1) {
         OrderContentViewController *orderController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"OrderContentViewController"];
         orderController.orderNo = model.orderNo;
         orderController.goodsOrderId = model.goodsOrderId;
+        orderController.isPayBack = 6;
         [self.navigationController pushViewController:orderController animated:YES];
     }
-    
 }
-
-
-
-
-
-
 #pragma mark - dealloc
 - (void)dealloc
 {
     NSLog(@"%@销毁了", [self class]);
 }
-
-
-
 @end

@@ -32,6 +32,18 @@
 @property (nonatomic, strong) NSArray *images;
 ///订单Id（新增）
 @property (nonatomic, strong) NSString  *goodsOrderId ;
+///行业圈id
+@property (nonatomic, strong) NSString  *industryCouponUserId ;
+///商家id
+@property (nonatomic, strong) NSString  *merchantId ;
+
+///		卡券id
+@property (nonatomic, strong) NSString  *couponId	 ;
+
+///		Int	卡券领取id
+@property (nonatomic, strong) NSString  *couponUserId ;
+
+
 
 
 @end

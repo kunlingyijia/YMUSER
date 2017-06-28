@@ -35,7 +35,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Width, Height-50) style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.rowHeight = 150;
+    self.tableView.rowHeight = 162;
     self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [self.tableView registerNib:[UINib nibWithNibName:@"BmOrderCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"BmOrderCell"];
     [self.view addSubview:self.tableView];
@@ -87,10 +87,27 @@
     [self.tableView tableViewDisplayWitimage:@"暂无订单" ifNecessaryForRowCount:self.dataSource.count];
     return self.dataSource.count;
 }
-#pragma mark - UITableViewDelegate
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 0.1;
+//#pragma mark - UITableViewDelegate
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//    return 0.1;
+//}
+
+
+- (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UITableViewHeaderFooterView * Footer =  [UITableViewHeaderFooterView new];
+    Footer.backgroundColor = [UIColor clearColor];
+    return Footer;
+
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 10;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.001;
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     RequestMyBminorderListModel *model = self.dataSource[indexPath.section];

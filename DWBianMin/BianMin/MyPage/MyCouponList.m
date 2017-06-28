@@ -115,26 +115,38 @@
 }
 
 #pragma mark TabelViewDataSource
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    [self.tableView tableViewDisplayWitimage:nil ifNecessaryForRowCount:self.dataSource.count];
-    
+//tab分区个数
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    [tableView tableViewDisplayWitimage:nil ifNecessaryForRowCount:self.dataSource.count];
+    //分区个数
     return self.dataSource.count;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     MyCouponCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCouponCell" forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    RequestMyCouponListModel *model = self.dataSource[indexPath.row];
+    RequestMyCouponListModel *model = self.dataSource[indexPath.section];
     [cell cellGetDataModel:model withController:self];
     return cell;
 }
 
 #pragma mark TableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 110;
+    return 103;
 }
-
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return [UIView new];
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 10;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 0.001;
+}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 //    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
@@ -149,7 +161,7 @@
 }
 //iOS 8.0 后才有的方法
 -(NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
-    RequestMyCouponListModel *model= self.dataSource[indexPath.row];
+    RequestMyCouponListModel *model= self.dataSource[indexPath.section];
         __weak typeof(self) weakSelf = self;
         UITableViewRowAction *delete = [UITableViewRowAction rowActionWithStyle:(UITableViewRowActionStyleDefault) title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
             [weakSelf alertWithTitle:@"是否删除?" message:nil OKWithTitle:@"删除" CancelWithTitle:@"取消" withOKDefault:^(UIAlertAction *defaultaction) {
@@ -163,7 +175,7 @@
                     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/User/requestDeleteMyCoupon" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response)  {
                         NSLog(@"删除抵用券----%@",response);
                         if ([response[@"resultCode"] isEqualToString:@"1"]) {
-                            [weakSelf.dataSource removeObjectAtIndex:indexPath.row];
+                            [weakSelf.dataSource removeObjectAtIndex:indexPath.section];
                             [weakSelf.tableView reloadData];
                         }else{
                             [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];

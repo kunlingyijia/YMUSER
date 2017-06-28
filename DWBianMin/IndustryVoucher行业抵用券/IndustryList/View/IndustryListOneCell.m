@@ -27,32 +27,38 @@
 -(void)setModel:(IndustryModel *)model{
     if (!model) return;
     _model = model;
-    _faceAmount.text = model.faceAmount;
     _name.text = model.name;
-    _limitAmount.text =[NSString stringWithFormat:@"满%@元可用", model.limitAmount];
-    _beginTimeAndendtime.text =[NSString stringWithFormat:@"有效期: %@至%@", model.beginTime,model.endTime];
-        //status		1-未使用(可删除) ，2-已使用(可删除)，3-已过期 (可删除)
+    _limitAmount.text =[NSString stringWithFormat:@"满%@元可用", model.faceAmount];
+    _beginTimeAndendtime.text =[NSString stringWithFormat:@"%@至%@", model.beginTime,model.endTime];
+    NSMutableAttributedString * faceAmount = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"¥%@", model.faceAmount] ];
+    [faceAmount addAttribute:NSFontAttributeName
+                       value:[UIFont systemFontOfSize:12]
+                       range:NSMakeRange(0, 1)];
+    //1-未使用(可删除) ，2-已使用(可删除)，3-已过期 (可删除)/
     if ([model.status isEqualToString:@"1"]) {
         _statusImageView.image  =[UIImage imageNamed:@""];
         _LeftView.backgroundColor = [UIColor colorWithHexString:kNavigationBgColor];
-        _symbol.textColor = [UIColor redColor];
         _faceAmount.textColor = [UIColor redColor];
         _name.textColor = [UIColor blackColor];
+        [faceAmount addAttribute:NSForegroundColorAttributeName
+                           value:[UIColor redColor]
+                           range:NSMakeRange(0, _model.faceAmount.length-1)];
+        
     }else{
-        _LeftView.backgroundColor = [UIColor lightGrayColor];
-        _symbol.textColor = [UIColor lightGrayColor];
-        _faceAmount.textColor = [UIColor lightGrayColor];
-        _name.textColor = [UIColor lightGrayColor];
-
+        _LeftView.backgroundColor = [UIColor grayColor];
+        _faceAmount.textColor = [UIColor grayColor];
+        _name.textColor = [UIColor grayColor];
+        [faceAmount addAttribute:NSForegroundColorAttributeName
+                           value:[UIColor grayColor]
+                           range:NSMakeRange(0, _model.faceAmount.length-1)];
     }
     if ([model.status isEqualToString:@"2"]) {
-        _statusImageView.image  =[UIImage imageNamed:@""];
+        _statusImageView.image  =[UIImage imageNamed:@"已使用-图标"];
     }
     if ([model.status isEqualToString:@"3"]) {
-        _statusImageView.image  =[UIImage imageNamed:@""];
+        _statusImageView.image  =[UIImage imageNamed:@"已过期-图标"];
     }
-    
-
+    _faceAmount.attributedText =faceAmount;
     
     
     

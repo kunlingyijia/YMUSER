@@ -10,7 +10,9 @@
 #import "TripModel.h"
 #import "requestVerifyCode.h"
 #import "TripPayVC.h"
-
+#import "industryUseVC.h"
+#import "IndustryModel.h"
+#import "TravelOrderVC.h"
 @interface TripAppointmentController ()
 
 @end
@@ -43,7 +45,6 @@
 }
 #pragma mark - 关于数据
 -(void)SET_DATA{
-    
     [self kongjianfuzhi];
     
     
@@ -69,6 +70,7 @@
     self.startPlace.text = self.tripModel.startPlace;
     self.endPlace.text = self.tripModel.endPlace;
     self.price.text =[NSString stringWithFormat:@"支付金额:%@元", self.tripModel.price];
+    [_industryCouponUser setTitle:self.tripModel.industryCouponUserId.length ==0 ?@"使用行业抵用券":@"" forState:0];
     
 }
 
@@ -143,6 +145,27 @@
 
     
 }
+- (IBAction)industryCouponUserAction:(UIButton *)sender {
+    //Push 跳转
+    industryUseVC * VC = [[industryUseVC alloc]initWithNibName:@"industryUseVC" bundle:nil];
+   __block IndustryModel * model =[IndustryModel new];
+    model.companyId = self.tripModel.companyId;
+    model.amount = self.tripModel.price;
+    model.industryCouponUserId = self.tripModel.industryCouponUserId;
+    __weak typeof(self) weakSelf = self;
+    VC.industryUseVCBlock = ^(IndustryModel * industryModel){
+    weakSelf.tripModel.industryCouponUserId = industryModel.industryCouponUserId;
+    [_industryCouponUser setTitle:weakSelf.tripModel.industryCouponUserId.length == 0 ?@"使用行业抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]
+    forState:0];
+    [_industryCouponUser setTitleColor:weakSelf.tripModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
+    forState:0];
+
+    };
+    VC.industryModel =model;
+    [self.navigationController  pushViewController:VC animated:YES];
+
+    
+}
 
 #pragma mark - 调交订单
 - (IBAction)addOrderAction:(UIButton *)sender {
@@ -163,6 +186,7 @@
     model.name = self.name.text;
     model.verifyCode = self.verifyCode.text;
     model.remark = self.remark.text;
+    model.industryCouponUserId = self.tripModel.industryCouponUserId;
     NSLog(@"%@",model.verifyCode);
     self.view.userInteractionEnabled = NO;
     __weak typeof(self) weakself = self;
@@ -176,12 +200,14 @@
             NSLog(@"预约/提交订单----%@",response);
             if ([response[@"resultCode"] isEqualToString:@"1"]) {
                 TripModel * model = [TripModel yy_modelWithJSON:response[@"data"]];
+                
                 //Push 跳转
                 TripPayVC * VC = [[TripPayVC alloc]initWithNibName:@"TripPayVC" bundle:nil];
-                                     VC.tripModel = model;
-                [weakself.navigationController  pushViewController:VC animated:YES];
-
-                
+                                VC.tripModel = model;
+                //Push 跳转
+                TravelOrderVC * travelOrderVC = [[TravelOrderVC alloc]initWithNibName:@"TravelOrderVC" bundle:nil];
+               // status  1-未支付，2-已支付
+                [weakself.navigationController  pushViewController:[model.status isEqualToString:@"1"] ? VC :travelOrderVC animated:YES];
             }else{
                 weakself.view.userInteractionEnabled = YES;
 

@@ -41,7 +41,6 @@
 -(void)SET_UI{
     [self showBackBtn];
     [self setUpTableView];
-
     self.view.backgroundColor = [UIColor colorWithHexString:kViewBg];
     self.blueView = [UIView new];
     _blueView.frame = CGRectMake(Width/4/6+_AllBtn.frame.origin.x, Width*0.125-3, _AllBtn.frame.size.width*2/3, 2);
@@ -49,8 +48,6 @@
     _blueView.backgroundColor =[UIColor colorWithHexString:kNavigationBgColor];
     [self.view addSubview:_blueView];
     self.title =@"行业抵用券";
-    self.balanceFaceAmount.text =@"1000";// self.model.balanceFaceAmount;
-    
 }
 #pragma mark - 关于tableView
 -(void)setUpTableView{
@@ -69,9 +66,9 @@
     self.dataArray = [NSMutableArray arrayWithCapacity:0];
     self.pageIndex =1;
     self.type = @"1";
-//    [self requestAction];
-//    //上拉刷新下拉加载
-//    [self Refresh];
+    [self requestAction];
+    //上拉刷新下拉加载
+    [self Refresh];
 }
 -(void)Refresh{
     //下拉刷新
@@ -103,7 +100,7 @@
             baseReq.token = [AuthenticationModel getLoginToken];
             baseReq.encryptionType = AES;
             baseReq.data = [AESCrypt encrypt:[dic yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
-            [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/IndustrycouponReceive/requestMyIndustryCouponReceiveList" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
+            [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/IndustryCouponUser/requestMyIndustryCouponUserList" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
                 BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
                 if (weakself.pageIndex == 1) {
                     [weakself.dataArray removeAllObjects];
@@ -131,7 +128,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     [tableView tableViewDisplayWitimage:@"列表为空-1" ifNecessaryForRowCount:self.dataArray.count];
     //分区个数
-    return 2;
+    return self.dataArray.count;
 }
 ///tab个数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -142,25 +139,20 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     //分割线
     tableView.separatorStyle = UITableViewCellSelectionStyleNone;
-    __weak typeof(self) weakSelf = self;
-//    if (indexPath.section>self.dataArray.count-1||self.dataArray.count==0) {
-//        return [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell" forIndexPath:indexPath];
-//    }else{
+    if (indexPath.section>self.dataArray.count-1||self.dataArray.count==0) {
+        return [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell" forIndexPath:indexPath];
+    }else{
         IndustryListOneCell * cell = [tableView dequeueReusableCellWithIdentifier:@"IndustryListOneCell" forIndexPath:indexPath];
         //cell 赋值
          cell.model = indexPath.section >= self.dataArray.count ? nil :self.dataArray[indexPath.section];
         // cell 其他配置
         return cell;
         
-   // }
+    }
 }
 #pragma mark - Cell点击事件
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    //Push 跳转
-//    IndustryDetailVC * VC = [[IndustryDetailVC alloc]initWithNibName:@"IndustryDetailVC" bundle:nil];
-//    [self.navigationController  pushViewController:VC animated:YES];
-//
     
 }
 #pragma mark - Cell的高度
@@ -179,14 +171,13 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
+    return YES;
 }
 //iOS 8.0 后才有的方法
 -(NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
     __weak typeof(self) weakSelf = self;
     IndustryModel*   model = indexPath.section >= self.dataArray.count ? nil :self.dataArray[indexPath.section];
     UITableViewRowAction *delete = [UITableViewRowAction rowActionWithStyle:(UITableViewRowActionStyleDefault) title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        
         [weakSelf alertWithTitle:@"是否删除?" message:nil OKWithTitle:@"删除" CancelWithTitle:@"取消" withOKDefault:^(UIAlertAction *defaultaction) {
             NSString *Token =[AuthenticationModel getLoginToken];
             __weak typeof(self) weakself = self;
@@ -195,27 +186,24 @@
                 baseReq.token = [AuthenticationModel getLoginToken];
                 baseReq.encryptionType = AES;
                 baseReq.data = [AESCrypt encrypt:[model yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
-                [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/IndustryCouponReceive/requestDeleteIndustryCouponReceive" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response)  {
+                [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/IndustryCouponUser/requestDeleteIndustryCouponUser" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response)  {
                     NSLog(@"删除行业抵用券----%@",response);
                     if ([response[@"resultCode"] isEqualToString:@"1"]) {
                         [weakSelf.dataArray removeObjectAtIndex:indexPath.section];
                         [weakSelf.tableView reloadData];
                     }else{
-                        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:indexPath.section];
-                        [weakSelf.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+                        [weakSelf.tableView reloadData];
                         [weakself showToast:response[@"msg"]];
                     }
-                    
                 } faild:^(id error) {
                     NSLog(@"%@", error);
+                     [weakSelf.tableView reloadData];
                 }];
             }
         } withCancel:^(UIAlertAction *cancelaction) {
             
         }];
     }];
-    
-   
     return @[delete];
     
 }
@@ -237,8 +225,6 @@
     self.pageIndex = 1;
     [self requestAction];
 }
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }

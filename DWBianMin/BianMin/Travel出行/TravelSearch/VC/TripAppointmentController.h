@@ -18,6 +18,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *endPlace;
 @property (weak, nonatomic) IBOutlet UILabel *price;
 @property (weak, nonatomic) IBOutlet UILabel *date;
+
+
+@property (weak, nonatomic) IBOutlet UIButton *industryCouponUser;
+
 @property (weak, nonatomic) IBOutlet UITextField *verifyCode;
 @property (weak, nonatomic) IBOutlet UIButton *verifyCodeBtn;
 

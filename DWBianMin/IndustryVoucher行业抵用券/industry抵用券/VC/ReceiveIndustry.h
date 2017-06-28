@@ -7,7 +7,10 @@
 //
 
 #import "BaseViewController.h"
-
+@class IndustryModel;
 @interface ReceiveIndustry : BaseViewController
-
+@property (weak, nonatomic) IBOutlet UILabel *name;
+@property (weak, nonatomic) IBOutlet UILabel *faceAmount;
+///model
+@property (nonatomic, strong) IndustryModel *industryModel;
 @end

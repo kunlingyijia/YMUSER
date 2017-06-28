@@ -490,6 +490,10 @@
 		BD4D12CB1EF25B9A00D13907 /* IndustryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BD4D12CA1EF25B9A00D13907 /* IndustryModel.m */; };
 		BD7256B41E5FCBC400E1E2B5 /* OwnerPositionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7256B21E5FCBC400E1E2B5 /* OwnerPositionVC.m */; };
 		BD7256B51E5FCBC400E1E2B5 /* OwnerPositionVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD7256B31E5FCBC400E1E2B5 /* OwnerPositionVC.xib */; };
+		BD761ADF1EF8CF3900983756 /* industryUseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BD761ADD1EF8CF3900983756 /* industryUseVC.m */; };
+		BD761AE01EF8CF3900983756 /* industryUseVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD761ADE1EF8CF3900983756 /* industryUseVC.xib */; };
+		BD761AE41EF8CF5900983756 /* industryUseOneCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BD761AE21EF8CF5900983756 /* industryUseOneCell.m */; };
+		BD761AE51EF8CF5900983756 /* industryUseOneCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD761AE31EF8CF5900983756 /* industryUseOneCell.xib */; };
 		BD7B169F1EDEA75F00C15A22 /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7B169E1EDEA75F00C15A22 /* EZTextView.m */; };
 		BD80C0A51E6F7F870047AF04 /* BMMerchantDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BD80C0A31E6F7F870047AF04 /* BMMerchantDetailVC.m */; };
 		BD80C0A61E6F7F870047AF04 /* BMMerchantDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD80C0A41E6F7F870047AF04 /* BMMerchantDetailVC.xib */; };
@@ -554,6 +558,10 @@
 		BDD4AF661E77B9FF0095D1F3 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = BDD4AF5A1E77B9FF0095D1F3 /* README.md */; };
 		BDDC42B71EE13C3800F04FAF /* SubmitTGOrderVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BDDC42B51EE13C3800F04FAF /* SubmitTGOrderVC.m */; };
 		BDDC42B81EE13C3800F04FAF /* SubmitTGOrderVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BDDC42B61EE13C3800F04FAF /* SubmitTGOrderVC.xib */; };
+		BDDEE8CE1EF91262009584DE /* IndustryListTwoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BDDEE8CD1EF91262009584DE /* IndustryListTwoCell.m */; };
+		BDDEE8D01EF91267009584DE /* IndustryListTwoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BDDEE8CF1EF91267009584DE /* IndustryListTwoCell.xib */; };
+		BDDEE8D41EF91324009584DE /* BusinessVouchersVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BDDEE8D21EF91324009584DE /* BusinessVouchersVC.m */; };
+		BDDEE8D51EF91324009584DE /* BusinessVouchersVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BDDEE8D31EF91324009584DE /* BusinessVouchersVC.xib */; };
 		BDE56B031E66E8A8006ADB7B /* 512.png in Resources */ = {isa = PBXBuildFile; fileRef = BDE56B021E66E8A8006ADB7B /* 512.png */; };
 		BDE56B051E66EA4C006ADB7B /* 512商户.png in Resources */ = {isa = PBXBuildFile; fileRef = BDE56B041E66EA4C006ADB7B /* 512商户.png */; };
 		BDE681901E94990F001B3157 /* jcore-ios-1.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE6818D1E94990F001B3157 /* jcore-ios-1.1.0.a */; };
@@ -1540,6 +1548,12 @@
 		BD7256B11E5FCBC400E1E2B5 /* OwnerPositionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OwnerPositionVC.h; sourceTree = "<group>"; };
 		BD7256B21E5FCBC400E1E2B5 /* OwnerPositionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OwnerPositionVC.m; sourceTree = "<group>"; };
 		BD7256B31E5FCBC400E1E2B5 /* OwnerPositionVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OwnerPositionVC.xib; sourceTree = "<group>"; };
+		BD761ADC1EF8CF3900983756 /* industryUseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = industryUseVC.h; sourceTree = "<group>"; };
+		BD761ADD1EF8CF3900983756 /* industryUseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = industryUseVC.m; sourceTree = "<group>"; };
+		BD761ADE1EF8CF3900983756 /* industryUseVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = industryUseVC.xib; sourceTree = "<group>"; };
+		BD761AE11EF8CF5900983756 /* industryUseOneCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = industryUseOneCell.h; sourceTree = "<group>"; };
+		BD761AE21EF8CF5900983756 /* industryUseOneCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = industryUseOneCell.m; sourceTree = "<group>"; };
+		BD761AE31EF8CF5900983756 /* industryUseOneCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = industryUseOneCell.xib; sourceTree = "<group>"; };
 		BD7B169D1EDEA75F00C15A22 /* EZTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		BD7B169E1EDEA75F00C15A22 /* EZTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		BD80C0A21E6F7F870047AF04 /* BMMerchantDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMMerchantDetailVC.h; sourceTree = "<group>"; };
@@ -1647,6 +1661,12 @@
 		BDDC42B41EE13C3800F04FAF /* SubmitTGOrderVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubmitTGOrderVC.h; sourceTree = "<group>"; };
 		BDDC42B51EE13C3800F04FAF /* SubmitTGOrderVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubmitTGOrderVC.m; sourceTree = "<group>"; };
 		BDDC42B61EE13C3800F04FAF /* SubmitTGOrderVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SubmitTGOrderVC.xib; sourceTree = "<group>"; };
+		BDDEE8CC1EF91259009584DE /* IndustryListTwoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IndustryListTwoCell.h; sourceTree = "<group>"; };
+		BDDEE8CD1EF91262009584DE /* IndustryListTwoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndustryListTwoCell.m; sourceTree = "<group>"; };
+		BDDEE8CF1EF91267009584DE /* IndustryListTwoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IndustryListTwoCell.xib; sourceTree = "<group>"; };
+		BDDEE8D11EF91324009584DE /* BusinessVouchersVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusinessVouchersVC.h; sourceTree = "<group>"; };
+		BDDEE8D21EF91324009584DE /* BusinessVouchersVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusinessVouchersVC.m; sourceTree = "<group>"; };
+		BDDEE8D31EF91324009584DE /* BusinessVouchersVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BusinessVouchersVC.xib; sourceTree = "<group>"; };
 		BDE56B021E66E8A8006ADB7B /* 512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 512.png; sourceTree = "<group>"; };
 		BDE56B041E66EA4C006ADB7B /* 512商户.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "512商户.png"; sourceTree = "<group>"; };
 		BDE6818D1E94990F001B3157 /* jcore-ios-1.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-1.1.0.a"; sourceTree = "<group>"; };
@@ -3554,6 +3574,49 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		BD761AD81EF8CF1600983756 /* industryUse可用抵用券 */ = {
+			isa = PBXGroup;
+			children = (
+				BD761AD91EF8CF1600983756 /* Model */,
+				BD761ADA1EF8CF1600983756 /* VC */,
+				BD761ADB1EF8CF1600983756 /* View */,
+			);
+			path = "industryUse可用抵用券";
+			sourceTree = "<group>";
+		};
+		BD761AD91EF8CF1600983756 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		BD761ADA1EF8CF1600983756 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				BD761ADC1EF8CF3900983756 /* industryUseVC.h */,
+				BD761ADD1EF8CF3900983756 /* industryUseVC.m */,
+				BD761ADE1EF8CF3900983756 /* industryUseVC.xib */,
+				BDDEE8D11EF91324009584DE /* BusinessVouchersVC.h */,
+				BDDEE8D21EF91324009584DE /* BusinessVouchersVC.m */,
+				BDDEE8D31EF91324009584DE /* BusinessVouchersVC.xib */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		BD761ADB1EF8CF1600983756 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BD761AE11EF8CF5900983756 /* industryUseOneCell.h */,
+				BD761AE21EF8CF5900983756 /* industryUseOneCell.m */,
+				BD761AE31EF8CF5900983756 /* industryUseOneCell.xib */,
+				BDDEE8CC1EF91259009584DE /* IndustryListTwoCell.h */,
+				BDDEE8CD1EF91262009584DE /* IndustryListTwoCell.m */,
+				BDDEE8CF1EF91267009584DE /* IndustryListTwoCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		BD7B169C1EDEA75F00C15A22 /* 自定义输入框 */ = {
 			isa = PBXGroup;
 			children = (
@@ -3711,6 +3774,7 @@
 		BD9676051EEF8E0B00F4C3E4 /* IndustryVoucher行业抵用券 */ = {
 			isa = PBXGroup;
 			children = (
+				BD761AD81EF8CF1600983756 /* industryUse可用抵用券 */,
 				BD4D12BB1EF2555600D13907 /* IndustryList */,
 				BD9676061EEF8E0B00F4C3E4 /* industry抵用券 */,
 			);
@@ -4074,6 +4138,7 @@
 				BD96760E1EEF8E5900F4C3E4 /* ReceiveIndustry.xib in Resources */,
 				BD8A37BE1EDA40A1006D6325 /* GDPoiCell.xib in Resources */,
 				630A92DA1D407B53007ACD7B /* MyCollectCell.xib in Resources */,
+				BD761AE01EF8CF3900983756 /* industryUseVC.xib in Resources */,
 				63FDDF3B1D19354800328FE2 /* HZQDatePickerView.xib in Resources */,
 				BD94F3661E5E84A700A82DD5 /* RefundDetailsVC.xib in Resources */,
 				BD80C0BF1E6FAE8F0047AF04 /* ClassMainVC.xib in Resources */,
@@ -4084,6 +4149,7 @@
 				BD3D104E1E8F9735007B7A62 /* PublicMessageVC.xib in Resources */,
 				633020C51D77D945006DF4B6 /* GoingOutMessageController.xib in Resources */,
 				63C52F981D5C4A57009254DC /* GoingOutHeaderView.xib in Resources */,
+				BDDEE8D01EF91267009584DE /* IndustryListTwoCell.xib in Resources */,
 				BDD4AF5B1E77B9FF0095D1F3 /* LICENSE in Resources */,
 				BDF20F3F1E6FDB030013EB1C /* HomePageVC.xib in Resources */,
 				635C10E61CCE0B9600522BBA /* photo3.jpg in Resources */,
@@ -4157,6 +4223,7 @@
 				63CACC1D1CC9C3F400FBF7E6 /* Assets.xcassets in Resources */,
 				63E2C2FC1CE5D2F70061A7D6 /* MGroupCell.xib in Resources */,
 				63E2C2EC1CE5D2F70061A7D6 /* ico_check_select.png in Resources */,
+				BD761AE51EF8CF5900983756 /* industryUseOneCell.xib in Resources */,
 				BD42B1EA1E5ABED2005FCE10 /* TOrderDetailsFiveCell.xib in Resources */,
 				BDF3AD661E5D8D0B00275D8B /* RefundApplyBtnCell.xib in Resources */,
 				63E2C2F11CE5D2F70061A7D6 /* plus@3x.png in Resources */,
@@ -4182,6 +4249,7 @@
 				63C52F8E1D5C132D009254DC /* region.json in Resources */,
 				BD80C0B51E6F822C0047AF04 /* BMMerchantDetailThreeCell.xib in Resources */,
 				63D219E91CF47D6D00B7F8F8 /* AlipaySDK.bundle in Resources */,
+				BDDEE8D51EF91324009584DE /* BusinessVouchersVC.xib in Resources */,
 				BDF3AD711E5D916200275D8B /* RefundReasonsCell.xib in Resources */,
 				63E2C2EF1CE5D2F70061A7D6 /* plus.png in Resources */,
 				63C0FEF51CCA08890063E2F4 /* h4.jpg in Resources */,
@@ -4304,6 +4372,7 @@
 				63B28D111CDC3FF300A4223D /* GoodsCell.m in Sources */,
 				63C0FED11CC9D23B0063E2F4 /* NJCycleScrollView.m in Sources */,
 				BD42B1E91E5ABED2005FCE10 /* TOrderDetailsFiveCell.m in Sources */,
+				BD761ADF1EF8CF3900983756 /* industryUseVC.m in Sources */,
 				631579D21D616A1A00F69CC6 /* BmOrderCell.m in Sources */,
 				6381522A1D814002001760D6 /* NewMerchantEnterController.m in Sources */,
 				BD94F3611E5E75D000A82DD5 /* PublicTF.m in Sources */,
@@ -4346,6 +4415,7 @@
 				63CA6FF61D76D7DE00E88E3F /* GoOutPayOrderController.m in Sources */,
 				63FAF2651CDB2ACF009929B9 /* CommentMoreCell.m in Sources */,
 				631908BB1D2A5B9D001294D4 /* RequestMyCouponList.m in Sources */,
+				BDDEE8CE1EF91262009584DE /* IndustryListTwoCell.m in Sources */,
 				63DB9A921D2F95580092BA4A /* RequestRefundGoodsOrderDetail.m in Sources */,
 				63C52FC91D5C72BC009254DC /* NSDate+GYZCalendar.m in Sources */,
 				6346FAC61D5D990800960F29 /* SearchAdressController.m in Sources */,
@@ -4639,6 +4709,8 @@
 				635132941D34D37500A00110 /* RequestThirdPartBind.m in Sources */,
 				63275D821CE1BF96003CA9E1 /* SDWaitingView.m in Sources */,
 				6317D9161CD8B2C1008AD416 /* NSString+TextHight.m in Sources */,
+				BDDEE8D41EF91324009584DE /* BusinessVouchersVC.m in Sources */,
+				BD761AE41EF8CF5900983756 /* industryUseOneCell.m in Sources */,
 				BD3D104D1E8F9735007B7A62 /* PublicMessageVC.m in Sources */,
 				BD2524BF1E5BCF3E00967C74 /* BSLMonthCollectionView.m in Sources */,
 				BDF20F481E6FDB310013EB1C /* HomePageTwoCell.m in Sources */,

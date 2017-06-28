@@ -32,6 +32,10 @@
 @end
 
 @implementation SettingController
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
+}
 - (NSArray *)qqAndWxArr {
     if (!_qqAndWxArr) {
         self.qqAndWxArr = @[@"icon_my_shezhi_weixin",@"icon_my_shezhi_qq"];
@@ -92,8 +96,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-//    self.tableView.separatorColor = [UIColor clearColor];
-//    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+   self.tableView.backgroundColor = [UIColor clearColor];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"settingCell"];
     [self.tableView registerClass:[WIFIViewCell class] forCellReuseIdentifier:@"wifiCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"QQAndWxTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"QQAndWxTableViewCell"];
@@ -108,22 +111,18 @@
     if (section == 3) {
         return 60;
     }
-    
-    
-    return 0.1;
+    return 0.01;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section==0||section==1) {
         return 0.01;
     }
-    return 15;
+    return 10;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-
-    
-    return 40;
+    return Width/8;
 }
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -154,11 +153,8 @@
     DWHelper *helper = [DWHelper shareHelper];
     [userDefaults setObject:@(0) forKey:@"isLogin"];
     helper.isLogin = @(0);
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"退出账号" object:@"退出账号" userInfo:nil];
     [self.navigationController  popViewControllerAnimated:YES];
-    
-    
     OKLog(@"退出账号");
 }
 #pragma mark - UITableViewDataSource
@@ -172,12 +168,8 @@
     if (section == 2) {
         return 2;
     }
-   
-
     return 1;
 }
-
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (indexPath.section == 0) {
@@ -204,7 +196,7 @@
     }else {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"settingCell" forIndexPath:indexPath];
         if (cell) {
-            UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(0, 39, Bounds.size.width, 1)];
+            UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(0, Width/8-0.5, Bounds.size.width, 0.5)];
             line.backgroundColor = [UIColor colorWithHexString:kLineColor];
             line.tag = 1000;
             [cell addSubview:line];
@@ -240,141 +232,104 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    QQAndWxTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if (indexPath.section == 3) {
-        
-        [self.navigationController pushViewController:[[AboutUS alloc]init] animated:YES];
+    NSString * title = self.myArray[indexPath.section][indexPath.row];
+    if ([title isEqualToString:@"清除缓存"]) {
+        [self alertWithTitle:@"提示" message:[NSString stringWithFormat:@"缓存大小%@", [self checkTmpSize]] OKWithTitle:@"确定" CancelWithTitle:@"取消" withOKDefault:^(UIAlertAction *defaultaction) {
+            [[SDImageCache sharedImageCache] clearDisk];
+            [self.tableView reloadData];
+        } withCancel:^(UIAlertAction *cancelaction) {
+            
+        }];
     }
-    if (indexPath.section == 2) {
-        if ([self isLogin]) {
-            if (indexPath.row == 0) {
-                if ([cell.isRemove.text isEqualToString:@"未绑定"]) {
-                    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否绑定微信?" preferredStyle:UIAlertControllerStyleAlert];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [self getQQOrWxTokenWith:2 withcell:cell];
-                    }]];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        
-                    }]];
-                    [self presentViewController:alertC animated:YES completion:nil];
+
+    if ([title isEqualToString:@"关于我们"]) {
+        [self.navigationController pushViewController:[[AboutUS alloc]init] animated:YES];
+        return;
+    }
+    
+    QQAndWxTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if ([self isLogin]) {
+        if ([title isEqualToString:@"仅Wi-Fi下显示图片"]) {
+            
+        }
+        if ([title isEqualToString:@"邀请好友使用"]) {
+            BaseRequest *baseReq = [[BaseRequest alloc] init];
+            baseReq.encryptionType = RequestMD5;
+            baseReq.data = [NSArray array];
+            [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Sys/requestAgreementLinks" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
+                BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
+                if (baseRes.resultCode == 1) {
+                    RequestAgreementLinksModel *model = [RequestAgreementLinksModel yy_modelWithJSON:baseRes.data];
+                    [[DWHelper shareHelper] UMShareWithController:self WithText:model.shareTitle WithPictureUrl:model.shareImage WithContentUrl:model.shareLink];
                 }else {
-                    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否解绑微信?" preferredStyle:UIAlertControllerStyleAlert];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [self removeThird:2 withIndexPaht:indexPath];
-                    }]];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        
-                    }]];
-                    [self presentViewController:alertC animated:YES completion:nil];
+                    [self showToast:baseRes.msg];//    [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
                 }
+            } faild:^(id error) {
+                
+            }];
+
+        }
+        if ([title isEqualToString:@"意见反馈"]) {
+            [self.navigationController pushViewController:[[Feedback alloc]init] animated:YES];
+
+        }
+        if ([title isEqualToString:@"收货地址"]) {
+            AdressViewController *adressController = [[AdressViewController alloc] init];
+            [self.navigationController pushViewController:adressController animated:YES];
+        }
+        if ([title isEqualToString:@"微信"]) {
+            if ([cell.isRemove.text isEqualToString:@"未绑定"]) {
+                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否绑定微信?" preferredStyle:UIAlertControllerStyleAlert];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self getQQOrWxTokenWith:2 withcell:cell];
+                }]];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }]];
+                [self presentViewController:alertC animated:YES completion:nil];
+            }else {
+                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否解绑微信?" preferredStyle:UIAlertControllerStyleAlert];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self removeThird:2 withIndexPaht:indexPath];
+                }]];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }]];
+                [self presentViewController:alertC animated:YES completion:nil];
+            }
+
+        }
+        if ([title isEqualToString:@"QQ"]) {
+            if ([cell.isRemove.text isEqualToString:@"未绑定"]) {
+                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否绑定QQ?" preferredStyle:UIAlertControllerStyleAlert];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self getQQOrWxTokenWith:1 withcell:cell];
+                }]];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }]];
+                [self presentViewController:alertC animated:YES completion:nil];
                 
             }else {
-                if ([cell.isRemove.text isEqualToString:@"未绑定"]) {
-                    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否绑定QQ?" preferredStyle:UIAlertControllerStyleAlert];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [self getQQOrWxTokenWith:1 withcell:cell];
-                    }]];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        
-                    }]];
-                    [self presentViewController:alertC animated:YES completion:nil];
+                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否解绑QQ?" preferredStyle:UIAlertControllerStyleAlert];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self removeThird:1 withIndexPaht:indexPath];
+                }]];
+                [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     
-                }else {
-                    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否解绑QQ?" preferredStyle:UIAlertControllerStyleAlert];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [self removeThird:1 withIndexPaht:indexPath];
-                    }]];
-                    [alertC addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        
-                    }]];
-                    [self presentViewController:alertC animated:YES completion:nil];
-                }
+                }]];
+                [self presentViewController:alertC animated:YES completion:nil];
             }
-        }else {
-            LoginController *loginController = [[LoginController alloc] init];
-            [self.navigationController pushViewController:loginController animated:YES];
-//            LoginController *loginController = [[LoginController alloc] init];
-//            DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//            
-//            CATransition *  ansition =[CATransition animation];
-//            [ansition setDuration:0.3];
-//            [ansition setType:kCAGravityRight];
-//            [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-            
-            
-        }
-
-    }
-    if (indexPath.section == 1) {
-     
-            if (indexPath.row == 2) {
-                   if ([self isLogin]) {
-                       [self.navigationController pushViewController:[[Feedback alloc]init] animated:YES];}else{
-                                       LoginController *loginController = [[LoginController alloc] init];
-                                       [self.navigationController pushViewController:loginController animated:YES];
-                           
-//                           LoginController *loginController = [[LoginController alloc] init];
-//                           DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//                           
-//                           CATransition *  ansition =[CATransition animation];
-//                           [ansition setDuration:0.3];
-//                           [ansition setType:kCAGravityRight];
-//                           [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//                           [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-                       }
-            }else if (indexPath.row == 3){
-                if ([self isLogin]) {
-                    AdressViewController *adressController = [[AdressViewController alloc] init];
-                    [self.navigationController pushViewController:adressController animated:YES];
-                }else{
-                                LoginController *loginController = [[LoginController alloc] init];
-                                [self.navigationController pushViewController:loginController animated:YES];
-//                    LoginController *loginController = [[LoginController alloc] init];
-//                    DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//                    
-//                    CATransition *  ansition =[CATransition animation];
-//                    [ansition setDuration:0.3];
-//                    [ansition setType:kCAGravityRight];
-//                    [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-                }
-                
-            }else if (indexPath.row == 1) {
-                
-                
-                    [self alertWithTitle:@"提示" message:[NSString stringWithFormat:@"缓存大小%@", [self checkTmpSize]] OKWithTitle:@"确定" CancelWithTitle:@"取消" withOKDefault:^(UIAlertAction *defaultaction) {
-                        [[SDImageCache sharedImageCache] clearDisk];
-                        [self.tableView reloadData];
-                    } withCancel:^(UIAlertAction *cancelaction) {
-                        
-                    }];
-                
-     
-            }else if (indexPath.row == 0) {
-                BaseRequest *baseReq = [[BaseRequest alloc] init];
-                baseReq.encryptionType = RequestMD5;
-                baseReq.data = [NSArray array];
-                [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Sys/requestAgreementLinks" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
-                    BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
-                    if (baseRes.resultCode == 1) {
-                        RequestAgreementLinksModel *model = [RequestAgreementLinksModel yy_modelWithJSON:baseRes.data];
-                        [[DWHelper shareHelper] UMShareWithController:self WithText:model.shareTitle WithPictureUrl:model.shareImage WithContentUrl:model.shareLink];
-                    }else {
-                     [self showToast:baseRes.msg];//    [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
-                    }
-                } faild:^(id error) {
-                    
-                }];
-                }
 
         }
+       
         
-//        else {
-//            LoginController *loginController = [[LoginController alloc] init];
-//            [self.navigationController pushViewController:loginController animated:YES];
-//        }
-    //}
+    }else{
+        LoginController *loginController = [[LoginController alloc] init];
+        [self.navigationController pushViewController:loginController animated:YES];
+  
+    }
+ 
 }
 
 - (void)removeThird:(NSInteger)isQQ withIndexPaht:(NSIndexPath *)indexPath {
@@ -453,8 +408,6 @@
     
     }];
 }
-
-
 //缓存大小
 - (NSString *)checkTmpSize {
     NSUInteger size = [[SDImageCache sharedImageCache] getSize];
@@ -468,19 +421,19 @@
     baseReq.token = [AuthenticationModel getLoginToken];
     baseReq.data = [AESCrypt encrypt:[[NSDictionary dictionary] yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
     baseReq.encryptionType = AES;
+    __weak typeof(self) weakSelf = self;
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/User/requestUserInfo" sign:[baseReq.data  MD5Hash] requestMethod:GET success:^(id response) {
         BaseResponse *baseResponse = [BaseResponse yy_modelWithJSON:response];
         UserModel *innerModel = [UserModel yy_modelWithJSON:response];
-        self.userModel = [UserModel yy_modelWithJSON:innerModel.data];
+        weakSelf.userModel = [UserModel yy_modelWithJSON:innerModel.data];
         if (innerModel.resultCode == 1) {
             
         }else if (innerModel.resultCode == 10) {
             
         }else {
-            [self showToast:innerModel.msg];
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseResponse viewControll:self];
+            [weakSelf showToast:innerModel.msg];
         }
-        [self.tableView reloadData];
+        [weakSelf.tableView reloadData];
     } faild:^(id error) {
         
     }];

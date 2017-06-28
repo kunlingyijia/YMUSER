@@ -44,6 +44,7 @@
     }else {
         [self showBackBtn];
     }
+    [self ShowNodataView];
     self.scroller = [UIScrollView new];
     self.scroller.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.scroller];
@@ -57,15 +58,11 @@
         make.edges.equalTo(self.scroller);
         make.width.equalTo(self.scroller);
     }];
-    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shopAction:)];
     [self.shopView addGestureRecognizer:tap];
     self.title = @"订单详情";
-   
-    
-    [self getDataMessage];
+     [self getDataMessage];
 }
-
 - (void)newShowBackBtn{
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     backBtn.frame = CGRectMake(0, 0, 40, 40);
@@ -78,18 +75,16 @@
     self.navigationItem.leftBarButtonItem = backItem;
     self.navigationController.navigationBar.translucent = NO;
 }
-
 - (void)newDoBack:(id)sender{
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
-
-
 - (void)createView {
+    self.pictureImage .layer .masksToBounds = YES;
+    self.pictureImage .layer.cornerRadius = 3.0;
     [self loadImageWithView:self.pictureImage urlStr:self.messageModel.originUrl];
     self.nameLabel.text = self.messageModel.goodsName;
     self.subNameLabel.text = self.messageModel.content;
-    self.priceLaebl.text = [NSString stringWithFormat:@"¥%.2f", self.messageModel.payAmount];
-    
+    self.priceLaebl.text = [NSString stringWithFormat:@"¥%.2f", self.messageModel.price];
     UIButton *buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [buyBtn setTitle:@"付款" forState:UIControlStateNormal];
     buyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -104,7 +99,6 @@
         make.right.equalTo(self.container).with.offset(-10);
         make.height.mas_equalTo(@(30));
     }];
-    
     NSInteger heightCount = self.messageModel.coupons.count;
     self.bgView = [[UIView alloc] init];
     [self.container addSubview:self.bgView];
@@ -121,7 +115,6 @@
             make.height.mas_equalTo(65 + heightCount*(30+5));
         }];
     }
-    
     self.bgView.backgroundColor = [UIColor whiteColor];
     UILabel *showOrder = [UILabel new];
     [self.bgView addSubview:showOrder];
@@ -132,7 +125,6 @@
         make.top.left.equalTo(self.bgView).with.offset(10);
         make.size.mas_equalTo(CGSizeMake(100, 20));
     }];
-    
     if ([self.messageModel.status isEqualToString:@"0"]) {
         [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(buyBtn.mas_bottom);
@@ -149,7 +141,6 @@
         }];
         buyBtn.hidden = YES;
     }
-    
     self.sureBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     switch ([self.messageModel.status intValue]) {
         case 0:
@@ -179,14 +170,12 @@
         default:
             break;
     }
-    
     self.sureBtn.titleLabel.font = [UIFont systemFontOfSize:12];
     self.sureBtn.layer.borderColor = [UIColor colorWithHexString:kNavigationBgColor].CGColor;
     [self.sureBtn addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
     self.sureBtn.layer.borderWidth = 1;
     self.sureBtn.layer.masksToBounds = YES;
     self.sureBtn.layer.cornerRadius = 3;
-    
     [self.sureBtn setTitleColor:[UIColor colorWithHexString:kNavigationBgColor] forState:UIControlStateNormal];
     [self.bgView addSubview:self.sureBtn];
     [self.sureBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -194,7 +183,6 @@
         make.right.equalTo(self.bgView).with.offset(-10);
         make.size.mas_equalTo(CGSizeMake(60, 20));
     }];
-    
     UIView *lineV = [UIView new];
     lineV.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [self.bgView addSubview:lineV];
@@ -204,7 +192,6 @@
         make.right.equalTo(self.bgView).with.offset(-10);
         make.height.mas_equalTo(1);
     }];
-    
     UILabel *couponLabel = [UILabel new];
     couponLabel.font = [UIFont systemFontOfSize:12];
     couponLabel.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -215,7 +202,6 @@
         make.size.mas_equalTo(CGSizeMake(200, 20));
     }];
     couponLabel.text = [NSString stringWithFormat:@"有效期至:%@", self.messageModel.endTime];
-    
     CGFloat couponWidth = Width - 20;
     for (int i = 0; i < self.messageModel.coupons.count; i++) {
         UILabel *passwordLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 65+(i*(30+5)), couponWidth, 30)];
@@ -239,7 +225,6 @@
         r=[str.string rangeOfString:newString];
         [str addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:kTitleColor] range:r
          ]; //设置字体颜色
-        
         [str addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"Arial" size:15] range:r]; //设置字体字号和字体类别
         passwordLabel.attributedText = str;
         
@@ -254,7 +239,6 @@
             make.left.right.equalTo(self.bgView);
             make.height.mas_equalTo(@(1));
         }];
-        
         UIButton *useBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         useBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         useBtn.tag = 2000+i;
@@ -302,14 +286,12 @@
         
         UIImageView *refundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"btn_class_xiangqing_right_jiantou"]];
         refundImage.contentMode = UIViewContentModeScaleAspectFit;
-        //    refundImage.backgroundColor = [UIColor redColor];
         [self.bgView addSubview:refundImage];
         [refundImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(refundMessage);
             make.left.equalTo(refundMessage.mas_right);
             make.size.mas_equalTo(CGSizeMake(20, 20));
         }];
-        
         UIView *refundLine = [UIView new];
         refundLine.backgroundColor = [UIColor colorWithHexString:kViewBg];
         [self.bgView addSubview:refundLine];
@@ -321,9 +303,6 @@
         }];
 
     }
-    
-    
-    
     UIView *shopBgview = [UIView new];
     shopBgview.backgroundColor = [UIColor whiteColor];
     [self.container addSubview:shopBgview];
@@ -361,7 +340,6 @@
         make.right.equalTo(shopBgview).with.offset(-10);
         make.height.mas_equalTo(@(1));
     }];
-    
     UILabel *shopNameLabel = [UILabel new];
     shopNameLabel.text = self.shopModel.merchantName;
     shopNameLabel.textColor = [UIColor colorWithHexString:kTitleColor];
@@ -372,7 +350,6 @@
         make.left.equalTo(shopBgview.mas_left).with.offset(10);
         make.size.mas_equalTo(CGSizeMake(Width-20, 20));
     }];
-    
     UILabel *adressLabel = [UILabel new];
     adressLabel.text = self.shopModel.address;
     adressLabel.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -381,13 +358,11 @@
     [shopBgview addSubview:adressLabel];
     UITapGestureRecognizer *adressTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapSelectedAction:)];
     [adressLabel addGestureRecognizer:adressTap];
-    
     [adressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(shopNameLabel.mas_bottom);
         make.left.equalTo(shopBgview.mas_left).with.offset(10);
         make.size.mas_equalTo(CGSizeMake(Width-40, 30));
     }];
-    
     UIImageView *adressImage = [UIImageView new];
     adressImage.contentMode = UIViewContentModeScaleAspectFit;
     adressImage.image = [UIImage imageNamed:@"btn_class_xiangqing_gps"];
@@ -397,7 +372,6 @@
         make.left.equalTo(shopBgview).with.offset(10);
         make.size.mas_equalTo(CGSizeMake(15, 15));
     }];
-    
     UILabel *distanceL = [UILabel new];
     double distance = [self getStarWith:self.shopModel];
     if (distance > 1) {
@@ -405,7 +379,6 @@
     }else {
         distanceL.text = [NSString stringWithFormat:@"%.0fm", distance*1000];
     }
-    
     distanceL.textColor = [UIColor colorWithHexString:kSubTitleColor];
     distanceL.font = [UIFont systemFontOfSize:12];
     [shopBgview addSubview:distanceL];
@@ -414,7 +387,6 @@
         make.left.equalTo(adressImage.mas_right).with.offset(10);
         make.size.mas_equalTo(CGSizeMake(80, 15));
     }];
-    
     UILabel *distanceMylabel = [UILabel new];
     distanceMylabel.text = @"离我最近";
     distanceMylabel.font = [UIFont systemFontOfSize:12];
@@ -425,7 +397,6 @@
         make.left.equalTo(distanceL.mas_right).with.offset(10);
         make.size.mas_equalTo(CGSizeMake(60, 15));
     }];
-    
     UIImageView *phoneImage = [UIImageView new];
     phoneImage.contentMode = UIViewContentModeScaleAspectFit;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(phoneAction:)];
@@ -438,16 +409,14 @@
         make.right.equalTo(shopBgview).with.offset(-10);
         make.size.mas_equalTo(CGSizeMake(20, 20));
     }];
-    
     UIView *goodsBgView = [UIView new];
     goodsBgView.backgroundColor = [UIColor whiteColor];
     [self.container addSubview:goodsBgView];
     [goodsBgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(shopBgview.mas_bottom).with.offset(10);
         make.right.left.equalTo(self.container);
-        make.height.mas_equalTo(@(140));
+        make.height.mas_equalTo(@(180));
     }];
-    
     UILabel *orderMessageL = [UILabel new];
     orderMessageL.text = @"订单信息";
     orderMessageL.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -458,7 +427,6 @@
         make.top.equalTo(goodsBgView).with.offset(5);
         make.size.mas_equalTo(CGSizeMake(100, 20));
     }];
-    
     UIView *orderLine = [UIView new];
     orderLine.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [goodsBgView addSubview:orderLine];
@@ -468,7 +436,6 @@
         make.left.equalTo(self.container).with.offset(10);
         make.height.mas_equalTo(@(1));
     }];
-    
     UILabel *orderNoName = [UILabel new];
     orderNoName.text = @"订单号:";
     orderNoName.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -476,11 +443,10 @@
     orderNoName.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:orderNoName];
     [orderNoName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(goodsBgView).with.offset(10);
+        make.left.equalTo(goodsBgView).with.offset(5);
         make.top.equalTo(orderLine).with.offset(5);
-        make.size.mas_equalTo(CGSizeMake(60, 20));
+        make.size.mas_equalTo(CGSizeMake(70, 20));
     }];
-    
     UILabel *orderNo = [UILabel new];
     orderNo.text = self.messageModel.orderNo;
     orderNo.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -491,7 +457,6 @@
         make.centerY.equalTo(orderNoName);
         make.right.equalTo(goodsBgView).with.offset(-10);
     }];
-    
     UILabel *buyTimeName = [UILabel new];
     buyTimeName.text = @"下单时间:";
     buyTimeName.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -499,11 +464,10 @@
     buyTimeName.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:buyTimeName];
     [buyTimeName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(goodsBgView).with.offset(10);
+        make.left.equalTo(goodsBgView).with.offset(5);
         make.top.equalTo(orderNoName.mas_bottom).with.offset(0);
-        make.size.mas_equalTo(CGSizeMake(60, 20));
+        make.size.mas_equalTo(CGSizeMake(70, 20));
     }];
-    
     UILabel *buyTime = [UILabel new];
     buyTime.text = self.messageModel.createTime;
     buyTime.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -514,7 +478,6 @@
         make.centerY.equalTo(buyTimeName);
         make.right.equalTo(goodsBgView).with.offset(-10);
     }];
-    
     UILabel *goodsNumName = [UILabel new];
     goodsNumName.text = @"数量:";
     goodsNumName.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -522,11 +485,10 @@
     goodsNumName.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:goodsNumName];
     [goodsNumName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(goodsBgView).with.offset(10);
+        make.left.equalTo(goodsBgView).with.offset(5);
         make.top.equalTo(buyTimeName.mas_bottom).with.offset(0);
-        make.size.mas_equalTo(CGSizeMake(60, 20));
+        make.size.mas_equalTo(CGSizeMake(70, 20));
     }];
-    
     UILabel *goodsNum = [UILabel new];
     goodsNum.text = self.messageModel.goodsNumber;
     goodsNum.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -537,7 +499,6 @@
         make.centerY.equalTo(goodsNumName);
         make.right.equalTo(goodsBgView).with.offset(-10);
     }];
-    
     UILabel *priceName = [UILabel new];
     priceName.text = @"总价:";
     priceName.textColor = [UIColor colorWithHexString:kSubTitleColor];
@@ -545,13 +506,12 @@
     priceName.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:priceName];
     [priceName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(goodsBgView).with.offset(10);
+        make.left.equalTo(goodsBgView).with.offset(5);
         make.top.equalTo(goodsNumName.mas_bottom).with.offset(0);
-        make.size.mas_equalTo(CGSizeMake(60, 20));
+        make.size.mas_equalTo(CGSizeMake(70, 20));
     }];
-    
     UILabel *price = [UILabel new];
-    price.text = [NSString stringWithFormat:@"¥%.2f", self.messageModel.payAmount];
+    price.text = [NSString stringWithFormat:@"%.2f元",  self.messageModel.price * [self.messageModel.goodsNumber  intValue]];
     price.textColor = [UIColor colorWithHexString:kSubTitleColor];
     price.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:price];
@@ -560,19 +520,17 @@
         make.centerY.equalTo(priceName);
         make.right.equalTo(goodsBgView).with.offset(-10);
     }];
-    
     UILabel *couponName = [UILabel new];
-    couponName.text = @"优惠券:";
+    couponName.text = @"商家抵用券:";
     couponName.textColor = [UIColor colorWithHexString:kSubTitleColor];
     couponName.textAlignment = NSTextAlignmentRight;
     couponName.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:couponName];
     [couponName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(goodsBgView).with.offset(10);
+        make.left.equalTo(goodsBgView).with.offset(5);
         make.top.equalTo(priceName.mas_bottom).with.offset(0);
-        make.size.mas_equalTo(CGSizeMake(60, 20));
+        make.size.mas_equalTo(CGSizeMake(70, 20));
     }];
-    
     UILabel *couponNo = [UILabel new];
         if (self.messageModel.couponId != nil) {
             double dvalue = self.messageModel.dValue%10;
@@ -596,7 +554,6 @@
         }else {
             couponNo.text = @"无";
         }
-    
     couponNo.textColor = [UIColor colorWithHexString:kSubTitleColor];
     couponNo.font = [UIFont systemFontOfSize:12];
     [goodsBgView addSubview:couponNo];
@@ -605,14 +562,60 @@
         make.centerY.equalTo(couponName);
         make.right.equalTo(goodsBgView).with.offset(-10);
     }];
+    UILabel *HangYeName = [UILabel new];
+    HangYeName.text = @"行业抵用券:";
+    HangYeName.textColor = [UIColor colorWithHexString:kSubTitleColor];
+    HangYeName.textAlignment = NSTextAlignmentRight;
+    HangYeName.font = [UIFont systemFontOfSize:12];
+    [goodsBgView addSubview:HangYeName];
+    [HangYeName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(goodsBgView).with.offset(5);
+        make.top.equalTo(couponName.mas_bottom).with.offset(0);
+        make.size.mas_equalTo(CGSizeMake(70, 20));
+    }];
+    UILabel *HangyeNo = [UILabel new];
+    if (![self.messageModel.faceAmount isEqualToString:@"0"]) {
+       HangyeNo.text = [NSString stringWithFormat:@"%@元",  self.messageModel.faceAmount];
+    }else {
+        HangyeNo.text = @"无";
+    }
+    HangyeNo.textColor = [UIColor colorWithHexString:kSubTitleColor];
+    HangyeNo.font = [UIFont systemFontOfSize:12];
+    [goodsBgView addSubview:HangyeNo];
+    [HangyeNo mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(HangYeName.mas_right).with.offset(5);
+        make.centerY.equalTo(HangYeName);
+        make.right.equalTo(goodsBgView).with.offset(-10);
+    }];
+    
+    UILabel *payAmountName = [UILabel new];
+    payAmountName.text = @"支付金额:";
+    payAmountName.textColor = [UIColor colorWithHexString:kSubTitleColor];
+    payAmountName.textAlignment = NSTextAlignmentRight;
+    payAmountName.font = [UIFont systemFontOfSize:12];
+    [goodsBgView addSubview:payAmountName];
+    [payAmountName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(goodsBgView).with.offset(5);
+        make.top.equalTo(HangYeName.mas_bottom).with.offset(0);
+        make.size.mas_equalTo(CGSizeMake(70, 20));
+    }];
+    UILabel *payAmount = [UILabel new];
+    
+    payAmount.text = [NSString stringWithFormat:@"%.2f元",  self.messageModel.payAmount];
+    
+    payAmount.textColor = [UIColor colorWithHexString:kSubTitleColor];
+    payAmount.font = [UIFont systemFontOfSize:12];
+    [goodsBgView addSubview:payAmount];
+    [payAmount mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(payAmountName.mas_right).with.offset(5);
+        make.centerY.equalTo(payAmountName);
+        make.right.equalTo(goodsBgView).with.offset(-10);
+    }];
     
     [self.container mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(goodsBgView.mas_bottom);
     }];
 }
-
-
-
 - (CGFloat)getStarWith:(RequestMerchantDetailModel *)model {
     DWHelper *helper = [DWHelper shareHelper];
     CLLocationCoordinate2D statr = helper.coordinate;
@@ -621,17 +624,13 @@
     CLLocationDistance kilometers=[orig distanceFromLocation:dist]/1000;
     return kilometers;
 }
-
-- (void)refundMessageAction:(UIButton *)sender {
+-(void)refundMessageAction:(UIButton *)sender {
     RefundContentViewController *refundC = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"RefundContentViewController"];
-    
     refundC.orderNo = self.messageModel.orderNo;
     refundC.goodsOrderId = self.messageModel.goodsOrderId;
     [self.navigationController pushViewController:refundC animated:YES];
     OKLog(@"退款详情");
 }
-
-
 - (void)sureAction:(UIButton *)sender {
     if ([sender.titleLabel.text isEqualToString:@"付款"]) {
         
@@ -703,9 +702,6 @@
 - (void)sheetAction:(NSString *)title {
     UIAlertView *alertController = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertController show];
-    //    UIAlertController *noAler = [UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] preferredStyle:UIAlertControllerStyleAlert];
-    //    [noAler addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
-    //    [self presentViewController:noAler animated:YES completion:nil];
 }
 
 
@@ -717,11 +713,7 @@
     }else {
         
         
-        __weak typeof(self) weakSelf = self;
-        
         [self alertWithTitle:@"温馨提示" message:@"是否拨打电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
-           
-            
             NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",self.shopModel.mobile];
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
 //            UIWebView * callWebview = [[UIWebView alloc] init];
@@ -730,16 +722,6 @@
         } withCancel:^(UIAlertAction *cancelaction) {
             
         }];
-
-//        NSString *phoneUrl = [NSString stringWithFormat:@"tel://%@", self.shopModel.mobile];//tel打电话 sms发信息
-//        //进行拨号操作（该拨号方式苹果不允许使用）
-//        //        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneUrl]];
-//        //网页拨号
-//        //创建网页对象
-//        UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-//        [self.view addSubview:webView];
-//        //利用网页对象实现拨号操作
-//        [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:phoneUrl]]];
     }
 }
 - (void)buyAction:(UIButton *)sender {
@@ -747,12 +729,8 @@
     payController.goodsNum = [self.messageModel.goodsNumber integerValue];
     payController.sumPrice = self.messageModel.payAmount;
      RequestPayOrderModel *payModel = [RequestPayOrderModel yy_modelWithJSON:[self.messageModel yy_modelToJSONString]];
-    NSLog(@"payModel--%@",[payModel yy_modelToJSONObject]);
-    
     RequestMerchantGoodsListModel *goodsModel = [RequestMerchantGoodsListModel yy_modelWithJSON:[self.messageModel yy_modelToJSONString]];
-    
     payController.goodsModel = goodsModel;
-    NSLog(@"goodsOrderId--%@",[goodsModel yy_modelToJSONObject]);
     payController.payOrderModel = payModel;
     [self.navigationController pushViewController:payController animated:YES];
 }
@@ -767,10 +745,6 @@
     NSArray *couponArr = self.messageModel.coupons;
     NSInteger count = sender.tag -2000;
     NSDictionary *dic = couponArr[count];
-//    userController.model = model;
-    NSLog(@"%lu", (unsigned long)couponArr.count);
-    
-
     userController.couponNo = dic[@"couponNo"];
     userController.goodsOrderCouponId = dic[@"goodsOrderCouponId"];
     userController.orderNo = dic[@"orderNo"];
@@ -784,42 +758,6 @@
 
 - (void)viewGetData {
     [self createView];
-//    self.dateLabel.text = [NSString stringWithFormat:@"有效期至:%@", self.messageModel.endTime];
-//    self.couponLabel.text = @"订单信息";
-//    self.passWordLabel.text = self.messageModel.orderNo;
-//    if (self.messageModel.merchantId == nil || self.messageModel.merchantId == NULL) {
-//        self.couponBtn.userInteractionEnabled = YES;
-//    }else {
-//        [self.couponBtn setTitle:[NSString stringWithFormat:@"优惠券信息:%@", self.messageModel.merchantId] forState:UIControlStateNormal];
-//    }
-//    switch (self.messageModel.status) {
-//        case 0:
-//            [self.refundBtn setTitle:@"付款" forState:UIControlStateNormal];
-//            break;
-//        case 1:
-//            [self.refundBtn setTitle:@"待使用" forState:UIControlStateNormal];
-//            break;
-//        case 2:
-//            [self.refundBtn setTitle:@"退款中" forState:UIControlStateNormal];
-//            break;
-//        case 3:
-//            [self.refundBtn setTitle:@"待评价" forState:UIControlStateNormal];
-//            break;
-//        case 4:
-//            [self.refundBtn setTitle:@"已退款" forState:UIControlStateNormal];
-//            self.refundBtn.userInteractionEnabled = NO;
-//            break;
-//        case 5:
-//            [self.refundBtn setTitle:@"取消订单" forState:UIControlStateNormal];
-//            break;
-//        case 6:
-//            [self.refundBtn setTitle:@"已完成" forState:UIControlStateNormal];
-//            self.refundBtn.userInteractionEnabled = NO;
-//            break;
-//            
-//        default:
-//            break;
-//    }
 }
 
 
@@ -843,15 +781,7 @@
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:webView];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:PhoneNum]]];
-//    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否拨打客服电话" preferredStyle:UIAlertControllerStyleAlert];
-//    [alert addAction:[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        
-//    }]];
-//    [alert addAction:[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        
-//    }]];
-//    //模态跳转
-//    [self presentViewController:alert animated:YES completion:nil];
+
     OKLog(@"拨打电话");
     if (self.shopModel.isCallCenter == 1) {
         [self callPhoneAction];
@@ -912,21 +842,23 @@
     baseReq.encryptionType = AES;
     baseReq.token = [AuthenticationModel getLoginToken];
     baseReq.data = [AESCrypt encrypt:[detail yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    __weak typeof(self) weakSelf = self;
+
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestMyGoodsOrderDetail" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
         BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
         if (baseRes.resultCode == 1) {
-            self.messageModel = [RequestMyGoodsOrderDetailModel yy_modelWithJSON:baseRes.data];
-             [DWHelper SD_WebImage:self.pictureImage imageUrlStr:self.messageModel.originUrl placeholderImage:nil];
-            [self getHeaderData];
+            weakSelf.messageModel = [RequestMyGoodsOrderDetailModel yy_modelWithJSON:baseRes.data];
+             [DWHelper SD_WebImage:weakSelf.pictureImage imageUrlStr:weakSelf.messageModel.originUrl placeholderImage:nil];
+            [weakSelf getHeaderData];
         }else {
-            [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+            [weakSelf showToast:baseRes.msg];
         }
     } faild:^(id error) {
     }];
 }
 - (void)getHeaderData {
     RequestMerchantDetail *detail = [[RequestMerchantDetail alloc] init];
-    detail.merchantId = self.self.messageModel.merchantId;
+    detail.merchantId = self.messageModel.merchantId;
     detail.lat = [AuthenticationModel getlatitude];
     detail.lng = [AuthenticationModel getlongitude];
     BaseRequest *baseReq = [[BaseRequest alloc] init];
@@ -936,14 +868,17 @@
     if ([self isLogin]) {
         baseReq.token = [AuthenticationModel getLoginToken];
     }
+    __weak typeof(self) weakSelf = self;
+
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Home/requestMerchantDetail" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
         BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
         if (baseRes.resultCode == 1) {
-            self.shopModel = [RequestMerchantDetailModel yy_modelWithJSON:baseRes.data];
+            weakSelf.shopModel = [RequestMerchantDetailModel yy_modelWithJSON:baseRes.data];
+            [weakSelf HiddenNodataView];
         }else {
-            [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+            [weakSelf showToast:baseRes.msg];
         }
-        [self createView];
+        [weakSelf createView];
     } faild:^(id error) {
         
     }];
@@ -963,7 +898,7 @@
             RequestMyGoodsOrderDetailModel *messageModel = [RequestMyGoodsOrderDetailModel yy_modelWithJSON:baseRes.data];
             [self viewGetNewData:messageModel];
         }else {
-             [self showToast:baseRes.msg];//[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+             [self showToast:baseRes.msg];
         }
     } faild:^(id error) {
     }];

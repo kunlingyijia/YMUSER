@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSString  *endPlaceLng ;
 ///目的地
 @property (nonatomic, strong) NSString  *endPlace ;
-///行程状态：1-待发布，2-已发布 ，3-待发车,4-已发车 ，5-已结束 订单状态：1-未支付，2-待上车（已支付），3-已上车，4-已完成，5-退款中，6-已退款，7-已取消
+///行程状态：1-待发布，2-已发布 ，3-待发车,4-已发车 ，5-已结束 订单状态：1-未支付，2-待上车（已支付），3-已上车，4-已完成，5-退款中，6-已退款，7-已取消/1-未支付，2-已支付 
 @property (nonatomic, strong) NSString  *status ;
 ///路线id
 @property (nonatomic, strong) NSString  *planId ;
@@ -102,6 +102,18 @@
 
 ///		备注（新增20170320）
 @property (nonatomic, strong) NSString  *remark ;
+
+///行业抵用券id
+@property (nonatomic, strong) NSString  *industryCouponUserId ;
+
+
+///车行id
+@property (nonatomic, strong) NSString  *companyId ;
+
+
+///行业抵用券面额
+@property (nonatomic, strong) NSString  *faceAmount ;
+
 
 
 

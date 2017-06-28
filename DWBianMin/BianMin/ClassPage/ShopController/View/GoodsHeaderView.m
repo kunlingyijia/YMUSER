@@ -72,7 +72,7 @@
     buyBtn.layer.cornerRadius = 50/20;
     buyBtn.titleLabel.font = [UIFont systemFontOfSize:14];
     [buyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.pictureView.mas_bottom).with.offset(1.5*Space);
+        make.top.equalTo(self.pictureView.mas_bottom).with.offset(1*Space);
         make.right.equalTo(self.mas_right).with.offset(-Space);
         make.bottom.equalTo(self.secondPriceLabel.mas_bottom);
         make.width.mas_equalTo(@(80));

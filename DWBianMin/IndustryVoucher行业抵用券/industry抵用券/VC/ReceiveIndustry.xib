@@ -13,6 +13,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ReceiveIndustry">
             <connections>
+                <outlet property="faceAmount" destination="aVZ-Y1-kq5" id="tLS-ua-KDe"/>
+                <outlet property="name" destination="0k8-UP-Wg8" id="kPP-sm-RF7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -33,15 +35,18 @@
                                 <constraint firstAttribute="width" secondItem="lis-3M-VJT" secondAttribute="height" multiplier="5:1" id="bDA-tU-0yV"/>
                             </constraints>
                         </imageView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hpS-8I-RrF">
-                            <rect key="frame" x="122.33333333333333" y="299" width="109.99999999999999" height="40"/>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hpS-8I-RrF">
+                            <rect key="frame" x="104.33333333333333" y="299" width="146" height="40"/>
                             <color key="backgroundColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="j1X-AQ-Gfu"/>
                             </constraints>
-                            <state key="normal" title="      立即领取      ">
+                            <state key="normal" image="立即领取－按钮">
                                 <color key="titleColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                             </state>
+                            <connections>
+                                <action selector="submitAction:" destination="-1" eventType="touchUpInside" id="EgR-UT-qed"/>
+                            </connections>
                         </button>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="形状-1" translatesAutoresizingMaskIntoConstraints="NO" id="5sg-LT-V4C">
                             <rect key="frame" x="10" y="107" width="334" height="100.33333333333331"/>
@@ -49,15 +54,15 @@
                                 <constraint firstAttribute="width" secondItem="5sg-LT-V4C" secondAttribute="height" multiplier="5:1.5" id="b7u-4h-61p"/>
                             </constraints>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="这是一家百年老店,时间铸造好吃的羊肉泡馍" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0k8-UP-Wg8">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="这是一家百年老店,时间铸造好吃的羊肉泡馍" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0k8-UP-Wg8">
                             <rect key="frame" x="25" y="117" width="178.33333333333334" height="80.333333333333314"/>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                            <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100000000000" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVZ-Y1-kq5">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100.00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVZ-Y1-kq5">
                             <rect key="frame" x="240.33333333333329" y="117" width="88.666666666666714" height="80.333333333333314"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -94,6 +99,9 @@
                         <constraint firstAttribute="height" constant="60" id="o9I-vL-Df7"/>
                     </constraints>
                     <state key="normal" image="关闭"/>
+                    <connections>
+                        <action selector="backAction:" destination="-1" eventType="touchUpInside" id="Zg5-Mx-m9m"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -110,6 +118,7 @@
     <resources>
         <image name="关闭" width="26" height="26"/>
         <image name="形状-1" width="244" height="64"/>
+        <image name="立即领取－按钮" width="146" height="50"/>
         <image name="背景2" width="273" height="270"/>
         <image name="行业抵用券" width="125" height="24"/>
     </resources>

@@ -12,6 +12,8 @@
 @interface TOrderDetailsThreeCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UITextField *orderNo;
 @property (weak, nonatomic) IBOutlet UITextField *status;
+@property (weak, nonatomic) IBOutlet UITextField *AllPrice;
+@property (weak, nonatomic) IBOutlet UITextField *faceAmount;
 @property (weak, nonatomic) IBOutlet UITextField *price;
 @property (weak, nonatomic) IBOutlet UITextField *createTime;
 @property (weak, nonatomic) IBOutlet UILabel *remark;

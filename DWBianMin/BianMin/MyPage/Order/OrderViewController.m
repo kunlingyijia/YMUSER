@@ -90,7 +90,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Width, Height-64) style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.rowHeight = 157.5;
+    self.tableView.rowHeight = 172.5;
     [self.tableView registerClass:[OrderViewCell class] forCellReuseIdentifier:@"orderCell"];
     self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];

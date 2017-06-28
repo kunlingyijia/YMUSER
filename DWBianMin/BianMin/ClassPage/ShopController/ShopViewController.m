@@ -323,7 +323,7 @@
     lineView.backgroundColor = [UIColor colorWithHexString:kLineColor];
     [self.headerView addSubview:lineView];
     
-    UIImageView *adressPicture = [[UIImageView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(lineView.frame)+5, 20, 20)];
+    UIImageView *adressPicture = [[UIImageView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(lineView.frame)+12, 20, 20)];
     adressPicture.image = [UIImage imageNamed:@"btn_class_xiangqing_gps"];
     adressPicture.contentMode = UIViewContentModeScaleAspectFit;
     [self.headerView addSubview:adressPicture];
@@ -345,7 +345,7 @@
     [phoneBtn addTarget:self action:@selector(phoneAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:phoneBtn];
     [phoneBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(lineView.mas_bottom).with.offset(5);
+        make.top.mas_equalTo(lineView.mas_bottom).with.offset(12);
         make.right.mas_equalTo(self.headerView.mas_right).with.offset(-20);
         make.height.mas_equalTo(@(20));
         make.width.mas_equalTo(@(20));
@@ -526,38 +526,7 @@
     [sheet showInView:self.view];
     
     
-//    DWHelper *helper = [DWHelper shareHelper];
-//    CLLocationCoordinate2D startLocation = helper.coordinate;
-//    NSString *name = @"东吴科技";
-//    
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"选择地图" preferredStyle:UIAlertControllerStyleActionSheet];
-//    
-//    
-//    [alertController addAction:[UIAlertAction actionWithTitle:@"百度地图" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://map/"]]) {
-//            NSString *urlString = [NSString stringWithFormat:@"baidumap://map/direction?origin=latlng:%f,%f|name:我的位置&destination=latlng:%f,%f|name:%@&mode=transit",
-//                                   startLocation.latitude, startLocation.longitude,  26.083490, 119.318280, name];
-//            [self openMap:urlString];
-//        }else {
-//            [self sheetAction:@"百度"];
-//        }
-//    }]];
-//    
-//    [alertController addAction:[UIAlertAction actionWithTitle:@"高德地图" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]){
-//            NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=3",
-//                                   name, 26.083490, 119.318280];
-//            
-//            [self openMap:urlString];
-//        }else {
-//            [self sheetAction:@"高德"];
-//        }
-//    }]];
-//    
-//    
-//    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-//
-//    [self presentViewController:alertController animated:YES completion:nil];
+
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -605,9 +574,7 @@
 - (void)sheetAction:(NSString *)title {
     UIAlertView *alertController = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertController show];
-//    UIAlertController *noAler = [UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] preferredStyle:UIAlertControllerStyleAlert];
-//    [noAler addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
-//    [self presentViewController:noAler animated:YES completion:nil];
+
 }
 
 
@@ -742,23 +709,7 @@
         
     }];
 
-//    [self alertWithTitle:@"温馨提示" message:@"拨打商户电话" OKWithTitle:@"确定" CancelWithTitle:@"取消" withOKDefault:^(UIAlertAction *defaultaction) {
-//        [self callPhone:self.shopModel.mobile];
-//    } withCancel:^(UIAlertAction *cancelaction) {
-//        
-//    }];
-//    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//    [alertC addAction:[UIAlertAction actionWithTitle:@"拨打商户电话" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [self callPhone:self.shopModel.mobile];
-//    }]];
-//    [alertC addAction:[UIAlertAction actionWithTitle:@"拨打平台客服" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [self callPhone:self.shopModel.kfmobile];
-//    }]];
-    
-//    [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//        
-//    }]];
-//    [self presentViewController:alertC animated:YES completion:nil];
+
 }
 
 - (void)callPhone:(NSString *)phoneNumber {
@@ -773,26 +724,7 @@
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:phoneUrl]]];
 }
 
-//- (void)callPhoneAction {
-//    BaseRequest *baseReq = [[BaseRequest alloc] init];
-//    baseReq.token = [AuthenticationModel getLoginToken];
-//    baseReq.encryptionType = AES;
-//    baseReq.data = [AESCrypt encrypt:[[NSDictionary dictionary] yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
-//    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Sys/requestCallPlatform" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
-//        NSLog(@"%@", response);
-//        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
-//        if (baseRes.resultCode == 1) {
-//            UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"正在转接中..." preferredStyle:UIAlertControllerStyleAlert];
-//            [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
-//            [self presentViewController:alertC animated:YES completion:nil];
-//        }else{
-//            [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
-//        }
-//    } faild:^(id error) {
-//        
-//    }];
-//    
-//}
+
 
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {

@@ -307,9 +307,9 @@
     [self.bgView addSubview:btn];
     [btn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.container.mas_bottom).with.offset(-10);
-        make.right.equalTo(self.container).with.offset(-10);
-        make.left.equalTo(self.container).with.offset(10);
-        make.height.mas_equalTo(@(35));
+        make.right.equalTo(self.container).with.offset(-20);
+        make.left.equalTo(self.container).with.offset(20);
+        make.height.mas_equalTo(@(40));
     }];
     [self getOrderDataList];
 
@@ -465,41 +465,16 @@
 //打电话
 - (void)callAction:(UITapGestureRecognizer *)sender {
     
-    __weak typeof(self) weakSelf = self;
     [self alertWithTitle:@"温馨提示" message:@"是否拨打商户电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
         NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",self.shopModel.mobile];
         
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-//        UIWebView * callWebview = [[UIWebView alloc] init];
-//        [callWebview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:str]]];
-//        [weakSelf.view addSubview:callWebview];
+
     } withCancel:^(UIAlertAction *cancelaction) {
         
     }];
 
-//    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//    [alertC addAction:[UIAlertAction actionWithTitle:@"拨打商户电话" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [self callPhone:self.shopModel.mobile];
-//    }]];
-////    [alertC addAction:[UIAlertAction actionWithTitle:@"拨打平台客服" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-////        [self callPhone:self.shopModel.kfmobile];
-////    }]];
-//    
-//    [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//        
-//    }]];
-//    [self presentViewController:alertC animated:YES completion:nil];
-//}
-//- (void)callPhone:(NSString *)phoneNumber {
-//    NSString *phoneUrl = [NSString stringWithFormat:@"tel://%@", phoneNumber];//tel打电话 sms发信息
-//    //进行拨号操作（该拨号方式苹果不允许使用）
-//    //        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneUrl]];
-//    //网页拨号
-//    //创建网页对象
-//    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-//    [self.view addSubview:webView];
-//    //利用网页对象实现拨号操作
-//    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:phoneUrl]]];
+
 }
 
 

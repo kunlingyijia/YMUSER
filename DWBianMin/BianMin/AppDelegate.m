@@ -61,9 +61,8 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    DBRegionModel *model = [FMDatabaseUtils getRegionByRegionCode:@"350111"];
-//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+   // application.applicationIconBadgeNumber = -1;
+   
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     
@@ -96,10 +95,6 @@
             };
 
             
-            
-            
-//            self.dwTabBarController = [[DWTabBarController alloc] init];
-//            self.window.rootViewController = self.dwTabBarController;
         }
     }
 
@@ -114,13 +109,23 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showActive:) name:@"登录成功" object:nil];
     //设置第三方
     [self SetUpThirdParty:launchOptions];
+    
     //设置别名
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(SetUpAlias:) name:@"设置别名" object:nil];
     //获取经纬度
      [[DWHelper shareHelper]getloaction];
+    
+    
+   
+    
+
+    
+    
+   
 
     return YES;
 }
+
 #pragma mark -  设置别名
 -(void)SetUpAlias:(NSNotification*)sender{
     NSDictionary * dic = sender.userInfo;
@@ -246,22 +251,22 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-//    [application setApplicationIconBadgeNumber:0];
-//    [JPUSHService setBadge:0];
+  // [application setApplicationIconBadgeNumber:0];
+    //[JPUSHService setBadge:0];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-//    [JPUSHService setBadge:0];
+    
+    UILocalNotification * LocalNotification = [UILocalNotification new];
+    LocalNotification.applicationIconBadgeNumber = -1;
+    [application presentLocalNotificationNow: LocalNotification];
+   
 }
 
-//- (void)applicationDidBecomeActive:(UIApplication *)application {
-//    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-//}
 
+#pragma mark -  程序即将退出
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
 }
 
 - (void)configThirdPart{
@@ -392,7 +397,6 @@
         self.adView = nil;
     }];
 }
-
 - (void)clickAd:(UIButton *)btn{
     NSNumber *num = [DWCacheManager getPublicCacheWithKey:@"logoNum"];
     if (num == nil) {
@@ -400,7 +404,6 @@
     }
     RequestHomePageModel *model = self.logoArr[[num integerValue] - 1];
     if (model.type == 1) {
-        
         NSString *regionName = [AuthenticationModel getRegionName];
         if (regionName == nil || regionName == NULL) {
             AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
@@ -461,9 +464,7 @@
 
                    
                };
-
-               
-               
+  
     }
     
     
@@ -538,101 +539,7 @@
     return _logoArr;
 }
 
-////极光推送
-//- (void)application:(UIApplication *)application
-//didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-//    
-//    NSLog(@"%@", [NSString stringWithFormat:@"Device Token: %@", deviceToken]);
-//    [JPUSHService registerDeviceToken:deviceToken];
-//}
 
-//- (void)application:(UIApplication *)application
-//didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-//    NSLog(@"did Fail To Register For Remote Notifications With Error: %@", error);
-//}
-
-//#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
-//- (void)application:(UIApplication *)application
-//didRegisterUserNotificationSettings:
-//(UIUserNotificationSettings *)notificationSettings {
-//    
-//    
-//    
-//}
-//
-//// Called when your app has been activated by the user selecting an action from
-//// a local notification.
-//// A nil action identifier indicates the default action.
-//// You should call the completion handler as soon as you've finished handling
-//// the action.
-//- (void)application:(UIApplication *)application
-//handleActionWithIdentifier:(NSString *)identifier
-//forLocalNotification:(UILocalNotification *)notification
-//  completionHandler:(void (^)())completionHandler {
-//    
-//    
-//    
-//}
-//
-//// Called when your app has been activated by the user selecting an action from
-//// a remote notification.
-//// A nil action identifier indicates the default action.
-//// You should call the completion handler as soon as you've finished handling
-//// the action.
-//- (void)application:(UIApplication *)application
-//handleActionWithIdentifier:(NSString *)identifier
-//forRemoteNotification:(NSDictionary *)userInfo
-//  completionHandler:(void (^)())completionHandler {
-//    
-//    
-//}
-//#endif
-//
-//- (void)application:(UIApplication *)application
-//didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    [JPUSHService handleRemoteNotification:userInfo];
-//    NSLog(@"收到通知:%@", userInfo);
-//    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-//    [JPUSHService clearAllLocalNotifications];
-//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-////    PushMessageController *messageC = [[PushMessageController alloc] init];
-//    
-//    //Push 跳转
-//    PublicMessageVC * messageC = [[PublicMessageVC alloc]initWithNibName:@"PublicMessageVC" bundle:nil];
-//   
-//    DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
-//    [tabbar.homePageViewController.navigationController popToRootViewControllerAnimated:NO];
-//    [tabbar.homePageViewController.navigationController pushViewController:messageC animated:YES];
-////    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"推送消息" message:[userInfo yy_modelToJSONString] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-////    [alert show];
-//}
-//
-//- (void)application:(UIApplication *)application
-//didReceiveRemoteNotification:(NSDictionary *)userInfo
-//fetchCompletionHandler:
-//(void (^)(UIBackgroundFetchResult))completionHandler {
-//    [JPUSHService handleRemoteNotification:userInfo];
-//    NSLog(@"收到通知:%@", userInfo);
-//    NSLog(@"收到通知:%@", userInfo);
-//    NSInteger num = application.applicationIconBadgeNumber;
-//    [application setApplicationIconBadgeNumber:num+1];
-////    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"推送消息" message:[userInfo yy_modelToJSONString] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-////    [alert show];
-//    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"刷新订单" object:@"刷新订单" userInfo:@{}];
-//    //Push 跳转
-//    PublicMessageVC * messageC = [[PublicMessageVC alloc]initWithNibName:@"PublicMessageVC" bundle:nil];
-//    
-//    DWTabBarController *tabbar = (DWTabBarController *)self.window.rootViewController;
-//    [tabbar.homePageViewController.navigationController popToRootViewControllerAnimated:NO];
-//    [tabbar.homePageViewController.navigationController pushViewController:messageC animated:YES];
-//    completionHandler(UIBackgroundFetchResultNewData);
-//}
-//
-//- (void)application:(UIApplication *)application
-//didReceiveLocalNotification:(UILocalNotification *)notification {
-//    [JPUSHService showLocalNotificationAtFront:notification identifierKey:nil];
-//}
 
 #pragma mark - 显示易民钱包
 - (void)showActive:(NSNotification *)sender {
@@ -722,52 +629,27 @@
 -(void)SetUpThirdParty:(NSDictionary *)launchOptions{
        //极光推送
     [self JGPush:launchOptions];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
-    
+    UILocalNotification * LocalNotification = [UILocalNotification new];
+    LocalNotification.applicationIconBadgeNumber = -1;
+    [[UIApplication sharedApplication] presentLocalNotificationNow: LocalNotification];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (launchOptions) {
+            // apn 内容获取：
+            NSDictionary *remoteNotification = [launchOptions objectForKey: UIApplicationLaunchOptionsRemoteNotificationKey];
+            //这个判断是在程序没有运行的情况下收到通知，点击通知跳转页面
+            if (remoteNotification) {
+                NSLog(@"推送消息==== %@",remoteNotification);
+                self.userInfo = remoteNotification;
+                [self receivePushMessage];
+            }
+        }
+    });
 }
 
 
 #pragma mark - 极光推送
 -(void)JGPush:(NSDictionary *)launchOptions{
-    /*=======
-     NSString *advertisingId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-     
-     // 3.0.0及以后版本注册可以这样写，也可以继续用旧的注册方式
-     JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
-     entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
-     if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
-     //可以添加自定义categories
-     //    if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
-     //      NSSet<UNNotificationCategory *> *categories;
-     //      entity.categories = categories;
-     //    }
-     //    else {
-     //      NSSet<UIUserNotificationCategory *> *categories;
-     //      entity.categories = categories;
-     //    }
-     }
-     [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
-     
-     
-     //如不需要使用IDFA，advertisingIdentifier 可为nil
-     [JPUSHService setupWithOption:launchOptions appKey:appKey
-     channel:channel
-     apsForProduction:isProduction
-     advertisingIdentifier:advertisingId];
-     
-     //2.1.9版本新增获取registration id block接口。
-     [JPUSHService registrationIDCompletionHandler:^(int resCode, NSString *registrationID) {
-     if(resCode == 0){
-     NSLog(@"registrationID获取成功：%@",registrationID);
-     
-     }
-     else{
-     NSLog(@"registrationID获取失败，code：%d",resCode);
-     }
-     }];
-     
-     ===========*/
+   
     NSString *advertisingId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
@@ -810,7 +692,9 @@
             NSLog(@"registrationID获取失败，code：%d",resCode);
         }
     }];
-}
+    
+    
+    }
 #pragma mark - 注册通知
 
 /** 远程通知注册成功委托 */
@@ -818,13 +702,11 @@
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSLog(@"\n>>>[DeviceToken Success]:%@\n\n", token);
-    //    [USER setObject:token forKey:@"deviceToken"];
-    //    [USER synchronize];
-    //
-    //    [UMessage registerDeviceToken:deviceToken];
+    
     [JPUSHService registerDeviceToken:deviceToken];
     
 }
+
 /** 远程通知注册失败委托 */
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     //    [SVProgressHUD showInfoWithStatus:@"注册推送失败"];
@@ -840,43 +722,50 @@
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 - (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler {
     NSDictionary * userInfo = notification.request.content.userInfo;
-    
     UNNotificationRequest *request = notification.request; // 收到推送的请求
     UNNotificationContent *content = request.content; // 收到推送的消息内容
-    
     NSNumber *badge = content.badge;  // 推送消息的角标
     NSString *body = content.body;    // 推送消息体
     UNNotificationSound *sound = content.sound;  // 推送消息的声音
     NSString *subtitle = content.subtitle;  // 推送消息的副标题
     NSString *title = content.title;  // 推送消息的标题
-    
+    //[JPUSHService setBadge: [content.badge integerValue]-1];
+    NSString *  industry =[NSString stringWithFormat:@"%@",     userInfo[@"industry"]];
+    // 1-消息列表 2-行业抵用券
+    NSString * transferType =[NSString stringWithFormat:@"%@",   userInfo[@"transferType"]];
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
-        //        NSLog(@"iOS10 前台收到远程通知:%@", [self logDic:userInfo]);
-        
         NSLog(@"iOS10 收到远程通知:%@", userInfo);
+       
+        if ([industry isEqualToString:@"0"] && [transferType isEqualToString:@"2"]) {
         self.userInfo = userInfo;
-        //        [self receivePushMessage];
+        [self receivePushMessage];
+        }
     }
     else {
         // 判断为本地通知
         NSLog(@"iOS10 前台收到本地通知:{\nbody:%@，\ntitle:%@,\nsubtitle:%@,\nbadge：%@，\nsound：%@，\nuserInfo：%@\n}",body,title,subtitle,badge,sound,userInfo);
     }
-    completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionSound|UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以设置
+    if ([industry isEqualToString:@"0"] && [transferType isEqualToString:@"2"]) {
+        
+        completionHandler(UNNotificationPresentationOptionBadge);
+        
+        // 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以设置
+    }else{
+       completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionSound|UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以设置
+    }
 }
 //后台收到推送
 - (void)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
-    
     NSDictionary * userInfo = response.notification.request.content.userInfo;
     UNNotificationRequest *request = response.notification.request; // 收到推送的请求
     UNNotificationContent *content = request.content; // 收到推送的消息内容
-    
     NSNumber *badge = content.badge;  // 推送消息的角标
     NSString *body = content.body;    // 推送消息体
     UNNotificationSound *sound = content.sound;  // 推送消息的声音
     NSString *subtitle = content.subtitle;  // 推送消息的副标题
     NSString *title = content.title;  // 推送消息的标题
-    
+    [JPUSHService setBadge: [content.badge integerValue]-1];
     if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
         //        NSLog(@"iOS10 收到远程通知:%@", [self logDic:userInfo]);
@@ -888,145 +777,68 @@
         // 判断为本地通知
         NSLog(@"iOS10 收到本地通知:{\nbody:%@，\ntitle:%@,\nsubtitle:%@,\nbadge：%@，\nsound：%@，\nuserInfo：%@\n}",body,title,subtitle,badge,sound,userInfo);
     }
-    
     completionHandler();  // 系统要求执行这个方法
 }
 #endif
-
-
 #pragma mark - APP运行中接收到通知(推送)处理
-
 ///** APP已经接收到“远程”通知(推送) - (App运行在后台/App运行在前台)  */
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     [JPUSHService handleRemoteNotification:userInfo];
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         [self receiveRemoteNotificationReset:userInfo];
-    }else{
-        self.userInfo = userInfo;
-        [self receivePushMessage];
+    }else  if([UIApplication sharedApplication].applicationState == UIApplicationStateInactive){
+        [self receiveRemoteNotificationReset:userInfo];
+    }else if([UIApplication sharedApplication].applicationState == UIApplicationStateBackground){
+         self.userInfo = userInfo;
+         [self receivePushMessage];
+    } else{
+//        self.userInfo = userInfo;
+//        [self receivePushMessage];
+
     }
     completionHandler(UIBackgroundFetchResultNewData);
 }
 
 #pragma mark------------------收到通知的页面处理
 -(void)receivePushMessage {
-//    NSString *Token =[AuthenticationModel getLoginToken];
-//    if (Token.length!= 0) {
-//        //手势
-//        [self.window bringSubviewToFront:self.gestureView];
-//    }
-//    //Push 跳转
-//    DWTabBarController * VC = [[DWTabBarController alloc]init];
-//    VC.selectedIndex = 0;
-//    self.window.rootViewController = VC;
-//    NSLog(@"%@",VC.viewControllers);
-//    BaseNavigationController *naVC = VC.viewControllers.firstObject;
-//    NSLog(@"%@",naVC.viewControllers);
-//    for (BaseViewController*tempVC in naVC.viewControllers) {
-//        if ([tempVC isKindOfClass:[HomePageVC class]]) {
-//            HomePageVC *home = (HomePageVC *)tempVC;
-//            NSString *Token =[AuthenticationModel getLoginToken];
-//            if (Token.length!= 0) {
-//                //Push 跳转
-//                MessageViewController * VC = [[MessageViewController alloc]initWithNibName:@"MessageViewController" bundle:nil];
-//                [home.navigationController  pushViewController:VC animated:YES];
-//                
-//            }
-//            
-//        }
-//    }
-    
-    
-    
-    
-    
-//        DWTabBarController *tabBarController = ( DWTabBarController*)self.window.rootViewController;
-//        // 取到navigationcontroller
-//        DWNavigationController * nav = (DWNavigationController *)tabBarController.selectedViewController;
-//        //取到nav控制器当前显示的控制器
-//        UIViewController * baseVC = (UIViewController *)nav.visibleViewController;
-    //type字段后台返回，使用极光测试需在『附加字段』处添加
-    NSDictionary *dic =self.userInfo;
-    NSLog(@"%@",dic);
-    
-//        if([dic[@"type"] integerValue]==1){
-//    
-//        }else  if([dic[@"type"] integerValue]==2){
-//    
-//        }else if([dic[@"type"] integerValue]==3){
-//    
-//        }else if([dic[@"type"] integerValue]==4){
-//    
-//        }else if ([dic[@"type"] integerValue]==5){
-////            WebToolViewController *vc=[[WebToolViewController alloc]init];
-////            vc.isChange=YES;
-////            vc.hidesBottomBarWhenPushed=YES;
-////            vc.urlStr = dic[@"custom"];
-////            [baseVC.navigationController pushViewController:vc animated:YES];
-//            return;
-//    
-//        }else{
-//            [self showReceiveMessage:dic[@"title"]];
-//            return;
-//        }
-    
-    
-//        //如果是当前控制器是我的消息控制器的话，刷新数据即可
-//        PublicMessageVC *message = [[PublicMessageVC alloc]initWithNibName:@"PublicMessageVC" bundle:nil];
-//        if([baseVC isKindOfClass:[PublicMessageVC class]])
-//        {
-//            PublicMessageVC * vc = (PublicMessageVC *)baseVC;
-//            //[vc headerRereshing];
-//            return;
-//        }
-//        message.hidesBottomBarWhenPushed = YES;
-//        [nav pushViewController:message animated:YES];
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    DWHelper *helper = [DWHelper shareHelper];
-    helper.isLogin = [userDefaults objectForKey:@"isLogin"];
-    NSLog(@"%@",helper.isLogin);
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 
-    //if ( [helper.isLogin intValue]==0) {
-//        LoginController *loginController = [[LoginController alloc] init];
-//        DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//        
-//        CATransition *  ansition =[CATransition animation];
-//        [ansition setDuration:0.3];
-//        [ansition setType:kCAGravityRight];
-//        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-    //}else if( [helper.isLogin intValue]==1){
-//        // 否则，跳转到我的消息
-//        PublicMessageVC *message = [[PublicMessageVC alloc]initWithNibName:@"PublicMessageVC" bundle:nil];
-//        
-//         UIViewController * viewControllerNow = [self currentViewController];
-//        if ([viewControllerNow  isKindOfClass:[PublicMessageVC class]]) {   //如果是页面XXX，则执行下面语句
-//            [message getDataList];
-//        }else{
-//            
-//            UINavigationController * Nav = [[UINavigationController alloc]initWithRootViewController:message];
-//            
-//            CATransition *  ansition =[CATransition animation];
-//            [ansition setDuration:0.3];
-//            [ansition setType:kCAGravityRight];
-//            [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-//        }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"跳转到消息中心" object:@"跳转到消息中心" userInfo:@{}];
-        
-//    }else{
-//        
-//    }
-   
+
     
+    NSDictionary *dic =self.userInfo;
+    if (dic.count==0) {
+        return;
+    }
+    //[UIApplication sharedApplication].applicationIconBadgeNumber = 3;
+    //用户类型：0-用户，1-团购 2-便民 3-出行
+    NSNumber *  industry =dic[@"industry"];
+    // 1-消息列表 2-行业抵用券
+    NSNumber * transferType =dic[@"transferType"];
+    switch ([industry intValue]) {
+        case 0:
+        {
+            if ([transferType intValue]==1) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"跳转到消息中心" object:@"跳转到消息中心" userInfo:@{}];
+                return;
+            }
+
+            if ([transferType intValue]==2) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"跳转到行业抵用券" object:@"跳转到行业抵用券" userInfo:[NSDictionary dictionaryWithObject:dic forKey:@"跳转到行业抵用券"]];
+                return;
+            }
+            break;
+        }
+            
+        default:{
+            
+            break;
+            
+        }
+    }
 }
 #pragma mark - 运行在前台时的提示框提醒
 -(void)receiveRemoteNotificationReset:(NSDictionary *)userInfo{
     
-    
-    
-    if (userInfo) {
+if (userInfo) {
         self.userInfo = userInfo;
     }
     NSString *typeStirng=userInfo[@"type"];

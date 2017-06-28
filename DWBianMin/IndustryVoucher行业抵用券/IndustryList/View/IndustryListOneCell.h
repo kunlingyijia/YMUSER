@@ -12,8 +12,7 @@
 ///model
 @property (nonatomic, strong) IndustryModel *model ;
 @property (weak, nonatomic) IBOutlet UIView *LeftView;
-///符号
-@property (weak, nonatomic) IBOutlet UILabel *symbol;
+
 @property (weak, nonatomic) IBOutlet UILabel *faceAmount;
 
 @property (weak, nonatomic) IBOutlet UILabel *name;

@@ -34,7 +34,9 @@
 #import "LoginResponse.h"
 #import "NewMerchantEnterController.h"
 #import "TravelOrderVC.h"
-
+#import "IndustryListVC.h"
+#import "ReceiveIndustry.h"
+#import "IndustryModel.h"
 @interface DWMyViewController ()<UMSocialUIDelegate, UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate>
 @property (nonatomic,strong) UIView *headerView;
 @property (nonatomic, strong)UITableView *tableView;
@@ -71,14 +73,14 @@
 
 - (NSMutableArray *)cellImages {
     if (!_cellImages) {
-        self.cellImages = [NSMutableArray arrayWithObjects:@[@"icon_home_bianmin",@"拼车"],@[@"icon_my_wodeshoucang", @"icon_mydiyongquan"],@[@"icon_my_jifenshangcheng", @"icon_my_jinrituijian"],@[@"icon_my_lianxikefu"],@[@"icon_my_woyaohezuo"], nil];
+        self.cellImages = [NSMutableArray arrayWithObjects:@[@"icon_home_bianmin",@"拼车"],@[@"icon_my_wodeshoucang", @"icon_mydiyongquan",@"行业抵用券0"],@[@"icon_my_jifenshangcheng"],@[@"icon_my_lianxikefu"],@[@"icon_my_woyaohezuo"], nil];
     }
     return _cellImages;
 }
 
 - (NSMutableArray *)nameArray {
     if (!_nameArray) {
-        self.nameArray = [NSMutableArray arrayWithObjects:@[@"便民订单",@"出行订单"],@[@"我的收藏", @"抵用券"],@[ @"易民钱包"],@[@"联系客服"], nil];
+        self.nameArray = [NSMutableArray arrayWithObjects:@[@"便民订单",@"出行订单"],@[@"我的收藏",@"抵用券",@"行业抵用券"],@[ @"易民钱包"],@[@"联系客服"], nil];
     }
     return _nameArray;
 }
@@ -124,22 +126,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
-//    if ([self isLogin]) {
-//        [self getOrderNumber];
-//    }
+
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    UIButton *UMShareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//    UMShareBtn.frame = CGRectMake(20, 100, 80, 40);
-//    [UMShareBtn setTitle:@"百度地图" forState:UIControlStateNormal];
-//    [UMShareBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-//    [UMShareBtn addTarget:self action:@selector(UMShareAction:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:UMShareBtn];
-    
-//    self.view.backgroundColor = [UIColor colorWithRed:0.0 / 255.0 green:198.0 /255.0 blue:180.0 / 255.0 alpha:1.0];
-//    DWHelper *helper =
+
    
     self.title = @"我的";
     [self createTableView];
@@ -171,8 +163,6 @@
 
 - (void)loginAction {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    //    [userDefaults setObject:self.nameField.text forKey:@"name"];
-    //    [userDefaults setObject:self.passwordTextField.text forKey:@"passWord"];
     NSString *name = [userDefaults objectForKey:@"name"];
     NSString *passWord = [userDefaults objectForKey:@"passWord"];
     RequestLogin *login = [[RequestLogin alloc] init];
@@ -203,7 +193,6 @@
         
     }];
 }
-
 #pragma mark - 用户信息
 - (void)netWorkUserMessage {
     BaseRequest *baseReq = [[BaseRequest alloc] init];
@@ -297,11 +286,8 @@
                 }
             }else {
                // [self showToast:baseRes.msg];
-                
-                // [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
             }
-            //        [self.tableView.mj_footer endRefreshing];
-            //        [self.tableView.mj_header endRefreshing];
+           
         } faild:^(id error) {
             
         }];
@@ -312,10 +298,6 @@
 - (void)loginView {
     self.IsLogin = YES;
     self.photoImage.frame = CGRectMake((Width-60)/2, 10, 60, 60);
-//    for (int i = 0; i < self.numberLabelArr.count; i++) {
-//        UILabel *numberLabel = self.numberLabelArr[i];
-//        numberLabel.hidden = NO;
-//    }
     self.nameLabel.hidden = NO;
     self.signNameLabel.hidden = NO;
     self.signInBtn.hidden = NO;
@@ -343,19 +325,7 @@
 
 #pragma mark - NavigationItemView
 - (void)setupNavigationItem {
-//    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Bounds.size.width, 44)];
-//    itemView.backgroundColor = [UIColor clearColor];
-//    self.navigationItem.titleView = itemView;
-    //设置按钮
-//    UIButton *settingBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [settingBtn setImage:[UIImage imageNamed:@"icon_my_shezhi"] forState:UIControlStateNormal];
-//    settingBtn.frame = CGRectMake(0, 0, 40, 30);
-//        settingBtn.imageView.contentMode = UIViewContentModeCenter;
-//   
-//    [settingBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-//    [settingBtn addTarget:self action:@selector(settingAction:) forControlEvents:UIControlEventTouchUpInside];
-//    UIBarButtonItem *rightBar = [[UIBarButtonItem alloc] initWithCustomView:settingBtn];
-//    self.navigationItem.rightBarButtonItem = rightBar;
+
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     backBtn.frame = CGRectMake(0, 0, 40, 40);
     backBtn.backgroundColor = [UIColor clearColor];
@@ -384,27 +354,15 @@
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Width, Height-64) style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
-//    self.tableView.rowHeight = 60;
+    self.tableView.rowHeight = Width/8;
     self.tableView.dataSource = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"MyCenterCell"];
     self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [self.view addSubview: self.tableView];
-//    self.tableView.bounces = NO;
-//    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-//        if ([self isLogin]) {
-//            [self getOrderNumber];
-//        }
-//    }];
-//    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-//        if ([self isLogin]) {
-//            [self getOrderNumber];
-//        }
-//    }];
-    
-//    self.tableView.backgroundColor = [UIColor colorWithRed:1 / 255.0 green:199 /255.0 blue:184 / 255.0 alpha:1.0];
-    UIView *footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Width, 15)];
-    footView.backgroundColor = [UIColor colorWithRed:239/256.0 green:239/256.0 blue:244/256.0 alpha:1];
+
+    UIView *footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Width, 10)];
+    footView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     self.tableView.tableFooterView = footView;
     [self createHeaderView];
     
@@ -450,7 +408,6 @@
     self.photoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"def_my_zhuye_touxiang"]];
     self.photoImage.userInteractionEnabled = YES;
     [self.photoImage addGestureRecognizer:photoTap];
-//    [self.photoImage addTarget:self action:@selector(loginAction:) forControlEvents:UIControlEventTouchUpInside];
     self.photoImage.frame = CGRectMake(10, 10, 60, 60);
     self.photoImage.layer.masksToBounds = YES;
     self.photoImage.layer.cornerRadius = 30;
@@ -570,8 +527,6 @@
             make.left.equalTo(btn.imageView.mas_right).with.offset(0);
             make.size.mas_equalTo(CGSizeMake(15, 15));
         }];
-        
-        
         UILabel *imageLabel = [[UILabel alloc] init];
 //        imageLabel.backgroundColor = [UIColor greenColor];
         imageLabel.textAlignment = NSTextAlignmentCenter;
@@ -585,24 +540,16 @@
             make.size.mas_equalTo(CGSizeMake((Bounds.size.width - 200)/4 + 30, 15));
         }];
     }
-    
 //    登录之后的显示的控件
     self.signInBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.signInBtn.frame = CGRectMake(0, 0, 50, 30);
     self.signInBtn.hidden = YES;
-//    NSDate *todyDate = [NSDate date];
-//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:@"YYYYMMdd"];
-//    NSString *today = [formatter stringFromDate:todyDate];
-////    [DWCacheManager setPulicCache:today :@"todayDate"];
-//    NSString *siginDate = [DWCacheManager getPublicCacheWithKey:@"signDate"];
     
     self.signInBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     self.signInBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     [self.signInBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.signInBtn addTarget:self action:@selector(signInBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.signInBtn];
-    
     self.nameLabel = [UILabel new];
     self.nameLabel.text = @"";
     self.nameLabel.hidden = YES;
@@ -636,10 +583,6 @@
     if ([helper.isLogin integerValue]==1) {
         self.IsLogin = YES;
         self.photoImage.frame = CGRectMake((Width-60)/2, 10, 60, 60);
-        //    for (int i = 0; i < self.numberLabelArr.count; i++) {
-        //        UILabel *numberLabel = self.numberLabelArr[i];
-        //        numberLabel.hidden = NO;
-        //    }
         self.nameLabel.hidden = NO;
         self.signNameLabel.hidden = NO;
         self.signInBtn.hidden = NO;
@@ -689,14 +632,7 @@
         LoginController *loginController = [[LoginController alloc] init];
         [self.navigationController pushViewController:loginController animated:YES];
         OKLog(@"登录");
-//        LoginController *loginController = [[LoginController alloc] init];
-//        DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//        
-//        CATransition *  ansition =[CATransition animation];
-//        [ansition setDuration:0.3];
-//        [ansition setType:kCAGravityRight];
-//        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
+
     }
 }
 
@@ -709,14 +645,6 @@
     }else {
         LoginController *loginController = [[LoginController alloc] init];
         [self.navigationController pushViewController:loginController animated:YES];
-//        LoginController *loginController = [[LoginController alloc] init];
-//        DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//        
-//        CATransition *  ansition =[CATransition animation];
-//        [ansition setDuration:0.3];
-//        [ansition setType:kCAGravityRight];
-//        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
     }
 }
 - (void)btnAction:(UIButton *)sender {
@@ -729,112 +657,146 @@
     }else {
         LoginController *loginController = [[LoginController alloc] init];
         [self.navigationController pushViewController:loginController animated:YES];
-//        LoginController *loginController = [[LoginController alloc] init];
-//        DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//        
-//        CATransition *  ansition =[CATransition animation];
-//        [ansition setDuration:0.3];
-//        [ansition setType:kCAGravityRight];
-//        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
     }
-    OKLog(@"选择了%@", self.myArray[sender.tag - 110]);
 }
 #pragma mark - UITableViewDelegate
-//- (nullable UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Bounds.size.width, 20)];
-//    view.backgroundColor = [UIColor colorWithRed:241 / 255.0 green:241/255.0 blue:241/255.0 alpha:1.0];
-//    return view;
-//}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 15;
+    return 10;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0.1;
+    return 0.01;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    if ([self isLogin]) {
-        if (indexPath.section == 1) {
-            if (indexPath.row == 0) {
-                MyCollectMerchant *m = [[MyCollectMerchant alloc] init];
-                [self.navigationController pushViewController:m animated:YES];
-            }else{
-               [self.navigationController pushViewController:[[MyCouponList alloc] init] animated:YES];
-            }
-        }
-        if (indexPath.section == 2) {
-            if (indexPath.row == 0) {
-//                [self.navigationController pushViewController:[[IntegralViewController alloc] init] animated:YES];
-                 [self webAction];
-            }
-//            if (indexPath.row == 1) {
-//                [self webAction];
-//            }
-        }
-        if (indexPath.section == 3) {
-            if (indexPath.row == 0) {
-                __weak typeof(self) weakSelf = self;
-                DWHelper *helper = [DWHelper shareHelper];
-
-                [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
-                    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-                   
-                } withCancel:^(UIAlertAction *cancelaction) {
-                    
-                }];
-            }
-        }
-        if (indexPath.section == 4) {
-            NewMerchantEnterController *merchatSettle = [[NewMerchantEnterController alloc] initWithNibName:@"NewMerchantEnterController" bundle:nil];
-            [self.navigationController pushViewController:merchatSettle animated:YES];
-        }
-        
-        if (indexPath.section == 0) {
-            if (indexPath.row == 0) {
-                BmOrderController *bmC = [[BmOrderController alloc] init];
-                [self.navigationController pushViewController:bmC animated:YES];
-            }else {
-
-                //Push 跳转
-                TravelOrderVC * VC = [[TravelOrderVC alloc]initWithNibName:@"TravelOrderVC" bundle:nil];
-                [self.navigationController  pushViewController:VC animated:YES];
-            }
-        }
-    }else {
-        
-        
-        if (indexPath.section == 3) {
-            if (indexPath.row == 0) {
-                __weak typeof(self) weakSelf = self;
-                DWHelper *helper = [DWHelper shareHelper];
-                
-                [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
-                                
-                    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-                    
-                } withCancel:^(UIAlertAction *cancelaction) {
-                    
-                }];
-            }
-        }else{
-            LoginController *loginController = [[LoginController alloc] init];
-            [self.navigationController pushViewController:loginController animated:YES];
-//            LoginController *loginController = [[LoginController alloc] init];
-//            DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//            
-//            CATransition *  ansition =[CATransition animation];
-//            [ansition setDuration:0.3];
-//            [ansition setType:kCAGravityRight];
-//            [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-        }
-
-       
+    NSString * title = self.nameArray[indexPath.section][indexPath.row];
+     if ([self isLogin]) {
+    if ([title isEqualToString:@"便民订单"]) {
+        BmOrderController *bmC = [[BmOrderController alloc] init];
+        [self.navigationController pushViewController:bmC animated:YES];
     }
+    if ([title isEqualToString:@"出行订单"]) {
+        //Push 跳转
+        TravelOrderVC * VC = [[TravelOrderVC alloc]initWithNibName:@"TravelOrderVC" bundle:nil];
+        [self.navigationController  pushViewController:VC animated:YES];
+    }
+    if ([title isEqualToString:@"我的收藏"]) {
+             MyCollectMerchant *m = [[MyCollectMerchant alloc] init];
+             [self.navigationController pushViewController:m animated:YES];
+    }
+    if ([title isEqualToString:@"抵用券"]) {
+             [self.navigationController pushViewController:[[MyCouponList alloc] init] animated:YES];
+    }
+    if ([title isEqualToString:@"行业抵用券"]) {
+//        //Push 跳转
+        IndustryListVC * VC = [[IndustryListVC alloc]initWithNibName:@"IndustryListVC" bundle:nil];
+        [self.navigationController  pushViewController:VC animated:YES];
+
+    }
+    if ([title isEqualToString:@"易民钱包"]) {
+             [self webAction];
+    }
+    if ([title isEqualToString:@"联系客服"]) {
+             DWHelper *helper = [DWHelper shareHelper];
+             [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
+                 
+                 NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
+                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+                 
+             } withCancel:^(UIAlertAction *cancelaction) {
+             }];
+         }
+
+    }else{
+        
+        if ([title isEqualToString:@"联系客服"]) {
+            DWHelper *helper = [DWHelper shareHelper];
+            [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
+                NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+                
+            } withCancel:^(UIAlertAction *cancelaction) {
+                
+            }];
+        }else{
+         LoginController *loginController = [[LoginController alloc] init];
+         [self.navigationController pushViewController:loginController animated:YES];
+        }
+     }
+    
+    
+    
+    
+    
+    
+//    
+//    if ([self isLogin]) {
+//        if (indexPath.section == 1) {
+//            if (indexPath.row == 0) {
+//                MyCollectMerchant *m = [[MyCollectMerchant alloc] init];
+//                [self.navigationController pushViewController:m animated:YES];
+//            }else if(indexPath.row == 1){
+//               [self.navigationController pushViewController:[[MyCouponList alloc] init] animated:YES];
+//            }else{
+//                
+//            }
+//        }
+//        if (indexPath.section == 2) {
+//            if (indexPath.row == 0) {
+//
+//                 [self webAction];
+//            }
+//        }
+//        if (indexPath.section == 3) {
+//            if (indexPath.row == 0) {
+//                DWHelper *helper = [DWHelper shareHelper];
+//                [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
+//                    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
+//                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+//                   
+//                } withCancel:^(UIAlertAction *cancelaction) {
+//                    
+//                }];
+//            }
+//        }
+//        if (indexPath.section == 4) {
+//            NewMerchantEnterController *merchatSettle = [[NewMerchantEnterController alloc] initWithNibName:@"NewMerchantEnterController" bundle:nil];
+//            [self.navigationController pushViewController:merchatSettle animated:YES];
+//        }
+//        
+//        if (indexPath.section == 0) {
+//            if (indexPath.row == 0) {
+//                BmOrderController *bmC = [[BmOrderController alloc] init];
+//                [self.navigationController pushViewController:bmC animated:YES];
+//            }else {
+//
+//                //Push 跳转
+//                TravelOrderVC * VC = [[TravelOrderVC alloc]initWithNibName:@"TravelOrderVC" bundle:nil];
+//                [self.navigationController  pushViewController:VC animated:YES];
+//            }
+//        }
+//    }else {
+//        if (indexPath.section == 3) {
+//            if (indexPath.row == 0) {
+//                __weak typeof(self) weakSelf = self;
+//                DWHelper *helper = [DWHelper shareHelper];
+//                [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
+//                                
+//                    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
+//                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+//                    
+//                } withCancel:^(UIAlertAction *cancelaction) {
+//                    
+//                }];
+//            }
+//        }else{
+//            LoginController *loginController = [[LoginController alloc] init];
+//            [self.navigationController pushViewController:loginController animated:YES];
+//
+//        }
+//
+//       
+//    }
     
 }
 #pragma mark - UITableViewDataSource
@@ -847,8 +809,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCenterCell" forIndexPath:indexPath];
     NSArray *nameArr = self.nameArray[indexPath.section];
     NSArray *imagesArr = self.cellImages[indexPath.section];
-    UIImage *icon = [UIImage imageNamed:imagesArr[indexPath.row]];
-    
+    UIImage *icon = [UIImage imageNamed:[NSString stringWithFormat:@"%@",  imagesArr[indexPath.row]]];
     CGSize itemSize = CGSizeMake(20, 20);
     UIGraphicsBeginImageContextWithOptions(itemSize, NO,0.0);
     CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
@@ -859,8 +820,6 @@
     cell.textLabel.text = nameArr[indexPath.row];
     cell.textLabel.font = [UIFont systemFontOfSize:14];
     cell.textLabel.textColor = [UIColor colorWithHexString:kTitleColor];
-//    cell.nameLabel.text = @"个人中心";
-//    cell.pictureImage.image = [UIImage imageNamed:@"h2.jpg"];
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     

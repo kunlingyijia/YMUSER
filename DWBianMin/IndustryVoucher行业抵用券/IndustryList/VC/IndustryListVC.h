@@ -7,13 +7,9 @@
 //
 
 #import "BaseViewController.h"
-@class IndustryModel;
+//@class IndustryModel;
 @interface IndustryListVC : BaseViewController
-///faceId
-//@property (nonatomic, strong) NSString  *faceId ;
-@property (weak, nonatomic) IBOutlet UILabel *balanceFaceAmount;
-
-///
-@property (nonatomic, strong) IndustryModel  *model ;
+/////
+//@property (nonatomic, strong) IndustryModel  *model ;
 
 @end

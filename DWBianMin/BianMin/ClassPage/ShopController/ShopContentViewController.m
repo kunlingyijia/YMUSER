@@ -189,17 +189,17 @@
 //    购买
     self.headerView.buyAction = ^(NSString *str) {
         if ([weakSelf isLogin]) {
-            CommitOrderController *commitOrderController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CommitOrderController"];
-            commitOrderController.merchantId = weakSelf.shopModel.merchantId;
-            commitOrderController.goodsModel = weakSelf.model;
-            [weakSelf.navigationController pushViewController:commitOrderController animated:YES];
+//            CommitOrderController *commitOrderController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CommitOrderController"];
+//            commitOrderController.merchantId = weakSelf.shopModel.merchantId;
+//            commitOrderController.goodsModel = weakSelf.model;
+//            [weakSelf.navigationController pushViewController:commitOrderController animated:YES];
             
             
             //Push 跳转
-//            SubmitTGOrderVC * VC = [[SubmitTGOrderVC alloc]initWithNibName:@"SubmitTGOrderVC" bundle:nil];
-//            VC.merchantId = weakSelf.shopModel.merchantId;
-//                       VC.goodsModel = weakSelf.model;
-//            [weakSelf.navigationController  pushViewController:VC animated:YES];
+            SubmitTGOrderVC * VC = [[SubmitTGOrderVC alloc]initWithNibName:@"SubmitTGOrderVC" bundle:nil];
+            VC.merchantId = weakSelf.shopModel.merchantId;
+            VC.goodsModel = weakSelf.model;
+            [weakSelf.navigationController  pushViewController:VC animated:YES];
 
             
             
@@ -367,9 +367,7 @@
 - (void)sheetAction:(NSString *)title {
     UIAlertView *alertController = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertController show];
-    //    UIAlertController *noAler = [UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] preferredStyle:UIAlertControllerStyleAlert];
-    //    [noAler addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
-    //    [self presentViewController:noAler animated:YES completion:nil];
+   
 }
 #pragma mark - 网络请求
 - (void)getGoodsData {

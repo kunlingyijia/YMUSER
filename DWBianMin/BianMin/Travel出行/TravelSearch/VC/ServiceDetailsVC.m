@@ -51,16 +51,11 @@ enum {
     self.avatarUrl.layer.cornerRadius =(0.2*Width-20)/2;
     self.zoomLevel  = 15;
     [self addMap];
-    
-    
 }
 #pragma mark - 关于数据
 -(void)SET_DATA{
     self.index = 0;
     [self kongjianfuzhi];
-   
-
-    
 }
 
 
@@ -103,9 +98,6 @@ enum {
 }
 #pragma mark - 提交
 - (IBAction)submitBtnAction:(PublicBtn *)sender {
-    
-    
-    
     if ([self isLogin]) {
     self.view.userInteractionEnabled = NO;
     //Push 跳转
@@ -115,16 +107,7 @@ enum {
     }else{
     LoginController *loginController = [[LoginController alloc] init];
     [self.navigationController pushViewController:loginController animated:YES];
-        
-//        LoginController *loginController = [[LoginController alloc] init];
-//        DWNavigationController * Nav = [[DWNavigationController alloc]initWithRootViewController:loginController];
-//        
-//        CATransition *  ansition =[CATransition animation];
-//        [ansition setDuration:0.3];
-//        [ansition setType:kCAGravityRight];
-//        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-//        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
-                    }
+ }
 }
 
 

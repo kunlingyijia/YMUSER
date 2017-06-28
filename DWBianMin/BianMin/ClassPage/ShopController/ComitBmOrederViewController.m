@@ -66,7 +66,7 @@
 
 #pragma mark - init_UI
 - (void)init_UI {
-        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Width, Height-64) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Width, Height-64) style:UITableViewStylePlain];
     self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -269,7 +269,7 @@
         make.top.equalTo(self.remarkView.mas_bottom).with.offset(20);
         make.right.equalTo(self.footView).with.offset(-20);
         make.left.equalTo(self.footView).with.offset(20);
-        make.height.mas_equalTo(@(Width/10));
+        make.height.mas_equalTo(@(40));
     }];
 }
 
@@ -297,14 +297,10 @@
                 if (indexIndex == 0 && j == 1) {
                     self.headerView.frame = CGRectMake(0, 0, Width, (viewWidth/2 + 10)*arrCount+10 +70);
                     _headerViewHeight=(viewWidth/2 + 10)*arrCount+10 +70;
-//                    self.orderHeight.constant = 60 * arrCount+10;
-//                    self.cornerHeight.constant = 420 + self.orderHeight.constant;
                     break;
                 }else if (indexIndex != 0 && j == 0) {
-                    self.headerView.frame = CGRectMake(0, 0, Width, (viewWidth/2 + 10) * arrCount+70 + 70);
-                    _headerViewHeight= (viewWidth/2 + 10) * arrCount+70 + 70;
-//                    self.orderHeight.constant = 60 * arrCount+70;
-//                    self.cornerHeight.constant = 420 + self.orderHeight.constant;
+                    self.headerView.frame = CGRectMake(0, 0, Width, (viewWidth/2 + 10) * arrCount+90 + 70);
+                    _headerViewHeight= (viewWidth/2 + 10) * arrCount+90 + 70;
                     break;
                 }
             }

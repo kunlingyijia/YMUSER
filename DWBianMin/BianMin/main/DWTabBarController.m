@@ -53,12 +53,11 @@
     UIImage *selectedImage = [[UIImage imageNamed:selectedImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     childVc.tabBarItem.selectedImage = selectedImage;
     [childVc.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                [UIFont systemFontOfSize:14], NSFontAttributeName,
+                                                [UIFont systemFontOfSize:13], NSFontAttributeName,
                                                 [UIColor colorWithHexString:kSubTitleColor], NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
-    
     [childVc.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                [UIFont systemFontOfSize:11], NSFontAttributeName,
-                                                [UIColor colorWithHexString:kTitleColor],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
+                                                [UIFont systemFontOfSize:13], NSFontAttributeName,
+                                                [UIColor colorWithHexString:kNavigationBgColor],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     //        self.tabBar.backgroundImage = [UIImage imageNamed:@"tabBar_bg"];
     //添加导航控制器
     DWNavigationController *nav = [[DWNavigationController alloc] initWithRootViewController:childVc];

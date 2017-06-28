@@ -16,20 +16,12 @@
 @property (weak, nonatomic) IBOutlet PublicTF *textTf;
 @property (weak, nonatomic) IBOutlet PublicBtn *deleteBtn;
 @property (weak, nonatomic) IBOutlet PublicBtn *addBtn;
-///通用券
-@property (weak, nonatomic) IBOutlet UILabel *toUseLabel;
-@property (weak, nonatomic) IBOutlet UIButton *toUseBtn;
-
-///抵用券
-@property (weak, nonatomic) IBOutlet UILabel *generalLabel;
-
-
-
 @property (weak, nonatomic) IBOutlet UILabel *alltotalLabel;
-
-
 @property (weak, nonatomic) IBOutlet UIButton *commitBtn;
-
+///商家
+@property (weak, nonatomic) IBOutlet UIButton *shangjiaBtn;
+///行业
+@property (weak, nonatomic) IBOutlet UIButton *hangyeBtn;
 @property (nonatomic, strong) RequestMerchantGoodsListModel *goodsModel;
 @property (nonatomic, copy)NSString *price;
 @property (nonatomic, copy)NSString *merchantId;

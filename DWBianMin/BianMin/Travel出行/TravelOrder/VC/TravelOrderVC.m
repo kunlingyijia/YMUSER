@@ -40,7 +40,6 @@
 }
 #pragma mark - 关于UI
 -(void)SET_UI{
-//    [self showBackBtn];
     [self showBackBtn:^{
         for (BaseViewController *tempVC in self.navigationController.viewControllers) {
             if ([tempVC isKindOfClass:[DWHomePageViewController class]]) {
@@ -59,13 +58,10 @@
     self.title = @"订单列表";
     [self.tableView tableViewregisterClassArray:@[@"UITableViewCell"]];
     [self.tableView tableViewregisterNibArray:@[@"TravelOrderCell"]];
-    
-    
 }
 #pragma mark - 关于数据
 -(void)SET_DATA{
     self.pageIndex = 1;
-   
     [self Refresh];
     
 }
@@ -73,13 +69,10 @@
     //下拉刷新
     __weak typeof(self) weakself = self;
     self.tableView.mj_header =[MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        
         weakself.pageIndex =1 ;
         [weakself requestTripOrderList];
         // 进入刷新状态后会自动调用这个block
         [weakself.tableView.mj_header endRefreshing];
-        
-        
     }];
     //上拉加载
     self.tableView. mj_footer=
@@ -96,7 +89,6 @@
 }
 #pragma mark - 我的出行订单列表
 -(void)requestTripOrderList{
-    
     NSString *Token =[AuthenticationModel getLoginToken];
     NSMutableDictionary *dic  =[ @{@"pageIndex":@(self.pageIndex),@"pageCount":@(10),}mutableCopy];
     __weak typeof(self) weakself = self;
@@ -106,7 +98,6 @@
         baseReq.encryptionType = AES;
         baseReq.data = [AESCrypt encrypt:[dic yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
         [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/TravelOrder/requestMyOrderList" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response)  {
-            
             NSLog(@" 我的出行订单列表----%@",response);
             if ([response[@"resultCode"] isEqualToString:@"1"]) {
                 if (weakself.pageIndex == 1) {
@@ -121,19 +112,14 @@
                 [weakself.tableView reloadData];
             }else{
                 [weakself showToast:response[@"msg"]];
-                
             }
             
         } faild:^(id error) {
             NSLog(@"%@", error);
         }];
-        
     }else {
         
     }
-    
-    
-    
 }
 
 #pragma tableView 代理方法
@@ -152,7 +138,6 @@
     tableView.separatorStyle = UITableViewCellSelectionStyleNone;
     TravelOrderCell * cell = [tableView dequeueReusableCellWithIdentifier:@"TravelOrderCell" forIndexPath:indexPath];
     [cell CellGetData:self.dataArray[indexPath.row]];
-    
     return cell;
 }
 #pragma mark - Cell点击事件
@@ -177,14 +162,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - dealloc
+- (void)dealloc
+{
+    NSLog(@"%@销毁了", [self class]);
 }
-*/
-
 @end

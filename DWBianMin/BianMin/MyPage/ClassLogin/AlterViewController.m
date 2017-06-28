@@ -28,27 +28,6 @@
     [self textAddImageWithTextField:self.codeNum withImage:@"icon_common_zhaohuimima_yanzhengma"];
     [self textAddImageWithTextField:self.password withImage:@"icon_common_zhaohuimima_mima"];
     [self textAddImageWithTextField:self.againPassword withImage:@"icon_common_zhaohuimima_mima"];
-    
-//    UIButton *rightV = [UIButton buttonWithType:UIButtonTypeCustom];
-//    rightV.tag = 1500;
-//    [rightV setImage:[UIImage imageNamed:@"icon_common_zhuce_keshi_normal"] forState:UIControlStateNormal];
-//    [rightV setImage:[UIImage imageNamed:@"icon_common_zhuce_keshi_press"] forState:UIControlStateSelected];
-//    rightV.frame = CGRectMake(0, 0, 30, 30);
-//    [rightV addTarget:self action:@selector(passwordAction:) forControlEvents:UIControlEventTouchUpInside];
-//    rightV.imageView.contentMode = UIViewContentModeScaleAspectFit;
-//    self.password.rightView = rightV;
-//    self.password.rightViewMode = UITextFieldViewModeAlways;
-    
-    
-//    UIButton *secondRightV = [UIButton buttonWithType:UIButtonTypeCustom];
-//    secondRightV.tag = 1501;
-//    [secondRightV setImage:[UIImage imageNamed:@"icon_common_zhuce_keshi_normal"] forState:UIControlStateNormal];
-//    [secondRightV setImage:[UIImage imageNamed:@"icon_common_zhuce_keshi_press"] forState:UIControlStateSelected];
-//    secondRightV.frame = CGRectMake(0, 0, 30, 30);
-//    [secondRightV addTarget:self action:@selector(passwordAction:) forControlEvents:UIControlEventTouchUpInside];
-//    secondRightV.imageView.contentMode = UIViewContentModeScaleAspectFit;
-//    self.againPassword.rightView = secondRightV;
-//    self.againPassword.rightViewMode = UITextFieldViewModeAlways;
 }
 
 - (void)passwordAction:(UIButton *)sender {
@@ -141,15 +120,16 @@
         }];
 
     }else {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"输入的手机号不正确" preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:alertController animated:YES completion:nil];
+        
+        [self alertWithTitle:@"提示" message:@"输入的手机号不正确" OKWithTitle:@"确定" withOKDefault:^(UIAlertAction *defaultaction) {
+            
+        }];
+        
+       
     }
 }
 - (IBAction)sureAction:(id)sender {
-//    if ([self.password.text isEqualToString:self.againPassword.text]) {
-//
-//    }
+
     if (self.codeNum.text.length == 0) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请输入验证码" preferredStyle:UIAlertControllerStyleAlert];
         [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];

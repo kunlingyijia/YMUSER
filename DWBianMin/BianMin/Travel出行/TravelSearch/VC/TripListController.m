@@ -107,22 +107,17 @@
 #pragma mark - 车次列表/搜索
 
 -(void)requestTravelPlanList{
-    NSLog(@"%@",self.date);
-        NSString *Token =[AuthenticationModel getLoginToken];
-    NSLog(@"-------%@",self.dateStr);
+    
     NSString * regionId = [AuthenticationModel getRegionID];
     NSMutableDictionary * dic = [NSMutableDictionary dictionaryWithCapacity:0];
     dic  = [@{@"pageIndex":@(self.pageIndex),@"pageCount":@(10),@"startPlace":self.startPlace,@"endPlace":self.endPlace,@"regionId":regionId,@"date":self.dateStr}mutableCopy];
         NSLog(@"%@",dic);
         __weak typeof(self) weakself = self;
-      //  if (Token.length!= 0) {
             BaseRequest *baseReq = [[BaseRequest alloc] init];
             baseReq.token = [AuthenticationModel getLoginToken];
             baseReq.encryptionType = RequestMD5;
-    
           baseReq.data = [dic yy_modelToJSONObject];
             [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/TravelPlan/requestTravelPlanList" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response)  {
-                
                 NSLog(@" 车次列表/搜索----%@",response);
                 if ([response[@"resultCode"] isEqualToString:@"1"]) {
                     if (weakself.pageIndex == 1) {
@@ -139,19 +134,9 @@
                     [weakself showToast:response[@"msg"]];
                     
                 }
-                
             } faild:^(id error) {
                 NSLog(@"%@", error);
             }];
-            
-       // }
-//else {
-//            
-//        }
-//        
-//        
-
-    
     
 }
 
@@ -188,15 +173,6 @@
     VC.tripModel = self.dataArray[indexPath.row];
     [self.navigationController  pushViewController:VC animated:YES];
     
-   
-
-    
-//    //Push 跳转
-//
-//    TripPayVC
-//   * VC1 = [[TripPayVC alloc]initWithNibName:@"TripPayVC" bundle:nil];
-//    [self.navigationController  pushViewController:VC1 animated:YES];
-
 
 }
 @end

@@ -345,7 +345,7 @@
 }
 #pragma mark - 拨打客服电话
 -(void)TwoBtn:(UIButton*)sender{
-    __weak typeof(self) weakSelf = self;
+    
     DWHelper *helper = [DWHelper shareHelper];
     
 
@@ -396,7 +396,7 @@
             self.tableView.estimatedRowHeight = 500;
             self.tableView.rowHeight = UITableViewAutomaticDimension;
 
-           return _trioModel.remark.length<10 ?5*Width/9+10:  self.tableView.rowHeight;
+           return _trioModel.remark.length<10 ?7*Width/9+10:  self.tableView.rowHeight;
             
             break;
         }

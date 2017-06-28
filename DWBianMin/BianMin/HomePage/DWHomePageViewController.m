@@ -48,6 +48,8 @@
 #import "SearchHistoryViewController.h"
 #import "GoodsListOneCell.h"
 #import "IndustryListVC.h"
+#import "ReceiveIndustry.h"
+#import "IndustryModel.h"
 #define BoundsWidth [UIScreen mainScreen].bounds.size.width
 #define CategoryWidth ([UIScreen mainScreen].bounds.size.width - 3) / 4
 #define IOSVersion [[[UIDevice currentDevice] systemVersion] floatValue]
@@ -134,6 +136,7 @@
 //    IndustryListVC * VC = [[IndustryListVC alloc]initWithNibName:@"IndustryListVC" bundle:nil];
 //    [self.navigationController  pushViewController:VC animated:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PublicMessageVC) name:@"跳转到消息中心" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PublicReceiveIndustryVC:) name:@"跳转到行业抵用券" object:nil];
     //定位
     [self locationAction];
     [self setupNavigationItem];
@@ -1005,46 +1008,6 @@
     
 }
 
-//- (void)againView {
-//    self.headerView.backgroundColor = [UIColor colorWithRed:248 / 255.0 green:249 / 255.0 blue:248 / 255.0 alpha:1.0];
-//    if (self.activeArr.count == 0) {
-//        if (self.classKindArr.count < 2) {
-//            self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, Width*2/5 + Width * 0.5+10 - CategoryWidth);
-//            self.threeAdView.frame = CGRectMake(0, Width*2/5+Width*0.25, Width, 0);
-//        }else {
-//            self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, Width*2/5 + Width * 0.5+10);
-//            self.threeAdView.frame = CGRectMake(0, Width*2/5+Width*0.5, Width, 0);
-//        }
-//    }else {
-//        self.threeAdView.hidden = NO;
-//        self.threeAdView.frame = CGRectMake(0, Width*2/5+Width*0.25, Width, 140);
-//        if (self.classKindArr.count < 2) {
-//            self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, 132 + Width*2/5 + Width * 0.5+10 - CategoryWidth);
-//            self.threeAdView.frame = CGRectMake(0, Width*2/5+Width*0.25, Width, 0);
-//        }else {
-//            self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, 132 + Width*2/5 + Width * 0.5+10);
-//            self.threeAdView.frame = CGRectMake(0, Width*2/5+Width*0.5, Width, 0);
-//        }
-//    }
-//    for (UIView *view in self.threeAdView.subviews) {
-//        [view removeFromSuperview];
-//    }
-//   
-//    
-//    [self.cycleScorllView removeFromSuperview];
-//    self.cycleScorllView = nil;
-//    
-//    self.cycleScorllView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, Bounds.size.width, Bounds.size.width * 2 /5) delegate:self placeholderImage:[UIImage imageNamed:@"bg_zaijia_5-2"]];
-//    self.cycleScorllView.pageControlAliment = SDCycleScrollViewPageContolAlimentRight;
-//    self.cycleScorllView.currentPageDotColor = [UIColor whiteColor];
-//    
-//    [self.headerView addSubview:self.cycleScorllView];
-//    [self getPageAdList:self.cycleScorllView];
-//    
-//    [self.headerView addSubview:self.threeAdView];
-//    [self.threeAdView setDataSource:self.activeArr withController:self];
-//    self.tableView.tableHeaderView = self.headerView;
-//}
 
 - (void)getShopKindData {
     RequestMenuList *list = [[RequestMenuList alloc] init];
@@ -1201,22 +1164,12 @@
 -(void)PublicMessageVC{
     
     if ([self isLogin]) {
-        
-   
     // 否则，跳转到我的消息
     PublicMessageVC *message = [[PublicMessageVC alloc]initWithNibName:@"PublicMessageVC" bundle:nil];
     UIViewController * viewControllerNow = [self currentViewController];
     if ([viewControllerNow  isKindOfClass:[PublicMessageVC class]]) {   //如果是页面XXX，则执行下面语句
         [message getDataList];
     }else{
-        
-        //        UINavigationController * Nav = [[UINavigationController alloc]initWithRootViewController:message];
-        //
-        //        CATransition *  ansition =[CATransition animation];
-        //        [ansition setDuration:0.3];
-        //        [ansition setType:kCAGravityRight];
-        //        [[[[UIApplication sharedApplication]keyWindow ]layer] addAnimation:ansition forKey:nil];
-        //        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:Nav animated:YES completion:nil];
         [viewControllerNow.navigationController pushViewController:message animated:YES];
     }
     
@@ -1225,6 +1178,42 @@
         LoginController *loginC = [[LoginController alloc] init];
         [self.navigationController pushViewController:loginC animated:YES];
     }
+    
+}
+
+#pragma mark - 跳转到行业抵用券
+-(void)PublicReceiveIndustryVC:(NSNotification*)sender{
+    
+    
+    
+    
+    if ([self isLogin]) {
+        NSDictionary * dic = sender.userInfo;
+    
+        IndustryModel * model = [IndustryModel yy_modelWithJSON : dic[@"跳转到行业抵用券"]]  ;
+        // 否则，跳转到我的消息
+        ReceiveIndustry *message = [[ReceiveIndustry alloc]initWithNibName:@"ReceiveIndustry" bundle:nil];
+        message.industryModel = model;
+    message.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+
+        
+        UIViewController * viewControllerNow = [self currentViewController];
+        if ([viewControllerNow  isKindOfClass:[PublicMessageVC class]]) {   //如果是页面XXX，则执行下面语句
+            [viewControllerNow presentViewController:message animated:NO completion:^{
+            }];
+
+           }else{
+            [viewControllerNow presentViewController:message animated:NO completion:^{
+            }];
+
+            
+        }
+    }else{
+                LoginController *loginC = [[LoginController alloc] init];
+        [self.navigationController pushViewController:loginC animated:YES];
+    }
+
+    
     
 }
 

@@ -36,6 +36,7 @@
     }else {
         [self showBackBtn];
     }
+    [self ShowNodataView];
     self.title = @"订单详情";
     self.firstBtnUser = 1;
     self.secondBtnUser = 1;
@@ -71,7 +72,8 @@
 - (void)viewGetData {
     self.merchantName.text = self.orderModel.merchantName;
     [self loadImageWithView:self.merchantImage urlStr:self.orderModel.iconUrl];
-    
+    _merchantImage.layer.masksToBounds = YES;
+    _merchantImage.layer.cornerRadius =3.0;
     self.name.text = self.orderModel.name;
     self.tel.text = self.orderModel.tel;
     self.address.text = self.orderModel.address;
@@ -337,14 +339,17 @@
     baseReq.token = [AuthenticationModel getLoginToken];
     baseReq.encryptionType = AES;
     baseReq.data = [AESCrypt encrypt:[detail yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
+    __weak typeof(self) weakSelf = self;
+
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Order/requestMyBminorderDetail" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
         BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
          if (baseRes.resultCode == 1) {
              NSLog(@"%@", response);
-            self.orderModel = [RequestMyBminorderDetailModel yy_modelWithJSON:baseRes.data];
-            [self viewGetData];
+            weakSelf.orderModel = [RequestMyBminorderDetailModel yy_modelWithJSON:baseRes.data];
+            [weakSelf viewGetData];
+             [weakSelf HiddenNodataView];
         }else {
-          [self showToast:baseRes.msg];//   [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+          [weakSelf showToast:baseRes.msg];
         }
     } faild:^(id error) {
         
