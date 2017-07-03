@@ -51,7 +51,8 @@
 @property (nonatomic, strong) NSString  *faceAmount ;
 
 
-
+///距离(新增)
+@property (nonatomic, strong) NSString  *distance ;
 
 
 

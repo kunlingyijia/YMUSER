@@ -32,12 +32,12 @@
     self.expireTime .text = model.expireTime;;
     if (model.couponType == 1) {
         self.couponType.text = @"满减券";
-        self.priceLabel.text = [NSString stringWithFormat:@"%.0f", model.mVaule];
-        self.contentLabel.text = [NSString stringWithFormat:@"满%.0f减%.0f", model.mPrice,model.mVaule];
+        self.priceLabel.text = [NSString stringWithFormat:@"%.2f", model.mVaule];
+        self.contentLabel.text = [NSString stringWithFormat:@"满%.2f减%.2f", model.mPrice,model.mVaule];
     }else if (model.couponType == 2)  {
         self.couponType.text = @"立减券";
-        self.priceLabel.text = [NSString stringWithFormat:@"%.0f", model.lValue];
-        self.contentLabel.text =[NSString stringWithFormat:@"立减%.0f", model.lValue];
+        self.priceLabel.text = [NSString stringWithFormat:@"%.2f", model.lValue];
+        self.contentLabel.text =[NSString stringWithFormat:@"立减%.2f", model.lValue];
 
     }else {
         self.couponType.text = @"折扣券";

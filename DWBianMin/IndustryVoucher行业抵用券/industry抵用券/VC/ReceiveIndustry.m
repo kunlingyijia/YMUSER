@@ -31,9 +31,6 @@
     [faceAmount addAttribute:NSFontAttributeName
                        value:[UIFont systemFontOfSize:10]
                        range:NSMakeRange(0, 1)];
-    [faceAmount addAttribute:NSFontAttributeName
-                       value:[UIFont systemFontOfSize:20]
-                       range:NSMakeRange(1, _industryModel.faceAmount.length-2)];
     _faceAmount.attributedText  =faceAmount;
 }
 - (IBAction)submitAction:(UIButton *)sender {

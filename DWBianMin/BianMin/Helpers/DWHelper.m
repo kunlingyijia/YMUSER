@@ -335,8 +335,7 @@
 //        //应用注册scheme,在AlixPayDemo-Info.plist定义URL types
 //        //标识 支付后根据这个值跳转到这个App (要在info中设置 见图片http://blog.sina.com.cn/s/blog_6f72ff900102v4vp.html)
         NSString *appScheme = @"dwbm";
-
-            [[AlipaySDK defaultService] payOrder:str fromScheme:appScheme callback:^(NSDictionary *resultDic) {
+        [[AlipaySDK defaultService] payOrder:str fromScheme:appScheme callback:^(NSDictionary *resultDic) {
                 NSLog(@"reslut = %@",resultDic);
                 NSString *resultStatus = resultDic[@"resultStatus"];
                 NSLog(@"%@",resultDic[@"memo"]);

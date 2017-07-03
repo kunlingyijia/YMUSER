@@ -45,13 +45,13 @@
 @property (nonatomic, assign) NSInteger cellIndex;
 @property (nonatomic, assign) NSInteger isKind;
 @property (nonatomic, assign) NSInteger count;
-
 @end
-
 @implementation DWClassPageViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     //获取经纬度
     [[DWHelper shareHelper]getloaction];
     [self getClassKind];
@@ -81,7 +81,7 @@
     [self getClassKind];
     self.businessIndex = 0;
     self.factorNum = 1;
-    self.tableView.frame = CGRectMake(0, 40, Width, Height-64-40);
+    self.tableView.frame = CGRectMake(0, 40, Width, Height-64-40-40);
     [self.bmTableView removeFromSuperview];
     
     [self.dropDownView setTitle:@"全部" inSection:0];
@@ -98,7 +98,6 @@
     merchantL.pageIndex = self.count;
     merchantL.regionId = [AuthenticationModel getRegionID];
     merchantL.sort =[NSString stringWithFormat:@"%ld", (long)sort];
-    
     DWHelper *helper = [DWHelper shareHelper];
     merchantL.lng = [NSString stringWithFormat:@"%f", helper.coordinate.longitude];
     merchantL.lat = [NSString stringWithFormat:@"%f", helper.coordinate.latitude];
@@ -138,19 +137,15 @@
 }
 
 - (void)stupTableView {
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, Bounds.size.width, Bounds.size.height - 104) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, Bounds.size.width, Bounds.size.height - 104-40) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    //self.tableView.backgroundColor =[UIColor colorWithHexString:kViewBg];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView registerClass:[DWMainPageTableViewCell class] forCellReuseIdentifier:@"HomePageCell"];
-    
-//    self.tableView.rowHeight = 80;
-    self.tableView.rowHeight = Width *0.19;
+        self.tableView.rowHeight = Width *0.19;
     [self.tableView tableViewregisterNibArray:@[@"GoodsListOneCell"]];
         self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [self.view addSubview:self.tableView];
-    
     __weak DWClassPageViewController *weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         weakSelf.count = 1;
@@ -200,7 +195,7 @@
     if (self.chooseArray.count == 3) {
         if (section == 0) {
             self.cellIndex = 0;
-            self.tableView.frame= CGRectMake(0, 40, Width, Height-40-64);
+            self.tableView.frame= CGRectMake(0, 40, Width, Height-40-64-40);
             self.bmTableView.backgroundColor = [UIColor redColor];
             [self.bmTableView removeFromSuperview];
             //选择全部 不显示侧边
@@ -240,7 +235,7 @@
                 
                 [self.bmTableView removeFromSuperview];
                 
-                self.tableView.frame = CGRectMake(Width/4, 40, Width-Width/4, Height-40-64);
+                self.tableView.frame = CGRectMake(Width/4, 40, Width-Width/4, Height-40-64-40);
                 self.bmTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, Width/4, Height-40-64-44) style:UITableViewStylePlain];
                 self.bmTableView.delegate = self;
                 self.bmTableView.dataSource = self;
@@ -365,7 +360,7 @@
         shopController.merchantId = model.merchantId;
         [self.navigationController pushViewController:shopController animated:YES];
     }
-    
+
 }
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -414,7 +409,6 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self delayRun:model withIndex:kindIndex];
     });
-//    [self performSelector:@selector(delayRun:) withObject:model afterDelay:0.2];
 }
 
 - (void)delayRun:(RequestCateAndBusinessareaModel *)model withIndex:(NSInteger)kindIndex{
@@ -477,15 +471,12 @@
         
     }];
 }
-
 - (void)createDorpView {
     self.dropDownView = [[DropDownListView alloc] initWithFrame:CGRectMake(0,0, self.view.frame.size.width, 40) dataSource:self delegate:self isNavigation:NO titleColor:kNavigationBgColor];
     self.dropDownView.backgroundColor = [UIColor whiteColor];
     self.dropDownView.mSuperView = self.view;
     self.dropDownView.hightArray = [NSMutableArray arrayWithArray:self.chooseArray];
-    
     [self.view addSubview:self.dropDownView];
-    
     if (self.isNewController == 6) {
         [self showBackBtn];
         [self delayRun:self.model withIndex:0];
@@ -508,8 +499,8 @@
             return;
         }
         
-        self.tableView.frame = CGRectMake(Width/4, 40, Width-Width/4, Height-40-64);
-        self.bmTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, Width/4, Height-40-64) style:UITableViewStylePlain];
+        self.tableView.frame = CGRectMake(Width/4, 40, Width-Width/4, Height-40-64-40);
+        self.bmTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, Width/4, Height-40-64-40) style:UITableViewStylePlain];
         self.bmTableView.delegate = self;
         self.bmTableView.dataSource = self;
 //        [self.bmTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"bmCell"];

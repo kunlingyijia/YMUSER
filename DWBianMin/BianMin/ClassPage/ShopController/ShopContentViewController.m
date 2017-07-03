@@ -326,22 +326,22 @@
     
     if (buttonIndex == 0) {
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://map/"]]) {
-            NSString *name = @"";
+            NSString *name = self.shopModel.address;
             CLLocationCoordinate2D Coordinate ;
             Coordinate.latitude = [self.shopModel.lat doubleValue];
             Coordinate.longitude = [self.shopModel.lng doubleValue];
             CLLocationCoordinate2D Coordinate2D = [self BD09FromGCJ02:Coordinate];
             
             NSString *urlString = [NSString stringWithFormat:@"baidumap://map/direction?origin=latlng:%f,%f|name:我的位置&destination=latlng:%f,%f|name:%@&mode=transit",startLocation.latitude, startLocation.longitude,  Coordinate2D.latitude, Coordinate2D.longitude, name];
-            //NSString *urlString = [NSString stringWithFormat:@"baidumap://map/direction?origin=latlng:%f,%f|name:我的位置&destination=latlng:%f,%f|name:%@&mode=transit",startLocation.latitude, startLocation.longitude,  [self.shopModel.lat floatValue], [self.shopModel.lng floatValue], name];
             [self openMap:urlString];
         }else {
             [self sheetAction:@"百度地图"];
         }
     }else if( buttonIndex == 1) {
+         //style  导航方式(0 速度快; 1 费用少; 2 路程短; 3 不走高速；4 躲避拥堵；5 不走高速且避免收费；6 不走高速且躲避拥堵；7 躲避收费和拥堵；8 不走高速躲避收费和拥堵)
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]){
-             NSString *name = @"东吴科技";
-            NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=3",name, [self.shopModel.lat floatValue], [self.shopModel.lng floatValue]];
+            NSString *name = self.shopModel.address;
+            NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=2",name, [self.shopModel.lat floatValue], [self.shopModel.lng floatValue]];
             [self openMap:urlString];
         }else {
             [self sheetAction:@"高德地图"];

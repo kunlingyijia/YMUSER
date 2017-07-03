@@ -29,6 +29,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self showBackBtn:^{
+        
+       
+        
+        for (UIViewController *tempVC in self.navigationController.viewControllers) {
+            if ([tempVC isKindOfClass:[OrderContentViewController class]]) {
+                [self.navigationController popToViewController:tempVC animated:YES];
+                return ;
+            }
+        }        
         OrderContentViewController *orderController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"OrderContentViewController"];
         orderController.orderNo = self.payOrderModel.orderNo;
         orderController.goodsOrderId =self.payOrderModel.goodsOrderId;
@@ -49,7 +58,7 @@
     self.priceLabel.text =[NSString stringWithFormat:@"总价:%.2f元",self.goodsModel.price * [self.goodsModel.goodsNumber intValue]];
     self.onePriceLabel.text = [NSString stringWithFormat:@"单价:%.2f元", self.goodsModel.price];
     self.numberLabel.text = [NSString stringWithFormat:@"数量:x%@", self.goodsModel.goodsNumber];
-    [self.payBtn setTitle:[NSString stringWithFormat:@"确认支付:%.2f元",self.sumPrice] forState:0];
+    [self.payBtn setTitle:[NSString stringWithFormat:@"确认支付:%@元",self.payOrderModel.payAmount] forState:0];
     //支付成功后的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccessAction:) name:@"支付成功" object:nil];
 }

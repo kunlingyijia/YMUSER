@@ -16,7 +16,7 @@
 #import "RequestAgreementLinksModel.h"
 #import <UIButton+LXMImagePosition.h>
 #import "SDPhotoBrowser.h"
-@interface BMShopContentController ()<SDPhotoBrowserDelegate>
+@interface BMShopContentController ()<SDPhotoBrowserDelegate,UIActionSheetDelegate>
 ///商家详情
 @property (nonatomic, strong) UIScrollView *scrollerView;
 @property (nonatomic, strong) UIView *container;
@@ -422,46 +422,56 @@
 #pragma mark - 自定义方法
 //地图
 - (void)mapAction:(UITapGestureRecognizer *)sender {
-        DWHelper *helper = [DWHelper shareHelper];
-        CLLocationCoordinate2D startLocation = helper.coordinate;
-    
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"选择地图" preferredStyle:UIAlertControllerStyleActionSheet];
-    
-        [alertController addAction:[UIAlertAction actionWithTitle:@"百度地图" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSString *name = @"";
-            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://map/"]]) {
-                NSString *urlString = [NSString stringWithFormat:@"baidumap://map/direction?origin=latlng:%f,%f|name:我的位置&destination=latlng:%f,%f|name:%@&mode=transit",
-                                       startLocation.latitude, startLocation.longitude,  [self.shopModel.lat floatValue], [self.shopModel.lng floatValue], name];
-                [self openMap:urlString];
-            }else {
-                [self sheetAction:@"百度"];
-            }
-        }]];
-    
-        [alertController addAction:[UIAlertAction actionWithTitle:@"高德地图" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSString *name = @"东吴科技";
-            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]){
-                NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=3",
-                                       name, 26.083490, 119.318280];
-    
-                [self openMap:urlString];
-            }else {
-                [self sheetAction:@"高德"];
-            }
-        }]];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-        [self presentViewController:alertController animated:YES completion:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"提示" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"百度地图",@"高德地图", nil];
+    [sheet showInView:self.view];
 }
-- (void)sheetAction:(NSString *)title {
-    UIAlertView *alertController = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    [alertController show];
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    DWHelper *helper = [DWHelper shareHelper];
+    CLLocationCoordinate2D startLocation = helper.coordinate;
+    if (buttonIndex == 0) {
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://map/"]]) {
+            NSString *name =self.shopModel.address;
+            CLLocationCoordinate2D Coordinate ;
+            Coordinate.latitude = [self.shopModel.lat doubleValue];
+            Coordinate.longitude = [self.shopModel.lng doubleValue];
+            CLLocationCoordinate2D Coordinate2D = [self BD09FromGCJ02:Coordinate];
+            NSString *urlString = [NSString stringWithFormat:@"baidumap://map/direction?origin=latlng:%f,%f|name:我的位置&destination=latlng:%f,%f|name:%@&mode=transit",startLocation.latitude, startLocation.longitude,  Coordinate2D.latitude, Coordinate2D.longitude, name];
+
+            [self openMap:urlString];
+        }else {
+            [self sheetAction:@"百度地图"];
+        }
+    }else if( buttonIndex == 1) {
+        //style  导航方式(0 速度快; 1 费用少; 2 路程短; 3 不走高速；4 躲避拥堵；5 不走高速且避免收费；6 不走高速且躲避拥堵；7 躲避收费和拥堵；8 不走高速躲避收费和拥堵)
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]){
+            NSString *name =self.shopModel.address;
+            NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=2",name, [self.shopModel.lat floatValue], [self.shopModel.lng floatValue]];
+            [self openMap:urlString];
+        }else {
+            [self sheetAction:@"高德地图"];
+        }
+    }
 }
 - (void)openMap:(NSString *)urlString {
     NSString *string = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:string];
     [[UIApplication sharedApplication] openURL:url];
 }
-
+// 高德坐标转百度坐标
+- (CLLocationCoordinate2D)BD09FromGCJ02:(CLLocationCoordinate2D)coor
+{
+    CLLocationDegrees x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+    CLLocationDegrees x = coor.longitude, y = coor.latitude;
+    CLLocationDegrees z = sqrt(x * x + y * y) + 0.00002 * sin(y * x_pi);
+    CLLocationDegrees theta = atan2(y, x) + 0.000003 * cos(x * x_pi);
+    CLLocationDegrees bd_lon = z * cos(theta) + 0.0065;
+    CLLocationDegrees bd_lat = z * sin(theta) + 0.006;
+    return CLLocationCoordinate2DMake(bd_lat, bd_lon);
+}
+- (void)sheetAction:(NSString *)title {
+    UIAlertView *alertController = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"您还未安装%@客户端,请安装", title] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alertController show];
+}
 //打电话
 - (void)callAction:(UITapGestureRecognizer *)sender {
     
@@ -628,9 +638,6 @@
 {
     return self.pictureArr[index];
 }
-
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

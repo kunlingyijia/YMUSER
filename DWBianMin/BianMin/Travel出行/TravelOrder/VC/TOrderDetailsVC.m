@@ -26,15 +26,20 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self requestMyOrderInfo];
-
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     //UI
     [self SET_UI];
     //数据
     [self  SET_DATA];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PublicReceiveIndustryVC:) name:@"跳转到行业抵用券" object:nil];
     
+}
+#pragma mark - 刷新
+-(void)PublicReceiveIndustryVC:(NSNotification*)sender{
+    [self requestMyOrderInfo];
 }
 #pragma mark - 关于UI
 -(void)SET_UI{
@@ -59,7 +64,6 @@
     NSString *Token =[AuthenticationModel getLoginToken];
     model.orderNo = self.orderNo;
     model.orderId = self.orderId;
-    
     __weak typeof(self) weakself = self;
     if (Token.length!= 0) {
         BaseRequest *baseReq = [[BaseRequest alloc] init];

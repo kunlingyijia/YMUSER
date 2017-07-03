@@ -35,7 +35,7 @@
         self.status.text = @"订单状态:已取消";
     }else{
     }
-    self.AllPrice.text = [NSString stringWithFormat:@"订单金额:%.2f元",[model.faceAmount floatValue]+[model.payAmount floatValue]];
+    self.AllPrice.text = [NSString stringWithFormat:@"订单金额:%.2f元",[model.price floatValue]];
     if ([model.faceAmount floatValue]==0) {
         self.faceAmount.text = @"行业抵用券:无";
     }else{

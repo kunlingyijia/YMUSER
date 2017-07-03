@@ -1198,7 +1198,8 @@
 
         
         UIViewController * viewControllerNow = [self currentViewController];
-        if ([viewControllerNow  isKindOfClass:[PublicMessageVC class]]) {   //如果是页面XXX，则执行下面语句
+        if ([viewControllerNow  isKindOfClass:[ReceiveIndustry class]]) {   //如果是页面XXX，则执行下面语句
+            
             [viewControllerNow presentViewController:message animated:NO completion:^{
             }];
 
@@ -1209,7 +1210,7 @@
             
         }
     }else{
-                LoginController *loginC = [[LoginController alloc] init];
+         LoginController *loginC = [[LoginController alloc] init];
         [self.navigationController pushViewController:loginC animated:YES];
     }
 

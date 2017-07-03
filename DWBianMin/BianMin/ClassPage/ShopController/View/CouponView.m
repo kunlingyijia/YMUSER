@@ -81,7 +81,7 @@
                 contentLabel.font = [UIFont systemFontOfSize:6];
                 contentLabel.textColor = [UIColor whiteColor];
                 contentLabel.textAlignment = NSTextAlignmentCenter;
-                contentLabel.text = [NSString stringWithFormat:@"满%.0f元,立减%.2f元", model.mPrice, model.mVaule];
+                contentLabel.text = [NSString stringWithFormat:@"满%.2f元,立减%.2f元", model.mPrice, model.mVaule];
                 [contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.right.equalTo(bgView);
                     make.left.equalTo(getLabel).with.offset(-10);
@@ -100,7 +100,7 @@
                 }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
-                priceLabel.text = [NSString stringWithFormat:@"%.0f", model.mVaule];
+                priceLabel.text = [NSString stringWithFormat:@"%.2f", model.mVaule];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
@@ -141,7 +141,7 @@
                 }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
-                priceLabel.text = [NSString stringWithFormat:@"%.0f", model.lValue];
+                priceLabel.text = [NSString stringWithFormat:@"%.2f", model.lValue];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
@@ -225,7 +225,7 @@
                 contentLabel.font = [UIFont systemFontOfSize:6];
                 contentLabel.textColor = [UIColor whiteColor];
                 contentLabel.textAlignment = NSTextAlignmentCenter;
-                contentLabel.text = [NSString stringWithFormat:@"满%.0f元,立减%.0f元", model.mPrice, model.mVaule];
+                contentLabel.text = [NSString stringWithFormat:@"满%.2f元,立减%.2f元", model.mPrice, model.mVaule];
                 [contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.right.equalTo(bgView);
                     make.left.equalTo(getLabel).with.offset(-10);
@@ -244,7 +244,7 @@
                 }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
-                priceLabel.text = [NSString stringWithFormat:@"%.0f", model.mVaule];
+                priceLabel.text = [NSString stringWithFormat:@"%.2f", model.mVaule];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
@@ -285,7 +285,7 @@
                 }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
-                priceLabel.text = [NSString stringWithFormat:@"%.0f", model.lValue];
+                priceLabel.text = [NSString stringWithFormat:@"%.2f", model.lValue];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
@@ -307,7 +307,7 @@
                 UILabel *moneyLabel = [UILabel new];
                 [bgView addSubview:moneyLabel];
                 moneyLabel.textAlignment = NSTextAlignmentRight;
-                moneyLabel.text = [NSString stringWithFormat:@"%.0f", model.dValue];
+                moneyLabel.text = [NSString stringWithFormat:@"%ld", (long)model.dValue];
                 moneyLabel.textColor = [UIColor whiteColor];
                 [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);

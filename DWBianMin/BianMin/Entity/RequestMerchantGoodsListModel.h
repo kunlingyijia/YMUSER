@@ -43,7 +43,7 @@
 ///		Int	卡券领取id
 @property (nonatomic, strong) NSString  *couponUserId ;
 
-
+@property (nonatomic, copy) NSString *payAmount;
 
 
 @end

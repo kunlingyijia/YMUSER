@@ -179,14 +179,14 @@
         if (model.couponType == 0)  {
             AllPrice =weakSelf.AllPrice;
         }else  if (model.couponType == 1) {
-            Amount = [NSString stringWithFormat:@"-¥%.0f", model.mVaule];
+            Amount = [NSString stringWithFormat:@"-¥%.2f", model.mVaule];
             AllPrice = [NSString stringWithFormat:@"%.2f",[weakSelf.AllPrice floatValue]-model.mVaule];
         }else if (model.couponType == 2)  {            
             if ([weakSelf.AllPrice floatValue]-model.lValue<0) {
-                Amount = [NSString stringWithFormat:@"-¥%.2f", [weakSelf.AllPrice floatValue]];
-                  AllPrice = @"0.00";
+                Amount = [NSString stringWithFormat:@"-¥%.2f", model.lValue];
+                AllPrice = @"0.00";
             }else{
-            Amount = [NSString stringWithFormat:@"-¥%.0f", model.lValue];
+            Amount = [NSString stringWithFormat:@"-¥%.2f", model.lValue];
             AllPrice = [NSString stringWithFormat:@"%.2f",[weakSelf.AllPrice floatValue]-model.lValue];
             }
         }else  if(industryModel.couponType ==3 ){
@@ -216,12 +216,10 @@
 #pragma mark - 行业
 - (IBAction)hangyeBtnAction:(UIButton *)sender {
     [self.view endEditing:YES];
-
     //Push 跳转
     industryUseVC * VC = [[industryUseVC alloc]initWithNibName:@"industryUseVC" bundle:nil];
     __block IndustryModel * model =[IndustryModel new];
     model.merchantId = self.goodsModel.merchantId;
-   //model. companyId = @"1";
    model.amount = _hangyePrice ;
    model.industryCouponUserId = self.goodsModel.industryCouponUserId;
     __weak typeof(self) weakSelf = self;
@@ -229,7 +227,6 @@
       __block  NSString *AllPrice ;
         AllPrice = [NSString stringWithFormat:@"%.2f", [_hangyePrice floatValue]-[industryModel.amount floatValue]];
         weakSelf.goodsModel.industryCouponUserId = industryModel.industryCouponUserId;
-        
         [_hangyeBtn setTitle:weakSelf.goodsModel.industryCouponUserId.length ==0 ?@"使用行业抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]forState:0];
         [_hangyeBtn setTitleColor:weakSelf.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
         weakSelf.AllPrice = weakSelf.goodsModel.industryCouponUserId.length == 0 ? _hangyePrice :AllPrice;

@@ -83,7 +83,7 @@
     self.pictureImage .layer.cornerRadius = 3.0;
     [self loadImageWithView:self.pictureImage urlStr:self.messageModel.originUrl];
     self.nameLabel.text = self.messageModel.goodsName;
-    self.subNameLabel.text = self.messageModel.content;
+    //self.subNameLabel.text = self.messageModel.content;
     self.priceLaebl.text = [NSString stringWithFormat:@"¥%.2f", self.messageModel.price];
     UIButton *buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [buyBtn setTitle:@"付款" forState:UIControlStateNormal];
@@ -99,7 +99,7 @@
         make.right.equalTo(self.container).with.offset(-10);
         make.height.mas_equalTo(@(30));
     }];
-    NSInteger heightCount = self.messageModel.coupons.count;
+  __block  NSInteger heightCount = self.messageModel.coupons.count;
     self.bgView = [[UIView alloc] init];
     [self.container addSubview:self.bgView];
     if ([self.messageModel.status isEqualToString: @"2"]) {
@@ -108,13 +108,28 @@
             make.right.left.equalTo(self.container);
             make.height.mas_equalTo(65 + heightCount*(30+5)+30);
         }];
-    }else {
+    } else if ([self.messageModel.status isEqualToString: @"4"]) {
+        [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(buyBtn.mas_bottom);
+            make.right.left.equalTo(self.container);
+            make.height.mas_equalTo(65 + heightCount*(30+5)+30);
+        }];
+    }else if([self.messageModel.status isEqualToString: @"8"]) {
+        [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(buyBtn.mas_bottom);
+            make.right.left.equalTo(self.container);
+            make.height.mas_equalTo(65 + heightCount*(30+5)+30);
+        }];
+        
+        
+    }else{
         [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(buyBtn.mas_bottom);
             make.right.left.equalTo(self.container);
             make.height.mas_equalTo(65 + heightCount*(30+5));
         }];
     }
+
     self.bgView.backgroundColor = [UIColor whiteColor];
     UILabel *showOrder = [UILabel new];
     [self.bgView addSubview:showOrder];
@@ -269,7 +284,7 @@
         }];
     }
     
-    if ([self.messageModel.status isEqualToString: @"2"]) {
+    if ([self.messageModel.status isEqualToString: @"2"]||[self.messageModel.status isEqualToString: @"4"]||[self.messageModel.status isEqualToString: @"8"]) {
         UIButton *refundMessage = [UIButton buttonWithType:UIButtonTypeCustom];
         [refundMessage setTitle:@"退款详情" forState:UIControlStateNormal];
         refundMessage.titleLabel.font = [UIFont systemFontOfSize:12];
@@ -278,7 +293,7 @@
         refundMessage.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [self.bgView addSubview:refundMessage];
         [refundMessage mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(self.bgView);
+            make.bottom.equalTo(self.bgView.mas_bottom);
             make.left.equalTo(self.bgView).with.offset(10);
             make.right.equalTo(self.bgView).with.offset(-30);
             make.height.mas_equalTo(@(30));
@@ -290,7 +305,7 @@
         [refundImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(refundMessage);
             make.left.equalTo(refundMessage.mas_right);
-            make.size.mas_equalTo(CGSizeMake(20, 20));
+            make.size.mas_equalTo(CGSizeMake(8, 15));
         }];
         UIView *refundLine = [UIView new];
         refundLine.backgroundColor = [UIColor colorWithHexString:kViewBg];
@@ -373,12 +388,14 @@
         make.size.mas_equalTo(CGSizeMake(15, 15));
     }];
     UILabel *distanceL = [UILabel new];
-    double distance = [self getStarWith:self.shopModel];
-    if (distance > 1) {
-        distanceL.text = [NSString stringWithFormat:@"%.1fkm", distance];
-    }else {
-        distanceL.text = [NSString stringWithFormat:@"%.0fm", distance*1000];
-    }
+    distanceL.text = self.shopModel.distance;
+//    double distance = [self getStarWith:self.shopModel];
+//    
+//    if (distance > 1) {
+//        distanceL.text = [NSString stringWithFormat:@"%.1fkm", distance];
+//    }else {
+//        distanceL.text = [NSString stringWithFormat:@"%.0fm", distance*1000];
+//    }
     distanceL.textColor = [UIColor colorWithHexString:kSubTitleColor];
     distanceL.font = [UIFont systemFontOfSize:12];
     [shopBgview addSubview:distanceL];
@@ -575,7 +592,7 @@
     }];
     UILabel *HangyeNo = [UILabel new];
     if (![self.messageModel.faceAmount isEqualToString:@"0"]) {
-       HangyeNo.text = [NSString stringWithFormat:@"%@元",  self.messageModel.faceAmount];
+       HangyeNo.text = [NSString stringWithFormat:@"-%@元",  self.messageModel.faceAmount];
     }else {
         HangyeNo.text = @"无";
     }
@@ -661,7 +678,7 @@
     CLLocationCoordinate2D startLocation = helper.coordinate;
     if (buttonIndex == 0) {
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://map/"]]) {
-            NSString *name = @"";
+            NSString *name =self.shopModel.address;
             CLLocationCoordinate2D Coordinate ;
             Coordinate.latitude = [self.shopModel.lat doubleValue];
             Coordinate.longitude = [self.shopModel.lng doubleValue];
@@ -673,10 +690,10 @@
             [self sheetAction:@"百度地图"];
         }
     }else if( buttonIndex == 1) {
+         //style  导航方式(0 速度快; 1 费用少; 2 路程短; 3 不走高速；4 躲避拥堵；5 不走高速且避免收费；6 不走高速且躲避拥堵；7 躲避收费和拥堵；8 不走高速躲避收费和拥堵)
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]){
-            NSString *name = @"东吴科技";
-
-            NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=3",name, [self.shopModel.lat floatValue], [self.shopModel.lng floatValue]];
+        NSString *name =self.shopModel.address;
+            NSString *urlString = [NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=applicationScheme&poiname=fangheng&poiid=BGVIS&lat=%f&lon=%f&dev=0&style=2",name, [self.shopModel.lat floatValue], [self.shopModel.lng floatValue]];
             [self openMap:urlString];
         }else {
             [self sheetAction:@"高德地图"];
