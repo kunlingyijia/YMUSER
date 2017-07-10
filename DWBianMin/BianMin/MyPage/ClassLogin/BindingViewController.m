@@ -158,20 +158,24 @@
         thirdBind.avatarUrl = self.userModel.profile_image_url;
         thirdBind.userName = self.userModel.screen_name;
         thirdBind.gender = self.userModel.gender;
+        thirdBind.registrationId = [[[[[UIDevice currentDevice] identifierForVendor] UUIDString] MD5Hash] substringToIndex:10];
         BaseRequest *baseReq = [[BaseRequest alloc] init];
         baseReq.encryptionType = RequestMD5;
         baseReq.data = thirdBind;
-        
         [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/User/requestBindPhoneNum" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
             NSLog(@"%@", response);
             LoginResponse *registResq = [LoginResponse yy_modelWithJSON:response];
             LoginResponse *registData = [LoginResponse yy_modelWithJSON:[registResq.data yy_modelToJSONString]];
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            [userDefaults setObject:registData.key forKey:@"loginKey"];
-            [userDefaults setObject:registData.token forKey:@"loginToken"];
             if (registResq.resultCode == 1) {
-                [self showToast:@"登录成功"];
                 NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                [userDefaults setObject:registData.key forKey:@"loginKey"];
+                [userDefaults setObject:registData.token forKey:@"loginToken"];
+                NSString *pushAlias
+                =registResq.data[@"pushAlias"];
+                if (pushAlias.length>0) {
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:registResq.data[@"pushAlias"] forKey:@"pushAlias"]];
+                }
+                [self showToast:@"登录成功"];
                 [userDefaults setObject:@(1) forKey:@"isLogin"];
                 DWHelper *helper =  [DWHelper shareHelper];
                 helper.isLogin = @(1);
@@ -181,11 +185,8 @@
                 });
             }else {
                 [self showToast:registResq.msg];
-               // [ProcessResultCode processResultCodeWithBaseRespone:registResq viewControll:self];
             }
             [self hideProgress];
-            
-            
         } faild:^(id error) {
             
         }];

@@ -80,7 +80,7 @@
 
 - (NSMutableArray *)nameArray {
     if (!_nameArray) {
-        self.nameArray = [NSMutableArray arrayWithObjects:@[@"便民订单",@"出行订单"],@[@"我的收藏",@"抵用券",@"行业抵用券"],@[ @"易民钱包"],@[@"联系客服"], nil];
+        self.nameArray = [NSMutableArray arrayWithObjects:@[@"便民订单",@"出行订单"],@[@"我的收藏",@"商家抵用券",@"行业抵用券"],@[ @"易民钱包"],@[@"联系客服"], nil];
     }
     return _nameArray;
 }
@@ -148,7 +148,9 @@
 }
 //程序运行时 判断是不是运行过 自动登录
 - (void)isloginAction {
-    [self loginAction];
+    [self netWorkUserMessage];
+
+    //[self loginAction];
 }
 //登录成功后执行的方法
 - (void)successLogin:(NSNotification *)sender {
@@ -160,7 +162,6 @@
 
 
 //请求个人信息
-
 - (void)loginAction {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *name = [userDefaults objectForKey:@"name"];
@@ -168,17 +169,21 @@
     RequestLogin *login = [[RequestLogin alloc] init];
     login.mobile = name;
     login.password = [passWord MD5Hash];
+    login.registrationId = [[[[[UIDevice currentDevice] identifierForVendor] UUIDString] MD5Hash] substringToIndex:10];
     BaseRequest *baseReq = [[BaseRequest alloc] init];
     baseReq.data = [login yy_modelToJSONObject];
     baseReq.encryptionType = RequestMD5;
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/User/requestLogin" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
         LoginResponse *registResq = [LoginResponse yy_modelWithJSON:response];
-        
         LoginResponse *registData = [LoginResponse yy_modelWithJSON:[registResq.data yy_modelToJSONString]];
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setObject:registData.key forKey:@"loginKey"];
-        [userDefaults setObject:registData.token forKey:@"loginToken"];
         if (registResq.resultCode == 1) {
+            [userDefaults setObject:registData.key forKey:@"loginKey"];
+            [userDefaults setObject:registData.token forKey:@"loginToken"];
+            NSString *pushAlias
+            =registResq.data[@"pushAlias"];
+            if (pushAlias.length>0) {
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:registResq.data[@"pushAlias"] forKey:@"pushAlias"]];
+            }
             [userDefaults setObject:@(1) forKey:@"isLogin"];
             DWHelper *helper =  [DWHelper shareHelper];
             helper.isLogin = @(1);
@@ -206,7 +211,7 @@
         self.userModel = [UserModel yy_modelWithJSON:innerModel.data];
         if (baseResponse.resultCode == 1) {
             NSLog(@"%@", self.userModel.userId);
-            [JPUSHService setAlias:self.userModel.pushAlias callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:self];
+            //[JPUSHService setAlias:self.userModel.pushAlias callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:self];
             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
             [userDefaults setObject:self.userModel.userId forKey:@"userID"];
             [self loginView];
@@ -382,14 +387,14 @@
         [weakself.tableView.mj_header endRefreshing];
     }];
     
-    //上拉加载
-    self.tableView. mj_footer=
-    [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        if ([self isLogin]) {
-            [self getOrderNumber];
-        }        // 进入刷新状态后会自动调用这个block
-        [weakself.tableView.mj_footer endRefreshing];
-    }];
+//    //上拉加载
+//    self.tableView. mj_footer=
+//    [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+//        if ([self isLogin]) {
+//            [self getOrderNumber];
+//        }        // 进入刷新状态后会自动调用这个block
+//        [weakself.tableView.mj_footer endRefreshing];
+//    }];
     
 }
 - (void)createHeaderView {
@@ -672,8 +677,7 @@
     NSString * title = self.nameArray[indexPath.section][indexPath.row];
      if ([self isLogin]) {
     if ([title isEqualToString:@"便民订单"]) {
-        BmOrderController *bmC = [[BmOrderController alloc] init];
-        [self.navigationController pushViewController:bmC animated:YES];
+        [self.navigationController pushViewController:[BmOrderController new] animated:YES];
     }
     if ([title isEqualToString:@"出行订单"]) {
         //Push 跳转
@@ -681,28 +685,30 @@
         [self.navigationController  pushViewController:VC animated:YES];
     }
     if ([title isEqualToString:@"我的收藏"]) {
-             MyCollectMerchant *m = [[MyCollectMerchant alloc] init];
-             [self.navigationController pushViewController:m animated:YES];
+             [self.navigationController pushViewController:[MyCollectMerchant new] animated:YES];
     }
-    if ([title isEqualToString:@"抵用券"]) {
-             [self.navigationController pushViewController:[[MyCouponList alloc] init] animated:YES];
+    if ([title isEqualToString:@"商家抵用券"]) {
+        [self.navigationController pushViewController:[[MyCouponList alloc] init] animated:YES];
     }
     if ([title isEqualToString:@"行业抵用券"]) {
-//        //Push 跳转
+        //Push 跳转
         IndustryListVC * VC = [[IndustryListVC alloc]initWithNibName:@"IndustryListVC" bundle:nil];
         [self.navigationController  pushViewController:VC animated:YES];
 
     }
     if ([title isEqualToString:@"易民钱包"]) {
-             [self webAction];
+        DWHelper *helper = [DWHelper shareHelper];
+        WebLoginController *webLogin = [[WebLoginController alloc] init];
+        webLogin.registUrl = helper.configModel.referralUrl;
+        [webLogin setUrl:helper.configModel.referralUrl];
+        [self.navigationController pushViewController:webLogin animated:YES];
+
     }
     if ([title isEqualToString:@"联系客服"]) {
              DWHelper *helper = [DWHelper shareHelper];
              [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
-                 
                  NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
                  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-                 
              } withCancel:^(UIAlertAction *cancelaction) {
              }];
          }
@@ -714,7 +720,6 @@
             [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
                 NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-                
             } withCancel:^(UIAlertAction *cancelaction) {
                 
             }];
@@ -726,77 +731,6 @@
     
     
     
-    
-    
-    
-//    
-//    if ([self isLogin]) {
-//        if (indexPath.section == 1) {
-//            if (indexPath.row == 0) {
-//                MyCollectMerchant *m = [[MyCollectMerchant alloc] init];
-//                [self.navigationController pushViewController:m animated:YES];
-//            }else if(indexPath.row == 1){
-//               [self.navigationController pushViewController:[[MyCouponList alloc] init] animated:YES];
-//            }else{
-//                
-//            }
-//        }
-//        if (indexPath.section == 2) {
-//            if (indexPath.row == 0) {
-//
-//                 [self webAction];
-//            }
-//        }
-//        if (indexPath.section == 3) {
-//            if (indexPath.row == 0) {
-//                DWHelper *helper = [DWHelper shareHelper];
-//                [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
-//                    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
-//                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-//                   
-//                } withCancel:^(UIAlertAction *cancelaction) {
-//                    
-//                }];
-//            }
-//        }
-//        if (indexPath.section == 4) {
-//            NewMerchantEnterController *merchatSettle = [[NewMerchantEnterController alloc] initWithNibName:@"NewMerchantEnterController" bundle:nil];
-//            [self.navigationController pushViewController:merchatSettle animated:YES];
-//        }
-//        
-//        if (indexPath.section == 0) {
-//            if (indexPath.row == 0) {
-//                BmOrderController *bmC = [[BmOrderController alloc] init];
-//                [self.navigationController pushViewController:bmC animated:YES];
-//            }else {
-//
-//                //Push 跳转
-//                TravelOrderVC * VC = [[TravelOrderVC alloc]initWithNibName:@"TravelOrderVC" bundle:nil];
-//                [self.navigationController  pushViewController:VC animated:YES];
-//            }
-//        }
-//    }else {
-//        if (indexPath.section == 3) {
-//            if (indexPath.row == 0) {
-//                __weak typeof(self) weakSelf = self;
-//                DWHelper *helper = [DWHelper shareHelper];
-//                [self alertWithTitle:@"温馨提示" message:@"是否拨客服电话?" OKWithTitle:@"确定" CancelWithTitle:@"稍后再说" withOKDefault:^(UIAlertAction *defaultaction) {
-//                                
-//                    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",helper.configModel.plat_kfmobile];
-//                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-//                    
-//                } withCancel:^(UIAlertAction *cancelaction) {
-//                    
-//                }];
-//            }
-//        }else{
-//            LoginController *loginController = [[LoginController alloc] init];
-//            [self.navigationController pushViewController:loginController animated:YES];
-//
-//        }
-//
-//       
-//    }
     
 }
 #pragma mark - UITableViewDataSource
@@ -814,7 +748,6 @@
     UIGraphicsBeginImageContextWithOptions(itemSize, NO,0.0);
     CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
     [icon drawInRect:imageRect];
-    
     cell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     cell.textLabel.text = nameArr[indexPath.row];
@@ -822,8 +755,6 @@
     cell.textLabel.textColor = [UIColor colorWithHexString:kTitleColor];
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-
     return cell;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -836,9 +767,6 @@
     if (iResCode == 6002) {
         [JPUSHService setAlias:self.userModel.pushAlias callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:self];
     }
-    
-    
-    NSLog(@"rescode: %d, \ntags: %@, \nalias: %@\n", iResCode, tags , alias);
 }
 #pragma UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -848,36 +776,6 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://0599114"]];
     }
 }
-
-- (void)webAction{
-    DWHelper *helper = [DWHelper shareHelper];
-    WebLoginController *webLogin = [[WebLoginController alloc] init];
-    webLogin.registUrl = helper.configModel.referralUrl;
-    [webLogin setUrl:helper.configModel.referralUrl];
-    [self.navigationController pushViewController:webLogin animated:YES];
-}
-
-
-
-
-- (void)UMShareAction:(id)sender {
-    
-//    NSString *appName = @"BianMin";
-//    NSString *urlScheme = @"";
-//    NSString *urlString = [[NSString stringWithFormat:@"iosamap://navi?sourceApplication=%@&backScheme=%@&lat=%f&lon=%f&dev=0&style=2",appName,urlScheme,111.11213, 165.0575] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-//    NSString *urlString = [[NSString stringWithFormat:@"baidumap://map/direction?origin=latlng:%f,%f|name:我的位置&destination=latlng:%f,%f|name:终点&mode=driving",12456.04, 11324.1,15646.41,1135465.4] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] ;
-//    
-//    //
-//    
-//    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:urlString]];
-    
-//    [[DWHelper shareHelper] UMShare:self];
-    
-    
-}
-
-
  #pragma mark -  //获取系统配置信息
 - (void)getConfig {
     BaseRequest *baseReq = [[BaseRequest alloc] init];

@@ -140,11 +140,11 @@
     NSInteger useCount = self.goodsMessageModel.coupons.count - couponArr.count;
     NSLog(@"%ld", useCount);
     if (useCount == self.goodsMessageModel.coupons.count) {
-        self.refundMoney.text = [NSString stringWithFormat:@"%.2f", self.goodsMessageModel.payAmount];
+        self.refundMoney.text = [NSString stringWithFormat:@"%@元", self.goodsMessageModel.returnAmount];
     }else {
-        CGFloat price = self.goodsMessageModel.price;
-        CGFloat allPrice = self.goodsMessageModel.payAmount - couponArr.count * price;
-        self.refundMoney.text = [NSString stringWithFormat:@"%.2f", allPrice];
+//        CGFloat price = self.goodsMessageModel.price;
+//        CGFloat allPrice = self.goodsMessageModel.returnAmount - couponArr.count * price;
+        self.refundMoney.text = [NSString stringWithFormat:@"%@元", self.goodsMessageModel.returnAmount];
     }
     
     self.passwordLabel.text = [NSString stringWithFormat:@"订单号:%@", self.goodsMessageModel.orderNo];

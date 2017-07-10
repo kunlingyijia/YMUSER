@@ -322,13 +322,10 @@
             PayViewController *payController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"PayViewController"];
             payController.goodsNum = [model.goodsNumber integerValue];
             payController.sumPrice = model.payAmount;
-            
-             RequestPayOrderModel *payModel = [RequestPayOrderModel yy_modelWithJSON:[model yy_modelToJSONString]];
+            RequestPayOrderModel *payModel = [RequestPayOrderModel yy_modelWithJSON:[model yy_modelToJSONString]];
             RequestMerchantGoodsListModel *goodsModel = [RequestMerchantGoodsListModel yy_modelWithJSON:[model yy_modelToJSONString]];
             payController.goodsModel = goodsModel;
-            
             payController.payOrderModel = payModel;
-            
             [weakSelf.navigationController pushViewController:payController animated:YES];
         }else if ([sender.payOrTalkBtn.titleLabel.text isEqualToString:@"退款详情"]) {
             RefundContentViewController *refundContentC = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"RefundContentViewController"];
@@ -337,8 +334,14 @@
             [weakSelf.navigationController pushViewController:refundContentC animated:YES];
         }else if ([sender.payOrTalkBtn.titleLabel.text isEqualToString:@"已退款"]) {
             [weakSelf showToast:@"已退款"];
-        }else if ([sender.payOrTalkBtn.titleLabel.text isEqualToString:@"已完成"]) {
-            [weakSelf showToast:@"订单已完成"];
+        }else if ([sender.payOrTalkBtn.titleLabel.text isEqualToString:@"查看详情"]) {
+//            [weakSelf showToast:@"订单已完成"];
+//            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            RequestMyGoodsOrderListModel *model = self.orderData[indexPath.row];
+            OrderContentViewController *orderController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"OrderContentViewController"];
+            orderController.orderNo = model.orderNo;
+            orderController.goodsOrderId = model.goodsOrderId;
+            [self.navigationController pushViewController:orderController animated:YES];
         }else if ([sender.payOrTalkBtn.titleLabel.text isEqualToString:@"订单取消"]) {
             [weakSelf showToast:@"订单已取消"];
         }

@@ -13,5 +13,8 @@
 @property (nonatomic, assign) NSInteger type;
 @property (nonatomic, copy) NSString *thirdPartToken;
 @property (nonatomic, copy) NSString *thirdPartUserId;
+///registrationId
+@property (nonatomic, strong) NSString  *registrationId ;
+
 
 @end

@@ -27,7 +27,6 @@
 #pragma mark - 视图已在屏幕上渲染完成
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
 }
 #pragma mark -  载入完成
 - (void)viewDidLoad {
@@ -48,7 +47,7 @@
     _blueView.backgroundColor =[UIColor colorWithHexString:kNavigationBgColor];
     [self.view addSubview:_blueView];
     self.title =@"行业抵用券";
-}
+} 
 #pragma mark - 关于tableView
 -(void)setUpTableView{
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, Width*0.125, Width, Height-64-Width*0.125) style:(UITableViewStyleGrouped)];

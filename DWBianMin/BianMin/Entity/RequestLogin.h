@@ -13,5 +13,8 @@
 @property (nonatomic, copy) NSString *mobile;
 @property (nonatomic, copy) NSString *password;
 @property (nonatomic, copy) NSString *bindMobile;
+///registrationId
+@property (nonatomic, strong) NSString  *registrationId ;
+
 
 @end

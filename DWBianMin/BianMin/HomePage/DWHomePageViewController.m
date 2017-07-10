@@ -36,7 +36,6 @@
 #import "RequestMerchantListModel.h"
 #import "RequestVersionUpdate.h"
 #import "RequestVersionUpdateModel.h"
-#import "PushMessageController.h"
 #import "RequestMenuList.h"
 #import "RequestCateAndBusinessareaModel.h"
 #import "GoOutViewController.h"
@@ -174,10 +173,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    DWMainPageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HomePageCell" forIndexPath:indexPath];
-//    RequestMerchantListModel *model = self.dataSource[indexPath.row];
-//    [cell cellGetDataModel:model WithController:self];
-//    return cell;
+
     GoodsListOneCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GoodsListOneCell" forIndexPath:indexPath];
         RequestMerchantListModel *model = self.dataSource[indexPath.row];
     cell.model = model;
@@ -346,14 +342,12 @@
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         }]];
         [alertView addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-           // [self VersionUpdate];
             //[self updateVerison];
         }]];
         [self presentViewController:alertView animated:YES completion:nil];
         
     }else {
          //[self updateVerison];
-       // [self VersionUpdate];
     }
     
 //    //判断是是7.0 之后还是8.0之后
@@ -480,9 +474,6 @@
 }
 #pragma mark - SearchBarViewDelegate
 - (void)searchBarSearchButtonClicked:(DWSearchBarView *)searchBarView {
-//    SearchViewController *searchController = [[SearchViewController alloc] init];
-//    [self.navigationController pushViewController:searchController animated:YES];
-    
     //Push 跳转
     SearchHistoryViewController * VC = [[SearchHistoryViewController alloc]initWithNibName:@"SearchHistoryViewController" bundle:nil];
     [self.navigationController  pushViewController:VC animated:YES];
@@ -512,10 +503,6 @@
         //Push 跳转
         PublicMessageVC * VC = [[PublicMessageVC alloc]initWithNibName:@"PublicMessageVC" bundle:nil];
         [self.navigationController  pushViewController:VC animated:YES];
-
-        
-//        PushMessageController *messageC = [[PushMessageController alloc] init];
-//        [self.navigationController pushViewController:messageC animated:YES];
     }else {
         LoginController *loginC = [[LoginController alloc] init];
         [self.navigationController pushViewController:loginC animated:YES];
@@ -536,7 +523,6 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
-//    self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     self.tableView.rowHeight = Width *0.19;
     
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -895,8 +881,6 @@
             }
         }else {
             [self showToast:baseRes.msg];
-
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
         }
         [self getShopKindData];
     } faild:^(id error) {
@@ -924,8 +908,6 @@
             }
         }else {
             [self showToast:baseRes.msg];
-
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
         }
         self.cycleScorllView.localizationImageNamesGroup = urlArr;
     } faild:^(id error) {
@@ -997,8 +979,6 @@
             }
         }else {
             [self showToast:baseRes.msg];
-
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
         }
         [self getShopKindData];
         [self.tableView reloadData];
@@ -1012,7 +992,6 @@
 - (void)getShopKindData {
     RequestMenuList *list = [[RequestMenuList alloc] init];
     list.regionId = [AuthenticationModel getRegionID];
-    
     BaseRequest *baseReq = [[BaseRequest alloc] init];
     baseReq.encryptionType = RequestMD5;
     baseReq.data = list;
@@ -1026,8 +1005,6 @@
             }
         }else {
             [self showToast:baseRes.msg];
-
-            //[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
         }
         self.tableView.tableHeaderView = [self headerViewForTableView:self.activeArr];
     } faild:^(id error) {
@@ -1057,62 +1034,6 @@
         
     }];
 }
-//检测版本
-- (void)VersionUpdate {
-    RequestVersionUpdate *update = [[RequestVersionUpdate alloc] init];
-    update.os = 1;
-    BaseRequest *baseReq = [[BaseRequest alloc] init];
-    baseReq.encryptionType = RequestMD5;
-    baseReq.data = update;
-    if ([self isLogin]) {
-        baseReq.token = [AuthenticationModel getLoginToken];
-    }
-    [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/Sys/requestVersionUpdate" sign:[[baseReq.data yy_modelToJSONString] MD5Hash] requestMethod:GET success:^(id response) {
-        BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
-        if (baseRes.resultCode == 1) {
-            RequestVersionUpdateModel *model = [RequestVersionUpdateModel yy_modelWithJSON:baseRes.data];
-            //            NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-            NSString *currentVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-            NSString *appStoreVersion = model.lastVersion;
-            NSLog(@"当前版本号:%@\n商店版本号:%@",currentVersion,appStoreVersion);
-            //设置版本号，主要是为了区分不同的版本，比如有1.2.1、1.2、1.31各种类型
-            currentVersion = [currentVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
-            if (currentVersion.length==2) {
-                currentVersion  = [currentVersion stringByAppendingString:@"0"];
-            }else if (currentVersion.length==1){
-                currentVersion  = [currentVersion stringByAppendingString:@"00"];
-            }
-            appStoreVersion = [appStoreVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
-            if (appStoreVersion.length==2) {
-                appStoreVersion  = [appStoreVersion stringByAppendingString:@"0"];
-            }else if (appStoreVersion.length==1){
-                appStoreVersion  = [appStoreVersion stringByAppendingString:@"00"];
-            }
-            
-            //4当前版本号小于商店版本号,就更新
-            if([currentVersion floatValue] < [appStoreVersion floatValue])
-            {
-                UIAlertController *alercConteoller = [UIAlertController alertControllerWithTitle:@"版本有更新" message:@"检测到新版本,是否前往更新?" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *actionYes = [UIAlertAction actionWithTitle:@"更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    //此处加入应用在app store的地址，方便用户去更新，一种实现方式如下
-                    NSURL *url = [NSURL URLWithString:model.downloadUrl];
-                    [[UIApplication sharedApplication] openURL:url];
-                }];
-                UIAlertAction *actionNo = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                }];
-                [alercConteoller addAction:actionYes];
-                [alercConteoller addAction:actionNo];
-                [self presentViewController:alercConteoller animated:YES completion:nil];
-            }else{
-                NSLog(@"版本号好像比商店大噢!检测到不需要更新");
-            }
-        }
-    } faild:^(id error) {
-        
-    }];
-}
-
-
 - (NSMutableArray *)classKindArr {
     if (!_classKindArr) {
         self.classKindArr = [NSMutableArray arrayWithCapacity:0];

@@ -59,7 +59,6 @@
 		6302F3821D6BE36B00561EA0 /* OrderDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6302F37F1D6BE36B00561EA0 /* OrderDetailViewController.xib */; };
 		630311E81CDB6C3B007CA583 /* FourShopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 630311E71CDB6C3B007CA583 /* FourShopCell.m */; };
 		6308B63F1D17EA9B007FE53E /* RequestUnbindSocialAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 6308B63E1D17EA9B007FE53E /* RequestUnbindSocialAccount.m */; };
-		630A92CD1D406B51007ACD7B /* PushMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 630A92CC1D406B51007ACD7B /* PushMessageController.m */; };
 		630A92D11D406F6C007ACD7B /* PushMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 630A92CF1D406F6C007ACD7B /* PushMessageCell.m */; };
 		630A92D21D406F6C007ACD7B /* PushMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 630A92D01D406F6C007ACD7B /* PushMessageCell.xib */; };
 		630A92D91D407B53007ACD7B /* MyCollectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 630A92D71D407B53007ACD7B /* MyCollectCell.m */; };
@@ -699,8 +698,6 @@
 		630311E71CDB6C3B007CA583 /* FourShopCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FourShopCell.m; sourceTree = "<group>"; };
 		6308B63D1D17EA9B007FE53E /* RequestUnbindSocialAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestUnbindSocialAccount.h; sourceTree = "<group>"; };
 		6308B63E1D17EA9B007FE53E /* RequestUnbindSocialAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestUnbindSocialAccount.m; sourceTree = "<group>"; };
-		630A92CB1D406B51007ACD7B /* PushMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushMessageController.h; sourceTree = "<group>"; };
-		630A92CC1D406B51007ACD7B /* PushMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushMessageController.m; sourceTree = "<group>"; };
 		630A92CE1D406F6C007ACD7B /* PushMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushMessageCell.h; sourceTree = "<group>"; };
 		630A92CF1D406F6C007ACD7B /* PushMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushMessageCell.m; sourceTree = "<group>"; };
 		630A92D01D406F6C007ACD7B /* PushMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PushMessageCell.xib; sourceTree = "<group>"; };
@@ -3065,8 +3062,6 @@
 				63CB581E1CE0953D002011F8 /* GovNewsViewController.m */,
 				63E06FDD1D1BDA2200C0E950 /* ActiveViewController.h */,
 				63E06FDE1D1BDA2200C0E950 /* ActiveViewController.m */,
-				630A92CB1D406B51007ACD7B /* PushMessageController.h */,
-				630A92CC1D406B51007ACD7B /* PushMessageController.m */,
 			);
 			path = HomePage;
 			sourceTree = "<group>";
@@ -4101,7 +4096,7 @@
 				TargetAttributes = {
 					63CACC0C1CC9C3F400FBF7E6 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = X57HHXYHRU;
+						DevelopmentTeam = 2M7G83HE4L;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
@@ -4730,7 +4725,6 @@
 				63275D6B1CE176D6003CA9E1 /* AdressCell.m in Sources */,
 				635C10DB1CCE02C700522BBA /* DWGuideViewController.m in Sources */,
 				BD42B1F91E5ACE10005FCE10 /* TripModel.m in Sources */,
-				630A92CD1D406B51007ACD7B /* PushMessageController.m in Sources */,
 				63D21A551CF47DDF00B7F8F8 /* RSADataVerifier.m in Sources */,
 				1926B2221CDAE7C8009B8C72 /* MerchantCategoryModel.m in Sources */,
 				BDF3AD4B1E5D7D7F00275D8B /* TripEWMVC.m in Sources */,
@@ -4865,7 +4859,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shenzhen Eztro Information Technology Co.Ltd.";
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: Shenzhen Eztro Information Technology Co.Ltd.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = X57HHXYHRU;
+				DEVELOPMENT_TEAM = 2M7G83HE4L;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4992,7 +4986,7 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bianmin;
 				PRODUCT_NAME = "易民";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5011,7 +5005,7 @@
 				CODE_SIGN_ENTITLEMENTS = "BianMin/易民.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shenzhen Eztro Information Technology Co.Ltd.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = X57HHXYHRU;
+				DEVELOPMENT_TEAM = 2M7G83HE4L;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5138,7 +5132,7 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dw.bianmin;
 				PRODUCT_NAME = "易民";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

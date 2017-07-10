@@ -24,7 +24,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UPb-TW-Y5S">
                     <rect key="frame" x="0.0" y="10" width="375" height="47"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AQ7-NV-pSl">
+                        <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AQ7-NV-pSl">
                             <rect key="frame" x="318" y="0.0" width="47" height="47"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="AQ7-NV-pSl" secondAttribute="height" id="NUc-m2-0qL"/>

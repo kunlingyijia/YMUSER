@@ -20,5 +20,8 @@
 @property (nonatomic, copy) NSString *avatarUrl;
 @property (nonatomic, copy) NSString *userName;
 @property (nonatomic, copy) NSString *gender;
+///registrationId
+@property (nonatomic, strong) NSString  *registrationId ;
+
 
 @end

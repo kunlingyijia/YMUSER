@@ -93,19 +93,24 @@
                 moneyLabel.text = @"¥";
                 moneyLabel.font = [UIFont systemFontOfSize:12];
                 moneyLabel.textColor = [UIColor whiteColor];
-                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(bgView).with.offset(17);
-                    make.centerX.equalTo(bgView);
-                    make.size.mas_equalTo(CGSizeMake(10, 10));
-                }];
+//                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//                    make.top.equalTo(bgView).with.offset(17);
+//                    make.centerX.equalTo(bgView);
+//                    make.size.mas_equalTo(CGSizeMake(10, 10));
+//                }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
                 priceLabel.text = [NSString stringWithFormat:@"%.2f", model.mVaule];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
-                    make.left.equalTo(moneyLabel.mas_right);
-                    make.size.mas_equalTo(CGSizeMake(50, 20));
+                    make.right.equalTo(bgView.mas_right);
+                    make.size.mas_equalTo(CGSizeMake(ImageWidth*0.7-10, 20));
+                }];
+                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(bgView).with.offset(17);
+                    make.right.equalTo(priceLabel.mas_left);
+                    make.size.mas_equalTo(CGSizeMake(10, 10));
                 }];
             }else if (model.couponType == 2){
                 UILabel *getLabel = [UILabel new];
@@ -134,21 +139,25 @@
                 moneyLabel.text = @"¥";
                 moneyLabel.font = [UIFont systemFontOfSize:12];
                 moneyLabel.textColor = [UIColor whiteColor];
-                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(bgView).with.offset(17);
-                    make.centerX.equalTo(bgView);
-                    make.size.mas_equalTo(CGSizeMake(10, 10));
-                }];
+//                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//                    make.top.equalTo(bgView).with.offset(17);
+//                    make.centerX.equalTo(bgView);
+//                    make.size.mas_equalTo(CGSizeMake(10, 10));
+//                }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
                 priceLabel.text = [NSString stringWithFormat:@"%.2f", model.lValue];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
-                    make.left.equalTo(moneyLabel.mas_right);
-                    make.size.mas_equalTo(CGSizeMake(50, 20));
+                    make.right.equalTo(bgView.mas_right);
+                    make.size.mas_equalTo(CGSizeMake(ImageWidth*0.7-10, 20));
                 }];
-
+                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(bgView).with.offset(17);
+                    make.right.equalTo(priceLabel.mas_left);
+                    make.size.mas_equalTo(CGSizeMake(10, 10));
+                }];
             }else {
                 if (model.isReceived == 1) {
                     getLabel.text = @"已经领取";
@@ -180,11 +189,11 @@
                 priceLabel.font = [UIFont systemFontOfSize:12];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(bgView).with.offset(16);
+                    make.top.equalTo(bgView).with.offset(10);
                     make.left.equalTo(moneyLabel.mas_right);
-                    make.size.mas_equalTo(CGSizeMake(20, 10));
+                    make.size.mas_equalTo(CGSizeMake(ImageWidth*0.7-10, 20));
                 }];
-                
+               
             }
             
         }else if(i  > 2 && i  < 6) {
@@ -237,19 +246,25 @@
                 moneyLabel.text = @"¥";
                 moneyLabel.font = [UIFont systemFontOfSize:12];
                 moneyLabel.textColor = [UIColor whiteColor];
-                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(bgView).with.offset(17);
-                    make.centerX.equalTo(bgView);
-                    make.size.mas_equalTo(CGSizeMake(10, 10));
-                }];
+//                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//                    make.top.equalTo(bgView).with.offset(17);
+//                    make.centerX.equalTo(bgView);
+//                    make.size.mas_equalTo(CGSizeMake(10, 10));
+//                }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
                 priceLabel.text = [NSString stringWithFormat:@"%.2f", model.mVaule];
+                priceLabel.backgroundColor = [UIColor redColor];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
-                    make.left.equalTo(moneyLabel.mas_right);
-                    make.size.mas_equalTo(CGSizeMake(50, 20));
+                    make.right.equalTo(bgView.mas_right);
+                    make.size.mas_equalTo(CGSizeMake(ImageWidth*0.7-10, 20));
+                }];
+                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(bgView).with.offset(17);
+                    make.right.equalTo(priceLabel.mas_left);
+                    make.size.mas_equalTo(CGSizeMake(10, 10));
                 }];
             }else if (model.couponType == 2){
                 UILabel *getLabel = [UILabel new];
@@ -278,21 +293,26 @@
                 moneyLabel.text = @"¥";
                 moneyLabel.font = [UIFont systemFontOfSize:12];
                 moneyLabel.textColor = [UIColor whiteColor];
-                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(bgView).with.offset(17);
-                    make.centerX.equalTo(bgView);
-                    make.size.mas_equalTo(CGSizeMake(10, 10));
-                }];
+//                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//                    make.top.equalTo(bgView).with.offset(17);
+//                    make.centerX.equalTo(bgView);
+//                    make.size.mas_equalTo(CGSizeMake(10, 10));
+               // }];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
                 priceLabel.text = [NSString stringWithFormat:@"%.2f", model.lValue];
                 priceLabel.textColor = [UIColor whiteColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(bgView).with.offset(10);
-                    make.left.equalTo(moneyLabel.mas_right);
+                    make.right.equalTo(bgView.mas_right);
                     make.size.mas_equalTo(CGSizeMake(50, 20));
                 }];
-                
+            [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(bgView).with.offset(17);
+                make.right.equalTo(priceLabel.mas_left);
+                make.size.mas_equalTo(CGSizeMake(10, 10));
+            }];
+            
             }else {
                 if (model.isReceived == 1) {
                     getLabel.text = @"已经领取";
@@ -314,16 +334,23 @@
                     make.centerX.equalTo(bgView);
                     make.size.mas_equalTo(CGSizeMake(30, 20));
                 }];
+                moneyLabel.backgroundColor = [UIColor yellowColor];
                 UILabel *priceLabel = [UILabel new];
                 [bgView addSubview:priceLabel];
                 priceLabel.text = @" 折";
                 priceLabel.font = [UIFont systemFontOfSize:12];
                 priceLabel.textColor = [UIColor whiteColor];
+                priceLabel.backgroundColor = [UIColor yellowColor];
                 [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.top.equalTo(bgView).with.offset(16);
+                    make.top.equalTo(bgView).with.offset(10);
                     make.left.equalTo(moneyLabel.mas_right);
-                    make.size.mas_equalTo(CGSizeMake(20, 10));
+                    make.size.mas_equalTo(CGSizeMake(50, 20));
                 }];
+//                [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//                    make.top.equalTo(bgView).with.offset(17);
+//                    make.right.equalTo(priceLabel.mas_left);
+//                    make.size.mas_equalTo(CGSizeMake(10, 10));
+//                }];
             }
         }else {
             break;

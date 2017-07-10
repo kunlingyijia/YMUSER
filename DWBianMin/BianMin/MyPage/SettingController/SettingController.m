@@ -153,6 +153,7 @@
     DWHelper *helper = [DWHelper shareHelper];
     [userDefaults setObject:@(0) forKey:@"isLogin"];
     helper.isLogin = @(0);
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:@"" forKey:@"pushAlias"]];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"退出账号" object:@"退出账号" userInfo:nil];
     [self.navigationController  popViewControllerAnimated:YES];
     OKLog(@"退出账号");

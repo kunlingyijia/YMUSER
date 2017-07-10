@@ -70,7 +70,6 @@ enum {
         self.gender.image = [UIImage imageNamed:@"性别－男"];
     }
     self.carNo.text = [NSString stringWithFormat:@" · %@",self.tripModel.carNo];
-    
     ///1-正常，2-满员，3-已发车，4-已结束
     if ([self.tripModel.planStatus isEqualToString:@"1"]) {
         [self.submitBtn setTitle:@"立即预约" forState:(UIControlStateNormal)];

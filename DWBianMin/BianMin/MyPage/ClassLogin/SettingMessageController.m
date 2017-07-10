@@ -248,7 +248,6 @@
     baseReq.encryptionType = AES;
     NSLog(@"%@", baseReq.data);
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString]  act:@"act=Api/User/requestModifyUserInfo" sign:[baseReq.data  MD5Hash] requestMethod:POST success:^(id response) {
-        
         BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
         NSLog(@"%@", response);
         if (baseRes.resultCode == 1) {

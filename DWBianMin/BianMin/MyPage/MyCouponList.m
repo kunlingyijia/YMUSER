@@ -11,15 +11,12 @@
 #import "RequestMyCouponList.h"
 #import "RequestMyCouponListModel.h"
 @interface MyCouponList()<UITableViewDelegate, UITableViewDataSource>
-
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSArray *fakeData;
 @property (nonatomic, strong) NSMutableArray *btnArray;
 @property (nonatomic, strong) UIView *lineV;
 @property (nonatomic, strong) NSMutableArray *dataSource;
 @property (nonatomic, assign) NSInteger pageIndex;
 @property (nonatomic, assign) NSInteger type;
-
 @end
 
 @implementation MyCouponList
@@ -42,14 +39,13 @@
     self.pageIndex = 1;
     self.type = 0;
     [self showBackBtn];
-    self.title = @"我的抵用券";
-    self.fakeData = [FakeData getHomePageShopData];
+    self.title = @"商家抵用券";
     [self initWithCustomView];
     [self creatBtn];
 }
 
 - (void)creatBtn {
-     CGFloat btnW = (Width - 3)/4;
+    CGFloat btnW = (Width - 3)/4;
     UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Width, 40)];
     bgView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:bgView];
@@ -93,22 +89,18 @@
     }];
     if ([sender.titleLabel.text isEqualToString:@"全部"]) {
         self.pageIndex = 1;
-        [self.dataSource removeAllObjects];
         self.type = 0;
         [self getDataList];
     }else if ([sender.titleLabel.text isEqualToString:@"已使用"]) {
         self.pageIndex = 1;
-        [self.dataSource removeAllObjects];
         self.type = 2;
         [self getDataList];
     }else if ([sender.titleLabel.text isEqualToString:@"未使用"]) {
         self.pageIndex = 1;
-        [self.dataSource removeAllObjects];
         self.type = 1;
         [self getDataList];
     }else if ([sender.titleLabel.text isEqualToString:@"已过期"]) {
         self.pageIndex = 1;
-        [self.dataSource removeAllObjects];
         self.type = 3;
         [self getDataList];
     }
@@ -147,17 +139,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.001;
 }
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-}
-
-
-
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
-
-
 }
 //iOS 8.0 后才有的方法
 -(NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -191,19 +174,8 @@
             }];
         }];
         return @[delete];
-   
-    
-    
-    
     
 }
-
-
-
-
-
-
-
 
 - (void)initWithCustomView{
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, Width, Height-40-64) style:UITableViewStylePlain];
@@ -213,14 +185,14 @@
     self.tableView.backgroundColor = [UIColor colorWithHexString:kViewBg];
     [self.tableView registerNib:[UINib nibWithNibName:@"MyCouponCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"myCouponCell"];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
+    __weak typeof(self) weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.pageIndex = 1;
-        [self getDataList];
+        weakSelf.pageIndex = 1;
+        [weakSelf getDataList];
     }];
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        self.pageIndex = self.pageIndex + 1;
-        [self getDataList];
+        weakSelf.pageIndex = weakSelf.pageIndex + 1;
+        [weakSelf getDataList];
     }];
     UIView *bgView = [[UIView alloc] init];
     bgView.backgroundColor = [UIColor colorWithHexString:kViewBg];
@@ -233,28 +205,27 @@
     couponList.pageCount = 10;
     couponList.pageIndex = self.pageIndex;
     couponList.status = self.type;
-    
     BaseRequest *baseReq = [[BaseRequest alloc] init];
     baseReq.token = [AuthenticationModel getLoginToken];
     baseReq.encryptionType = AES;
+    __weak typeof(self) weakSelf = self;
     baseReq.data = [AESCrypt encrypt:[couponList yy_modelToJSONString] password:[AuthenticationModel getLoginKey]];
     [[DWHelper shareHelper] requestDataWithParm:[baseReq yy_modelToJSONString] act:@"act=Api/User/requestMyCouponList" sign:[baseReq.data MD5Hash] requestMethod:GET success:^(id response) {
         BaseResponse *baseRes = [BaseResponse yy_modelWithJSON:response];
-        NSLog(@"%@", response);
         if (baseRes.resultCode == 1) {
-            if (self.pageIndex == 1) {
-                [self.dataSource removeAllObjects];
+            if (weakSelf.pageIndex == 1) {
+                [weakSelf.dataSource removeAllObjects];
             }
             for (NSDictionary *dic in baseRes.data) {
                 RequestMyCouponListModel *model = [RequestMyCouponListModel yy_modelWithDictionary:dic];
-                [self.dataSource addObject:model];
+                [weakSelf.dataSource addObject:model];
             }
         }else {
-             [self showToast:baseRes.msg];//[ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+             [weakSelf showToast:baseRes.msg];
         }
-        [self.tableView.mj_footer endRefreshing];
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView reloadData];
+        [weakSelf.tableView.mj_footer endRefreshing];
+        [weakSelf.tableView.mj_header endRefreshing];
+        [weakSelf.tableView reloadData];
     } faild:^(id error) {
         
     }];

@@ -328,6 +328,7 @@
     RequestLogin *login = [[RequestLogin alloc] init];
     login.mobile = name;
     login.password = [passWord MD5Hash];
+    login.registrationId = [[[[[UIDevice currentDevice] identifierForVendor] UUIDString] MD5Hash] substringToIndex:10];
     BaseRequest *baseReq = [[BaseRequest alloc] init];
     baseReq.data = [login yy_modelToJSONObject];
     baseReq.encryptionType = RequestMD5;
@@ -335,10 +336,15 @@
         NSLog(@"%@", response);
         LoginResponse *registResq = [LoginResponse yy_modelWithJSON:response];
         LoginResponse *registData = [LoginResponse yy_modelWithJSON:[registResq.data yy_modelToJSONString]];
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setObject:registData.key forKey:@"loginKey"];
-        [userDefaults setObject:registData.token forKey:@"loginToken"];
         if (registResq.resultCode == 1) {
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setObject:registData.key forKey:@"loginKey"];
+            [userDefaults setObject:registData.token forKey:@"loginToken"];
+            NSString *pushAlias
+            =registResq.data[@"pushAlias"];
+            if (pushAlias.length>0) {
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:registResq.data[@"pushAlias"] forKey:@"pushAlias"]];
+            }
             [userDefaults setObject:@(1) forKey:@"isLogin"];
             DWHelper *helper =  [DWHelper shareHelper];
             helper.isLogin = @(1);

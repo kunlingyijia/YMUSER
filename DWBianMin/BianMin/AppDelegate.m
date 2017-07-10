@@ -1,3 +1,5 @@
+
+
 //
 //  AppDelegate.m
 //  BianMin
@@ -26,7 +28,6 @@
 #import "ShopViewController.h"
 #import "JPUSHService.h"
 #import <AdSupport/AdSupport.h>
-#import "PushMessageController.h"
 #import "WebLoginController.h"
 #import "RequestWallet.h"
 #import "RequestWalletModel.h"
@@ -109,20 +110,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showActive:) name:@"登录成功" object:nil];
     //设置第三方
     [self SetUpThirdParty:launchOptions];
-    
     //设置别名
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(SetUpAlias:) name:@"设置别名" object:nil];
     //获取经纬度
      [[DWHelper shareHelper]getloaction];
     
-    
-   
-    
-
-    
-    
-   
-
     return YES;
 }
 
@@ -651,7 +643,6 @@
 -(void)JGPush:(NSDictionary *)launchOptions{
    
     NSString *advertisingId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-    
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
         JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
@@ -677,7 +668,7 @@
 //                          channel:channel
 //                 apsForProduction:isProduction
 //            advertisingIdentifier:advertisingId];
-        [JPUSHService setupWithOption:launchOptions appKey:@"bc6bf46b2d11135bf00723e7"
+        [JPUSHService setupWithOption:launchOptions appKey:JGKey
                               channel:@"官网"
                      apsForProduction:false
                 advertisingIdentifier:advertisingId];
@@ -685,14 +676,15 @@
     [JPUSHService registrationIDCompletionHandler:^(int resCode, NSString *registrationID) {
         if(resCode == 0){
             NSLog(@"registrationID获取成功：%@",registrationID);
-            //            [USER setObject:registrationID forKey:@"deviceToken"];
-            //            [USER synchronize];
+     NSUserDefaults*   USER   = [NSUserDefaults standardUserDefaults];
+     [USER setObject:registrationID forKey:@"registrationID"];
+     [USER synchronize];
         }
         else{
             NSLog(@"registrationID获取失败，code：%d",resCode);
         }
     }];
-    
+     NSString *uuid = [[NSUUID UUID] UUIDString];
     
     }
 #pragma mark - 注册通知
@@ -801,9 +793,6 @@
 
 #pragma mark------------------收到通知的页面处理
 -(void)receivePushMessage {
-
-
-    
     NSDictionary *dic =self.userInfo;
     if (dic.count==0) {
         return;

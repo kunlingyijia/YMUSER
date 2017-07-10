@@ -70,8 +70,8 @@
     self.goodsModel.couponId = @"";
     self.goodsModel.industryCouponUserId = @"";
     self.goodsModel.couponUserId = @"";
-    [_shangjiaBtn setTitle:self.goodsModel.couponId.length ==0 ?@"使用商家抵用券":@"" forState:0];
-    [_hangyeBtn setTitle:self.goodsModel.industryCouponUserId.length ==0 ?@"使用行业抵用券":@"" forState:0];
+    [_shangjiaBtn setTitle:self.goodsModel.couponId.length ==0 ?@"使用抵用券":@"" forState:0];
+    [_hangyeBtn setTitle:self.goodsModel.industryCouponUserId.length ==0 ?@"使用抵用券":@"" forState:0];
     _alltotalLabel.text = self.subtotalLabel.text;
 }
 
@@ -89,11 +89,11 @@
         self.goodsModel.couponId = @"";
         self.goodsModel.couponUserId = @"";
         self.goodsModel.industryCouponUserId = @"";
-        [_shangjiaBtn setTitle: @"使用商家抵用券"
+        [_shangjiaBtn setTitle: @"使用抵用券"
                     forState:0];
         [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
                          forState:0];
-        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitle:@"使用抵用券"forState:0];
         [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
     }
 }
@@ -112,11 +112,11 @@
         self.goodsModel.couponUserId = @"";
 
         self.goodsModel.industryCouponUserId = @"";
-        [_shangjiaBtn setTitle: @"使用商家抵用券"
+        [_shangjiaBtn setTitle: @"使用抵用券"
                       forState:0];
         [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
                            forState:0];
-        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitle:@"使用抵用券"forState:0];
         [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
     }
 }
@@ -132,11 +132,11 @@
 //        self.goodsModel.couponUserId = @"";
 //
 //        self.goodsModel.industryCouponUserId = @"";
-//        [_shangjiaBtn setTitle: @"使用商家抵用券"
+//        [_shangjiaBtn setTitle: @"使用抵用券"
 //                      forState:0];
 //        [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
 //                           forState:0];
-//        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+//        [_hangyeBtn setTitle:@"使用抵用券"forState:0];
 //        [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
 //    }else{
     int a=  [self.textTf.text intValue];
@@ -149,11 +149,11 @@
         self.goodsModel.couponUserId = @"";
 
         self.goodsModel.industryCouponUserId = @"";
-        [_shangjiaBtn setTitle: @"使用商家抵用券"
+        [_shangjiaBtn setTitle: @"使用抵用券"
                       forState:0];
         [_shangjiaBtn setTitleColor:self.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
                            forState:0];
-        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitle:@"使用抵用券"forState:0];
         [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
     //}
 }
@@ -166,7 +166,7 @@
     __weak typeof(self) weakSelf = self;
     VC.BusinessVouchersVCBlock = ^(IndustryModel * industryModel){
         weakSelf.goodsModel.industryCouponUserId = @"";
-        [_hangyeBtn setTitle:@"使用行业抵用券"forState:0];
+        [_hangyeBtn setTitle:@"使用抵用券"forState:0];
         [_hangyeBtn setTitleColor:self.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
         weakSelf.goodsModel.couponId = industryModel.couponId;
         weakSelf.goodsModel.couponUserId = industryModel.couponUserId;
@@ -199,7 +199,7 @@
             }
 
         }
-        [_shangjiaBtn setTitle:weakSelf.goodsModel.couponId.length ==0 ? @"使用商家抵用券": [NSString stringWithFormat:@"%@",Amount]
+        [_shangjiaBtn setTitle:weakSelf.goodsModel.couponId.length ==0 ? @"使用抵用券": [NSString stringWithFormat:@"%@",Amount]
                                      forState:0];
         [_shangjiaBtn setTitleColor:weakSelf.goodsModel.couponId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
            forState:0];
@@ -227,7 +227,7 @@
       __block  NSString *AllPrice ;
         AllPrice = [NSString stringWithFormat:@"%.2f", [_hangyePrice floatValue]-[industryModel.amount floatValue]];
         weakSelf.goodsModel.industryCouponUserId = industryModel.industryCouponUserId;
-        [_hangyeBtn setTitle:weakSelf.goodsModel.industryCouponUserId.length ==0 ?@"使用行业抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]forState:0];
+        [_hangyeBtn setTitle:weakSelf.goodsModel.industryCouponUserId.length ==0 ?@"使用抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]forState:0];
         [_hangyeBtn setTitleColor:weakSelf.goodsModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]forState:0];
         weakSelf.AllPrice = weakSelf.goodsModel.industryCouponUserId.length == 0 ? _hangyePrice :AllPrice;
         _alltotalLabel.text = [NSString stringWithFormat:@"%@元",weakSelf.goodsModel.industryCouponUserId.length == 0?_hangyePrice:AllPrice];

@@ -13,9 +13,6 @@
 - (CGFloat)getSingleLineTextWidthWithFont:(UIFont *)font withMaxWith:(float)maxWidth;
 //获取在规定size内 文本的高度
 - (CGFloat)getTextHeightWithFont:(UIFont *)font withMaxWith:(float)maxWidth;
-
-
-
 //中英文，转unicode 后获取长度
 -  (NSInteger)getUniCodeLength;
 

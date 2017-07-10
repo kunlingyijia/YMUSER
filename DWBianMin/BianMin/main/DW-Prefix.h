@@ -73,13 +73,30 @@
 ///正式
 //#define kServerUrl @"http://api.bmin.wang/?"
 ///测试
-//#define kServerUrl @"http://test.bmin.wang/?"
+#define kServerUrl @"http://test.bmin.wang/?"
 ///开发
-#define kServerUrl @"http://bmin.dongwuit.com/?"
-///正式地图
-#define GDKey @"a4725781981191b57d44936de2fbbe52"
-///测试地图
+//#define kServerUrl @"http://bmin.dongwuit.com/?"
+
+
+
+//地图
+#define GDKey  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"] isEqualToString:@"com.dw.bm"] ? @"a4725781981191b57d44936de2fbbe52" : @"2d5e8931fb852fc18d87d2ce0ee1404c"
+//极光
+#define JGKey  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"] isEqualToString:@"com.dw.bm"] ? @"bc6bf46b2d11135bf00723e7" : @"af4849ce1c709f23a7ae7366"
+
+
+/////正式地图
+//#define GDKey @"a4725781981191b57d44936de2fbbe52"
+///////极光正式
+//#define JGKey @"bc6bf46b2d11135bf00723e7"
+////测试地图
 //#define GDKey @"2d5e8931fb852fc18d87d2ce0ee1404c"
+////极光测试
+//#define JGKey @"af4849ce1c709f23a7ae7366"
+
+
+
+
 #define kPhotoUrl @"http://test.dongwuit.com/?act=Api/Image/upload&sign=%@"
 #define kTitleColor @"#333333"
 #define kSubTitleColor @"#aaaaaa"

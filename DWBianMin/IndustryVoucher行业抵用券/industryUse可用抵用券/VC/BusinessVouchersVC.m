@@ -55,6 +55,7 @@
 }
 #pragma mark - 关于数据
 -(void)SET_DATA{
+    self.ChoseBtn.selected = self.industryModel.couponId.length==0 ?YES :NO;
     self.dataArray = [NSMutableArray arrayWithCapacity:0];
     self.pageIndex =1;
     [self requestAction];
@@ -191,6 +192,8 @@
     }
     self.BusinessVouchersVCBlock(self.industryModel);
     [self.tableView reloadData];
+    [self.navigationController popViewControllerAnimated:YES];
+
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

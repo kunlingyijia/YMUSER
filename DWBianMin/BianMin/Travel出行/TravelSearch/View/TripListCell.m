@@ -17,6 +17,8 @@
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.avatarUrl.layer.masksToBounds = YES;
     self.avatarUrl.layer.cornerRadius =(0.2*Width-20)/2;
+    self.states.layer.masksToBounds = YES;
+    self.states.layer.cornerRadius =3.0;
 }
 -(void)CellGetData:(TripModel*)model{
     [self.avatarUrl sd_setImageWithURL:[NSURL URLWithString:model.avatarUrl] placeholderImage:[UIImage imageNamed:@"bg_zaijia_1-1"]];
@@ -50,9 +52,6 @@
         self.restNumber.text = [NSString stringWithFormat:@"剩余%@座",model.restNumber];
         self.states.backgroundColor = [UIColor colorWithRed:255/255.0 green:204.0/255 blue:102.0/255 alpha:1.0];
     }
-    
-    
-    
     self.carColor.text =[NSString stringWithFormat:@"%@·%@",model.carColor,model.carBrand];
     self.startPlace.text = model.startPlace;
     self.endPlace.text = model.endPlace;

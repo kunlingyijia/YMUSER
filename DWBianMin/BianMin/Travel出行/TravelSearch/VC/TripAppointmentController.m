@@ -39,9 +39,6 @@
     [self endEditingAction:self.view];
     //可滑动的高度
     self.contentHeight.constant = Height-64;;
-
-    
-    
 }
 #pragma mark - 关于数据
 -(void)SET_DATA{
@@ -70,7 +67,7 @@
     self.startPlace.text = self.tripModel.startPlace;
     self.endPlace.text = self.tripModel.endPlace;
     self.price.text =[NSString stringWithFormat:@"支付金额:%@元", self.tripModel.price];
-    [_industryCouponUser setTitle:self.tripModel.industryCouponUserId.length ==0 ?@"使用行业抵用券":@"" forState:0];
+    [_industryCouponUser setTitle:self.tripModel.industryCouponUserId.length ==0 ?@"使用抵用券":@"" forState:0];
     
 }
 
@@ -155,7 +152,7 @@
     __weak typeof(self) weakSelf = self;
     VC.industryUseVCBlock = ^(IndustryModel * industryModel){
     weakSelf.tripModel.industryCouponUserId = industryModel.industryCouponUserId;
-    [_industryCouponUser setTitle:weakSelf.tripModel.industryCouponUserId.length == 0 ?@"使用行业抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]
+    [_industryCouponUser setTitle:weakSelf.tripModel.industryCouponUserId.length == 0 ?@"使用抵用券": [NSString stringWithFormat:@"-¥%@",industryModel.amount]
     forState:0];
     [_industryCouponUser setTitleColor:weakSelf.tripModel.industryCouponUserId.length ==0 ?[UIColor grayColor]: [UIColor redColor]
     forState:0];

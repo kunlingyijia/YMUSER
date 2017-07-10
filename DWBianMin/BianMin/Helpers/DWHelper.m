@@ -19,6 +19,7 @@
 #import "DWTools.h"
 #import "DWDeviceInfo.h"
 #import "SVProgressHUD.h"
+#import "LoginController.h"
 @interface DWHelper ()<UMSocialUIDelegate, CLLocationManagerDelegate>
 
 @property (nonatomic, strong) CLLocationManager *locationManager;
@@ -81,10 +82,34 @@
         
         [Session GET:url parameters:[NSDictionary dictionaryWithObject:parm forKey:@"request"] progress:^(NSProgress * _Nonnull downloadProgress) {
         } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if([responseObject[@"resultCode"]isEqualToString:@"14"]) {
+                //设置别名
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:@"" forKey:@"pushAlias"]];
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                DWHelper *helper = [DWHelper shareHelper];
+                [userDefaults setObject:@(0) forKey:@"isLogin"];
+                helper.isLogin = @(0);
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"退出账号" object:@"退出账号" userInfo:nil];
+//                // 跳转到登录界面
+//                LoginController *loginController = [[LoginController alloc] init];
+//                     UIViewController * viewControllerNow = [self currentViewController];
+//                if ([viewControllerNow  isKindOfClass:[LoginController class]]) {
+//                    //如果是页面XXX，则执行下面语句
+//                }else{
+//                    [viewControllerNow.navigationController pushViewController:loginController animated:YES];
+//                }
+            }
+
             success(responseObject);
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             faild(error);
-            [SVProgressHUD showErrorWithStatus:@"网络连接失败"];
+            NSString * errorStr =error.localizedDescription;
+            if (errorStr.length>1) {
+                [SVProgressHUD showErrorWithStatus:  [error.localizedDescription   substringToIndex:error.localizedDescription.length-1]];
+            }else{
+                [SVProgressHUD showErrorWithStatus:@"网络连接失败"];
+                
+            }
         }];
     }else if (method == POST) {
         NSString *url = [NSString stringWithFormat:@"%@%@&sign=%@",kServerUrl, actName,sign];
@@ -253,37 +278,7 @@
     [WXApi sendReq:request];
 }
 
-//- (void)viewWillAppear:(BOOL)animated {
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getOrderPayMessage:) name:@"weixinpay" object:nil];
-//}
-//
-//- (void)getOrderPayMessage:(NSNotification *) sender {
-//    PayResp *resp = sender.object;
-//    switch (resp.errCode) {
-//        case WXSuccess:
-//            NSLog(@"成功");
-//            break;
-//        case WXErrCodeCommon:
-//            NSLog(@"普通错误类型");
-//            break;
-//        case WXErrCodeUserCancel:
-//            NSLog(@"用户点击取消并返回");
-//            break;
-//        case WXErrCodeSentFail:
-//            NSLog(@"发送失败");
-//            break;
-//        case WXErrCodeAuthDeny:
-//            NSLog(@"授权失败 ");
-//            break;
-//        case WXErrCodeUnsupport:
-//            NSLog(@"微信不支持");
-//            break;
-//            
-//        default:
-//            break;
-//    }
-//    
-//}
+
 
 + (void)AliPayActionWithOrderStr:(NSString *)str{
 //          /*
@@ -344,9 +339,6 @@
                 }
             }];
 }
-
-
-
 + (NSMutableArray *)getCityData
 {
     NSArray *jsonArray = [[NSArray alloc]init];
@@ -381,6 +373,57 @@
     }
     
     
+    
+}
+
+-(UIViewController*) findBestViewController:(UIViewController*)vc {
+    
+    if (vc.presentedViewController) {
+        
+        // Return presented view controller
+        return [self findBestViewController:vc.presentedViewController];
+        
+    } else if ([vc isKindOfClass:[UISplitViewController class]]) {
+        
+        // Return right hand side
+        UISplitViewController* svc = (UISplitViewController*) vc;
+        if (svc.viewControllers.count > 0)
+            return [self findBestViewController:svc.viewControllers.lastObject];
+        else
+            return vc;
+        
+    } else if ([vc isKindOfClass:[UINavigationController class]]) {
+        
+        // Return top view
+        UINavigationController* svc = (UINavigationController*) vc;
+        if (svc.viewControllers.count > 0)
+            return [self findBestViewController:svc.topViewController];
+        else
+            return vc;
+        
+    } else if ([vc isKindOfClass:[UITabBarController class]]) {
+        
+        // Return visible view
+        UITabBarController* svc = (UITabBarController*) vc;
+        if (svc.viewControllers.count > 0)
+            return [self findBestViewController:svc.selectedViewController];
+        else
+            return vc;
+        
+    } else {
+        
+        // Unknown view controller type, return last child view controller
+        return vc;
+        
+    }
+    
+}
+
+-(UIViewController*) currentViewController {
+    
+    // Find best view controller
+    UIViewController* viewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    return [self findBestViewController:viewController];
     
 }
 

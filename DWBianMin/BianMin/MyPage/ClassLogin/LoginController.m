@@ -199,6 +199,8 @@
         [self presentViewController:alertController animated:YES completion:nil];
     }else {
         RequestLogin *login = [[RequestLogin alloc] init];
+        ;
+        login.registrationId = [[[[[UIDevice currentDevice] identifierForVendor] UUIDString] MD5Hash] substringToIndex:10];
         login.mobile = self.nameField.text;
         login.password = [self.passwordTextField.text MD5Hash];
         BaseRequest *baseReq = [[BaseRequest alloc] init];
@@ -212,14 +214,16 @@
             
             LoginResponse *registResq = [LoginResponse yy_modelWithJSON:response];
             LoginResponse *registData = [LoginResponse yy_modelWithJSON:[registResq.data yy_modelToJSONString]];
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            [userDefaults setObject:registData.key forKey:@"loginKey"];
-            [userDefaults setObject:registData.token forKey:@"loginToken"];
             if (registResq.resultCode == 1) {
-                
-                //[[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:registResq.data[@"pushAlias"] forKey:@"pushAlias"]];
-                [weakSelf showToast:@"登录成功"];
                 NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                [userDefaults setObject:registData.key forKey:@"loginKey"];
+                [userDefaults setObject:registData.token forKey:@"loginToken"];
+                NSString *pushAlias
+                =registResq.data[@"pushAlias"];
+                if (pushAlias.length>0) {
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:registResq.data[@"pushAlias"] forKey:@"pushAlias"]];
+                }
+                [weakSelf showToast:@"登录成功"];
                 [userDefaults setObject:weakSelf.nameField.text forKey:@"name"];
                 [userDefaults setObject:weakSelf.passwordTextField.text forKey:@"passWord"];
                 [userDefaults setObject:@(1) forKey:@"isLogin"];
@@ -239,59 +243,7 @@
         }];
         
     }
-//        NSString *url = [NSString stringWithFormat:@"%@%@&sign=%@",kServerUrl, @"act=Api/User/requestLogin",[[baseReq.data yy_modelToJSONString] MD5Hash]];
-//        
-//        
-//        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//        manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-//        
-//        manager.requestSerializer.timeoutInterval = 10;
-//        
-//        manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-//        
-//        manager.responseSerializer = [AFJSONResponseSerializer serializer];
-//        
-////        [manager.requestSerializer setValue:[self getHelpToken] forHTTPHeaderField:@"Authorization"];
-//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json",@"text/javascript", @"text/plain", nil];
-//        [manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-//        [manager.requestSerializer setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-//
-//        
-//        [manager.requestSerializer setValue:@"福" forHTTPHeaderField:@"province"];
-//        
-////        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
-//        self.view.userInteractionEnabled = NO;
-//        [manager GET:url parameters:[NSDictionary dictionaryWithObject:[baseReq yy_modelToJSONString] forKey:@"request"] progress:^(NSProgress * _Nonnull downloadProgress) {
-//            
-//        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//            NSLog(@"%@", responseObject);
-//                    LoginResponse *registResq = [LoginResponse yy_modelWithJSON:responseObject];
-//                    LoginResponse *registData = [LoginResponse yy_modelWithJSON:[registResq.data yy_modelToJSONString]];
-//                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-//                    [userDefaults setObject:registData.key forKey:@"loginKey"];
-//                    [userDefaults setObject:registData.token forKey:@"loginToken"];
-//                    if (registResq.resultCode == 1) {
-//                        [self showToast:@"登录成功"];
-//                        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-//                        [userDefaults setObject:self.nameField.text forKey:@"name"];
-//                        [userDefaults setObject:self.passwordTextField.text forKey:@"passWord"];
-//                        [userDefaults setObject:@(1) forKey:@"isLogin"];
-//                        DWHelper *helper =  [DWHelper shareHelper];
-//                        helper.isLogin = @(1);
-//                        [[NSNotificationCenter defaultCenter] postNotificationName:@"登录成功" object:@"登录成功" userInfo:@{}];
-//                        [self.navigationController popViewControllerAnimated:YES];
-//                                                
-//                        [self dismissViewControllerAnimated:YES completion:nil];
-//                    }else {
-//                        self.view.userInteractionEnabled = YES;
-//                        [self showToast:registResq.msg];//[ProcessResultCode processResultCodeWithBaseRespone:registResq viewControll:self];
-//                    }
-//
-//        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//            self.view.userInteractionEnabled = YES;
-//        }];
-//    }
-//    OKLog(@"登录方法");
+
 }
 
 
@@ -307,24 +259,7 @@
 }
 - (void)WXAction:(UIButton *)sender {
     self.isQQ = 2;
-    //[self showProgress];
-//    UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
-//
-//    snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
-//        
-//        if (response.responseCode == UMSResponseCodeSuccess) {
-//            
-//            NSDictionary *dict = [UMSocialAccountManager socialAccountDictionary];
-//            UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:snsPlatform.platformName];
-//            NSLog(@"username = %@----uid = %@-------token = %@ ", snsAccount.userName, snsAccount.unionId, snsAccount.accessToken);
-//            
-//        }
-//        
-//    });
-//    
-    
     UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
-    
     snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
         
         if (response.responseCode == UMSResponseCodeSuccess) {
@@ -338,7 +273,6 @@
             [self thirdLoginWithToken:snsAccount.accessToken userID:snsAccount.usid];
         }
     });
-    OKLog(@"微信登录");
 }
 - (void)QQAction:(UIButton *)sender {
     self.isQQ = 1;
@@ -350,15 +284,7 @@
              [self hideProgress];
             UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:UMShareToQQ];
             NSLog(@"username is %@, uid is %@, token is %@ url is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken,snsAccount.iconURL);
-//            [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToQQ  completion:^(UMSocialResponseEntity *response){
-//                NSLog(@"SnsInformation is %@",response);
-//                self.thirdUserModel = [ThirdUserModel yy_modelWithDictionary:response.data];
-//                [self thirdLoginWithToken:response.data[@"access_token"] userID:response.data[@"uid"]];
-//            }];
-            
-            
             [self thirdLoginWithToken:snsAccount.accessToken userID:snsAccount.usid];
-            //[self thirdLoginWithToken:response.data[@"access_token"] userID:response.data[@"uid"]];
             
         }});
     OKLog(@"QQ登录");
@@ -369,6 +295,7 @@
     thirdLogin.type = self.isQQ;
     thirdLogin.thirdPartToken = token;
     thirdLogin.thirdPartUserId = userID;
+    thirdLogin.registrationId = [[[[[UIDevice currentDevice] identifierForVendor] UUIDString] MD5Hash] substringToIndex:10];
     BaseRequest *baseReq = [[BaseRequest alloc] init];
     baseReq.encryptionType = RequestMD5;
     baseReq.data = thirdLogin ;
@@ -385,6 +312,11 @@
             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
             [userDefaults setObject:registData.key forKey:@"loginKey"];
             [userDefaults setObject:registData.token forKey:@"loginToken"];
+            NSString *pushAlias
+            =registResq.data[@"pushAlias"];
+            if (pushAlias.length>0) {
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"设置别名" object:nil userInfo:[NSDictionary dictionaryWithObject:registResq.data[@"pushAlias"] forKey:@"pushAlias"]];
+            }
             [self showToast:@"登录成功"];
             [userDefaults setObject:@(1) forKey:@"isLogin"];
             DWHelper *helper =  [DWHelper shareHelper];
@@ -392,7 +324,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"登录成功" object:@"登录成功" userInfo:@{}];
             [self.navigationController popToRootViewControllerAnimated:NO];
         }else {
-           [self showToast:BaseRes.msg];//  [ProcessResultCode processResultCodeWithBaseRespone:BaseRes viewControll:self];
+           [self showToast:BaseRes.msg];
         }
         [self hideProgress];
     } faild:^(id error) {
@@ -400,8 +332,6 @@
         NSLog(@"%@", error);
     }];
 }
-
-
 - (void)setPasswordAction:(UIButton *)sender {
     OKLog(@"找回密码");
     [self.navigationController pushViewController:[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"AlterViewController"] animated:YES];

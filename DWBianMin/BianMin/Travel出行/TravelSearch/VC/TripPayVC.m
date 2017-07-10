@@ -14,7 +14,6 @@
 @interface TripPayVC (){
     }
 @property(nonatomic,strong)NSString *payType;
-
 @end
 
 @implementation TripPayVC
@@ -25,7 +24,6 @@
     [super viewDidDisappear:animated];
     dispatch_cancel(_timer);
     self.timer = nil;
-
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
