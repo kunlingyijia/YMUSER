@@ -9,4 +9,5 @@ pod 'MJRefresh'
 pod 'LXMButtonImagePosition', '~> 1.1.1'
 pod 'LBXScan','~> 1.1.1'
 pod 'IQKeyboardManager'
+pod 'Bugly'
 end

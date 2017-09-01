@@ -129,10 +129,9 @@ enum {
     [self.Map addSubview:self.mapView];
     UIView *zoomPannelView = [self makeZoomPannelView];
     NSLog(@"%f",self.Map.frame.size.height);
-     NSLog(@"%f",self.view.frame.size.height);
+    NSLog(@"%f",self.view.frame.size.height);
     zoomPannelView.center = CGPointMake(Width -  CGRectGetMidX(zoomPannelView.bounds) - 20,
                                         self.Map.frame.size.height/2 );
-    
     [self.Map addSubview:zoomPannelView];
     
     
@@ -177,7 +176,6 @@ enum {
     annotation.coordinate = coordinate;
 //    annotation.title    = @"AutoNavi";
 //    annotation.subtitle = @"CustomAnnotationView";
-    
     [self.mapView addAnnotation:annotation];
 }
 
@@ -192,9 +190,7 @@ enum {
     {
         self.index ++;
         static NSString *customReuseIndetifier = @"customReuseIndetifier";
-        
         CustomAnnotationView *annotationView = (CustomAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:customReuseIndetifier];
-        
         if (annotationView == nil)
         {
             annotationView = [[CustomAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:customReuseIndetifier];

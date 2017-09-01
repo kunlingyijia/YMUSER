@@ -48,65 +48,45 @@
 //展示活动图
 @property (nonatomic ,strong) UIView *activeV;
 @property (nonatomic, strong) UIImageView *img;
-
 @property (nonatomic, strong) UILabel *yiminL;
 @property (nonatomic, strong) UIButton *btn;
 @property (nonatomic, strong) UIButton *webBtn;
-
 @property(nonatomic,strong) NSDictionary * userInfo;
 ///pushAlias
 @property (nonatomic, strong) NSString  *pushAlias ;
 @end
 
 @implementation AppDelegate
-
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-   // application.applicationIconBadgeNumber = -1;
-   
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
-    
-    if ([self launchFirst]) { 
+    if ([self launchFirst]) {
         DWGuideViewController  *userGuideViewController = [[DWGuideViewController alloc] init];
         self.window.rootViewController = userGuideViewController;
     }else {
         if ([self haveNewAd]) {
             [self showAdView];
         }else{
-            
             NSString *regionName = [AuthenticationModel getRegionName];
             if (regionName == nil || regionName == NULL) {
                 AdressSelectedController *adressSelected = [[AdressSelectedController alloc] init];
                 adressSelected.isFrest = @"是";
                 adressSelected.selectdeAdress = ^(NSString *adressStr) {
-                    // [[NSNotificationCenter defaultCenter] postNotificationName:@"切换地址" object:@"切换地址" userInfo:@{}];
-                    //            weakSelf.pageIndex = 1;
-                    //            [weakSelf.searchView.adressBtn setTitle:adressStr forState:UIControlStateNormal];
-                    //            [weakSelf.classKindArr removeAllObjects];
-                    //            [weakSelf againAchiveData];
-                    //            [weakSelf.dataSource removeAllObjects];
-                    //            [weakSelf getShopDataWithType:self.merchantType];
-                };
+                                   };
                 
                 [UIApplication sharedApplication].keyWindow.rootViewController = [[UINavigationController alloc]initWithRootViewController:adressSelected];
             }else {
                 [UIApplication sharedApplication].keyWindow.rootViewController = [[DWTabBarController alloc] init];
-                
             };
-
-            
         }
     }
-
     [self locationAction];
     [self.window makeKeyAndVisible];
     [self configThirdPart];
     [self payAction];
     [self isLogin];
     [AMapServices sharedServices].apiKey =GDKey;
-    //[AMapServices sharedServices].apiKey = @"6eb92d95273f7d8f43112766c305130f";
-   [[AMapServices sharedServices] setEnableHTTPS:YES];
+    [[AMapServices sharedServices] setEnableHTTPS:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showActive:) name:@"登录成功" object:nil];
     //设置第三方
     [self SetUpThirdParty:launchOptions];
@@ -114,7 +94,6 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(SetUpAlias:) name:@"设置别名" object:nil];
     //获取经纬度
      [[DWHelper shareHelper]getloaction];
-    
     return YES;
 }
 
@@ -123,7 +102,6 @@
     NSDictionary * dic = sender.userInfo;
     self.pushAlias =dic[@"pushAlias"];
     [JPUSHService setAlias:self.pushAlias callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:self];
-    
 }
 
 #pragma mark - 推送别名
@@ -131,7 +109,6 @@
                      tags:(NSSet *)tags
                     alias:(NSString *)alias {
     if (iResCode == 0) {
-        
     }
     if (iResCode == 6002) {
         [JPUSHService setAlias:self.pushAlias callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:self];
@@ -145,14 +122,12 @@
     DWHelper *helper = [DWHelper shareHelper];
     helper.isLogin = [userDefaults objectForKey:@"isLogin"];
 }
-
 - (void)UMShare {
     [UMSocialData setAppKey:@"5760ee9be0f55a0dec0013e6"];
     [MobClick startWithAppkey:@"5770879c67e58e0f940010ef" reportPolicy:REALTIME channelId:@"测试"];
     //设置微信AppId、appSecret，分享url
     [UMSocialWechatHandler setWXAppId:@"wxb1b2bfe44501f201" appSecret:@"5c9d1be2f5dc4cc975c248f9efd7b608" url:@"http://www.umeng.com/social"];
     [UMSocialQQHandler setQQWithAppId:@"1105466760" appKey:@"ZhkBC58lGdVq4kaw" url:@"http://www.umeng.com/social"];
-
 }
 - (BOOL)launchFirst {
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
@@ -176,10 +151,8 @@
     if ([url.host isEqualToString:@"safepay"]) {
         //跳转支付宝钱包进行支付，处理支付结果
         [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
-            
         }];
     }
-    
     return  YES;
 }
 - (void)applicationDidBecomeActive:(UIApplication *)application {

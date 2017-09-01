@@ -386,7 +386,6 @@
         }];
     }
 }
-
 - (void)moreCouponeAction:(UIButton *)sender {
     MoreCouponViewController *moreCoupon = [[MoreCouponViewController alloc] init];
     moreCoupon.merchantId = self.merchantId;
@@ -394,8 +393,6 @@
     [self.navigationController pushViewController:moreCoupon animated:YES];
     
 }
-
-
 #pragma mark - 网络请求
 - (void)getHeaderData {
     [self showProgress];
@@ -509,10 +506,9 @@
                 [self.couponArr addObject:model];
             }
         }else {
-            [self showToast:baseRes.msg];// [ProcessResultCode processResultCodeWithBaseRespone:baseRes viewControll:self];
+            [self showToast:baseRes.msg];
         }
         [self getGoodsData:self.shopModel.merchantId];
-//        [self.tableView reloadData];
     } faild:^(id error) {
 
     }];
@@ -577,9 +573,6 @@
     [alertController show];
 
 }
-
-
-
 - (void)openMap:(NSString *)urlString {
     NSString *string = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:string];

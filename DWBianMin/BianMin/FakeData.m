@@ -18,7 +18,6 @@
 #import "GovModel.h"
 #import "AdressModel.h"
 @implementation FakeData
-
 + (NSArray *)getHomePageAdData{
     HomeAdModel *m1 = [[HomeAdModel alloc] init];
     m1.homeAdId = @"100";

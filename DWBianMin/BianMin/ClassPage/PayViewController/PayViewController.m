@@ -197,7 +197,7 @@
 }
 
 - (void)WXpay:(RequestPayGoodsOrderModel *)model {
-    if (        [WXApi isWXAppInstalled]
+    if (  [WXApi isWXAppInstalled]
         ) {
        [DWHelper  WXpayAction:model.prepayid withpartnerId:model.partnerid withpackage:model.package withnonceStr:model.noncestr withtimeStamp:model.timestamp withsign:model.sign];
     }else{

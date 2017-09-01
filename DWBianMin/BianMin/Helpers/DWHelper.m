@@ -50,8 +50,8 @@
         Session.requestSerializer.cachePolicy = 0;
         Session.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",@"text/json", @"text/plain", @"text/html",@"application/x-www-form-urlencoded", nil];
 //         [Session.requestSerializer setValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-        [Session.requestSerializer setValue:[NSString stringWithFormat:@"%f", self.coordinate.latitude] forHTTPHeaderField:@"lat"];
-        [Session.requestSerializer setValue:[NSString stringWithFormat:@"%f", self.coordinate.longitude] forHTTPHeaderField:@"lng"];
+        [Session.requestSerializer setValue:[NSString stringWithFormat:@"%lf", self.coordinate.latitude] forHTTPHeaderField:@"lat"];
+        [Session.requestSerializer setValue:[NSString stringWithFormat:@"%lf", self.coordinate.longitude] forHTTPHeaderField:@"lng"];
         NSString *province = nil;
         NSString *city = nil;
         NSString *area = nil;
@@ -99,7 +99,7 @@
 //                    [viewControllerNow.navigationController pushViewController:loginController animated:YES];
 //                }
             }
-
+           
             success(responseObject);
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             faild(error);
@@ -201,8 +201,8 @@
     CLLocation *location = [locations lastObject];
     CLLocationCoordinate2D coordinate = location.coordinate;
     NSLog(@"纬度:%f 经度:%f", coordinate.latitude, coordinate.longitude);
-    [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%f",coordinate.latitude] forKey:@"Dlatitude"];
-    [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%f",coordinate.longitude] forKey:@"Dlongitude"];
+    [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%lf",coordinate.latitude] forKey:@"Dlatitude"];
+    [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%lf",coordinate.longitude] forKey:@"Dlongitude"];
     // 2.停止定位
     [manager stopUpdatingLocation];
 }
